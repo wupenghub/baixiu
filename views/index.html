@@ -16,15 +16,15 @@
     <nav class="navbar">
       <button class="btn btn-default navbar-btn fa fa-bars"></button>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="../admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
-        <li><a href="../admin/login.html"><i class="fa fa-sign-out"></i>退出</a></li>
+        <li><a href="/admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
+        <li><a href="/views/login.html"><i class="fa fa-sign-out"></i>退出</a></li>
       </ul>
     </nav>
     <div class="container-fluid">
       <div class="jumbotron text-center">
         <h1>One Belt, One Road</h1>
         <p>Thoughts, stories and ideas.</p>
-        <p><a class="btn btn-primary btn-lg" href="../admin/post-add.html" role="button">写文章</a></p>
+        <p><a class="btn btn-primary btn-lg" href="/admin/post-add.html" role="button">写文章</a></p>
       </div>
       <div class="row">
         <div class="col-md-4">
@@ -86,7 +86,7 @@
           parentNode.append(dirObj);
       }else{//不包含子节点
          var html = '<li class="active">' +
-                        '<a href="index.html"><i class="fa fa-dashboard"></i>'+dataObj['mnue_desc']+'</a>' +
+                        '<a href="'+dataObj['url']+'"><i class="fa fa-dashboard"></i>'+dataObj['mnue_desc']+'</a>' +
                     '</li>';
           parentNode.append(html);
       }

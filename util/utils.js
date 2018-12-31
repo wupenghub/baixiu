@@ -47,6 +47,71 @@ var utils = {
              return
          }
          return user;
-     }
+     },
+    addMnues(parentNode,dataObj) {
+        if(dataObj.sonList && dataObj.sonList.length > 0){//包含子节点
+            //如果该父节点中包含其他子节点，先添加父节点
+            var dirObj = $('<li>' +
+                '<a href="#'+dataObj.id+'" class="collapsed" data-toggle="collapse">' +
+                '<i class="fa fa-thumb-tack"></i>'+dataObj.mnue_desc+'<i class="fa fa-angle-right"></i>' +
+                '</a>' +
+                '</li>');
+            var filesUL = $('<ul id='+dataObj.id+' class="collapse"></ul>');
+            //添加父节点到根目录中
+            dirObj.append(filesUL);
+            for(var i = 0;i<dataObj.sonList.length;i++){
+                //递归将当前目录传进，进一步添加目录
+                addMnues(filesUL,dataObj.sonList[i]);
+            }
+            //添加该节点到根目录
+            parentNode.append(dirObj);
+        }else{//不包含子节点
+            var html = '<li class="active">' +
+                '<a href="'+dataObj['url']+'"><i class="fa fa-dashboard"></i>'+dataObj['mnue_desc']+'</a>' +
+                '</li>';
+            parentNode.append(html);
+        }
+    },
+    addTableMnues(parentNode,dataObj,spanNoContent,index){
+        if(dataObj.sonList && dataObj.sonList.length > 0){//包含子节点
+            //如果该父节点中包含其他子节点，先添加父节点
+            var dirObj = $('<tr id="mnuesManger'+dataObj.id+'" class="mnuesManger'+dataObj.parent_id+'">' +
+                '<td class="first_td">'  +
+                '<span class="glyphicon glyphicon-menu-down" onclick="toggle(this,\'mnuesManger'+dataObj.id+'\')"></span>' +
+                '<a href="#">' + dataObj.mnue_desc+ '</a>' +
+                '</td>'+
+                '<td>'+dataObj.url+'</td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '</tr>');
+            parentNode.append(dirObj);
+            for(var i = 0;i<index;i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+            for(var i = 0;i<dataObj.sonList.length;i++){
+                //递归将当前目录传进，进一步添加目录
+                this.addTableMnues(parentNode,dataObj.sonList[i],$('<span class="no-content"></span>'),index+1);
+            }
+        }else{//不包含子节点
+            var html = '<tr id="mnuesManger'+dataObj.id+'" class="mnuesManger'+dataObj.parent_id+'">' +
+                '<td class="first_td">'  +
+                '<span class="no-content"></span>' +
+                '<a href="#">' + dataObj.mnue_desc+ '</a>' +
+                '</td>'+
+                '<td>'+dataObj.url+'</td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '</tr>';
+            parentNode.append(html);
+            for(var i = 0;i<index;i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+        }
+}
+
 };
 module.exports = utils;

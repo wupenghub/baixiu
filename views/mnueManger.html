@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Dashboard &laquo; Admin</title>
+    <link rel="stylesheet" href="/public/vendors/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
+
+    <script src="/public/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+<script>NProgress.start()</script>
+<script type="text/javascript" id="template">{{dataJsonArr}}</script>
+<div class="mnue-manger main">
+    <nav class="navbar">
+        <button class="btn btn-default navbar-btn fa fa-bars"></button>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
+            <li><a href="/baixiu/loginout"><i class="fa fa-sign-out"></i>退出</a></li>
+        </ul>
+    </nav>
+    <div class="container-fluid">
+        <div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#mnue_list"  data-toggle="tab">菜单列表</a></li>
+                <li role="presentation"><a href="#mnue_add"  data-toggle="tab">菜单添加</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="mnue_list">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>链接</th>
+                                <th>排序</th>
+                                <th>可见</th>
+                                <th>标识</th>
+                                <th>菜单操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div  class="tab-pane" id="mnue_add">...</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="aside">
+    <div class="profile">
+        <img class="avatar">
+        <h3 class="name"></h3>
+    </div>
+    <ul class="nav">
+    </ul>
+</div>
+
+<script src="/public/vendors/jquery/jquery.js"></script>
+<script src="/public/vendors/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<script src="/public/vendors/util/utils.js"></script>
+<script>NProgress.done()</script>
+<script>
+    var hiddenList = [];
+    $(function () {
+        var data = $("#template").html().replace(/&#34;/g,'"');
+        var dataJson = JSON.parse(data);
+        var rootNode = $('.aside .nav');
+        var tbody = $('.mnue-manger table tbody');
+        $('.avatar').prop('src',dataJson.user.avatar);
+        $('.name').html(dataJson.user.nickname);
+        for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+            //循环遍历集合元素,添加菜单目录。
+            utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
+            utils.addTableMnues(tbody,dataJson.dataJsonArr[i],null,0);
+        }
+    });
+    function toggle(obj,jsonObj) {
+        findAllID(obj,jsonObj);
+        var isOpen = $('#mnuesManger'+jsonObj.id).attr('data-open');
+        if(isOpen == 'on') {
+            for(var i = 0;i<hiddenList.length;i++){
+                $('#mnuesManger' + hiddenList[i]).hide();
+            }
+            $(obj).attr("class","glyphicon glyphicon-menu-right");
+            $('#mnuesManger'+jsonObj.id).attr('data-open','off');
+        }else{
+            for(var i = 0;i<hiddenList.length;i++){
+                $('#mnuesManger' + hiddenList[i]).show();
+            }
+            $(obj).attr("class","glyphicon glyphicon-menu-down");
+            $('#mnuesManger'+jsonObj.id).attr('data-open','on');
+        }
+        hiddenList = [];
+    }
+    function findAllID(obj, jsonObj) {
+        if (jsonObj.sonList) {
+            for (var i = 0; i < jsonObj.sonList.length; i++) {
+                hiddenList.push(jsonObj.sonList[i].id);
+                findAllID(obj, jsonObj.sonList[i]);
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -11,13 +11,13 @@
 </head>
 <body>
   <script>NProgress.start()</script>
-  <script type="text/javascript" id="template">{{dataJsonArr}}</script>
+  <script type="text/javascript" id="template">{{dataJson}}</script>
   <div class="main">
     <nav class="navbar">
       <button class="btn btn-default navbar-btn fa fa-bars"></button>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
-        <li><a href="/views/login.html"><i class="fa fa-sign-out"></i>退出</a></li>
+        <li><a href="/baixiu/loginout"><i class="fa fa-sign-out"></i>退出</a></li>
       </ul>
     </nav>
     <div class="container-fluid">
@@ -47,8 +47,8 @@
 
   <div class="aside">
     <div class="profile">
-      <img class="avatar" src="/uploads/avatar.jpg">
-      <h3 class="name">布头儿</h3>
+      <img class="avatar">
+      <h3 class="name"></h3>
     </div>
     <ul class="nav">
     </ul>
@@ -56,41 +56,20 @@
 
   <script src="/public/vendors/jquery/jquery.js"></script>
   <script src="/public/vendors/bootstrap/js/bootstrap.js"></script>
+  <script src="/public/vendors/util/utils.js"></script>
   <script>NProgress.done()</script>
 <script>
   $(function () {
     var data = $("#template").html().replace(/&#34;/g,'"');
-    var dataJsonArray = JSON.parse(data);
+    var dataJson = JSON.parse(data);
     var rootNode = $('.aside .nav');
-    for(var i = 0;i<dataJsonArray.length;i++){
+    $('.avatar').prop('src',dataJson.user.avatar);
+    $('.name').html(dataJson.user.nickname);
+    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
         //循环遍历集合元素,添加菜单目录。
-        addMnues(rootNode,dataJsonArray[i]);
+        utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
     }
   });
-  function addMnues(parentNode,dataObj) {
-      if(dataObj.sonList && dataObj.sonList.length > 0){//包含子节点
-          //如果该父节点中包含其他子节点，先添加父节点
-          var dirObj = $('<li>' +
-                              '<a href="#'+dataObj.id+'" class="collapsed" data-toggle="collapse">' +
-                                    '<i class="fa fa-thumb-tack"></i>'+dataObj.mnue_desc+'<i class="fa fa-angle-right"></i>' +
-                              '</a>' +
-                        '</li>');
-          var filesUL = $('<ul id='+dataObj.id+' class="collapse"></ul>');
-          //添加父节点到根目录中
-          dirObj.append(filesUL);
-          for(var i = 0;i<dataObj.sonList.length;i++){
-              //递归将当前目录传进，进一步添加目录
-              addMnues(filesUL,dataObj.sonList[i]);
-          }
-          //添加该节点到根目录
-          parentNode.append(dirObj);
-      }else{//不包含子节点
-         var html = '<li class="active">' +
-                        '<a href="'+dataObj['url']+'"><i class="fa fa-dashboard"></i>'+dataObj['mnue_desc']+'</a>' +
-                    '</li>';
-          parentNode.append(html);
-      }
-  }
 </script>
 </body>
 </html>

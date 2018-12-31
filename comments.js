@@ -18,7 +18,7 @@ app.all('*', function (req, res, next) {
 app.use(cookieParser());
 app.use(session({
         secret: '12345',
-        cookie: {maxAge: 60000},
+        cookie: {maxAge: 6000000},
         resave: false,
         saveUninitialized:false
     }

@@ -23,22 +23,23 @@ router.get('/', function (req, res) {
                 array.push(result[i]);
             }
         }
-        var dataJsonArr = JSON.stringify(array);
-        res.render('index.html',{dataJsonArr:dataJsonArr});
+        var dataJson = {};
+        dataJson.user = req.session.user[0];
+        dataJson.dataJsonArr = array;
+        req.session.userInfo = JSON.stringify(dataJson);
+        res.render('index.html',{dataJson:JSON.stringify(dataJson)});
     });
 });
+//登录接口
 router.post('/baixiu/login',function (req,res) {
     var emil = req.body.email;
     var password = req.body.password;
-    console.log(emil+"======="+password);
     var loginSql = 'select * from users u where u.`email` = "'+emil+'" and u.`password` = "'+password+'" ';
     DbUtils.queryData(loginSql,function (result) {
         var loginData = {};
         if(result&&result.length > 0){
             //登录成功，保存session
             req.session.user = result;
-            //冲定向到主页
-            // res.redirect(301, '/');
             loginData.login_state = '0';
             loginData.login_desc = '成功';
             loginData.user = result[0];
@@ -50,5 +51,21 @@ router.post('/baixiu/login',function (req,res) {
         }
         res.json(loginData);
     });
+});
+//退出登录
+router.get('/baixiu/loginout',function (req,res) {
+    req.session.destroy();
+    //重定向到主页
+    res.redirect(301, '/');
+});
+//菜单管理
+router.get('/baixiu/MenuManger',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req,res);
+    if(!user){
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    res.render('mnueManger.html',{dataJsonArr:req.session.userInfo});
 });
 module.exports = router;

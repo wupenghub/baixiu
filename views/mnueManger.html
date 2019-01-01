@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
     <link rel="stylesheet" href="/public/css/admin.css">
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
-
     <script src="/public/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
@@ -46,7 +45,27 @@
                         </tbody>
                     </table>
                 </div>
-                <div  class="tab-pane" id="mnue_add">...</div>
+                <div  class="tab-pane" id="mnue_add"><form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">File input</label>
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Example block-level help text here.</p>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Check me out
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form></div>
             </div>
         </div>
 
@@ -65,49 +84,7 @@
 <script src="/public/vendors/jquery/jquery.js"></script>
 <script src="/public/vendors/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 <script src="/public/vendors/util/utils.js"></script>
+<script src="/public/js/mnueManger/mnueManger.js"></script>
 <script>NProgress.done()</script>
-<script>
-    var hiddenList = [];
-    $(function () {
-        var data = $("#template").html().replace(/&#34;/g,'"');
-        var dataJson = JSON.parse(data);
-        var rootNode = $('.aside .nav');
-        var tbody = $('.mnue-manger table tbody');
-        $('.avatar').prop('src',dataJson.user.avatar);
-        $('.name').html(dataJson.user.nickname);
-        for(var i = 0;i<dataJson.dataJsonArr.length;i++){
-            //循环遍历集合元素,添加菜单目录。
-            utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
-            utils.addTableMnues(tbody,dataJson.dataJsonArr[i],null,0);
-        }
-    });
-    function toggle(obj,jsonObj) {
-        findAllID(obj,jsonObj);
-        var isOpen = $('#mnuesManger'+jsonObj.id).attr('data-open');
-        if(isOpen == 'on') {
-            for(var i = 0;i<hiddenList.length;i++){
-                $('#mnuesManger' + hiddenList[i]).hide();
-            }
-            $(obj).attr("class","glyphicon glyphicon-menu-right");
-            $('#mnuesManger'+jsonObj.id).attr('data-open','off');
-        }else{
-            for(var i = 0;i<hiddenList.length;i++){
-                $('#mnuesManger' + hiddenList[i]).show();
-            }
-            $(obj).attr("class","glyphicon glyphicon-menu-down");
-            $('#mnuesManger'+jsonObj.id).attr('data-open','on');
-        }
-        hiddenList = [];
-    }
-    function findAllID(obj, jsonObj) {
-        if (jsonObj.sonList) {
-            for (var i = 0; i < jsonObj.sonList.length; i++) {
-                hiddenList.push(jsonObj.sonList[i].id);
-                findAllID(obj, jsonObj.sonList[i]);
-            }
-        }
-    }
-
-</script>
 </body>
 </html>

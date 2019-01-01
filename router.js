@@ -11,7 +11,7 @@ router.get('/', function (req, res) {
         return;
     }
     // 2、查询对应的菜单数据
-    var sql = 'select * from mnues m where m.model_id = 1';
+    var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
     DbUtils.queryData(sql,function (result) {
         for(var i = 0;i<result.length;i++){
             utils.addList(result,result[i]);
@@ -67,5 +67,11 @@ router.get('/baixiu/MenuManger',function (req,res) {
         return;
     }
     res.render('mnueManger.html',{dataJsonArr:req.session.userInfo});
+});
+//菜单管理->菜单删除
+router.get('/baixiu/menuDelete',function (req,res) {
+   var id = req.query.id;
+   
+
 });
 module.exports = router;

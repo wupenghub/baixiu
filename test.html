@@ -18,14 +18,8 @@
     <![endif]-->
 </head>
 <body>
-<div class="dropdown">
-    <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Dropdown trigger
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dLabel">
-        ...
-    </ul>
+<div>
+
 </div>
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
@@ -33,7 +27,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <script>
     $(function () {
-        $('.dropdown-toggle').dropdown('toggle')
+            for(var i = 0;i<5;i++){
+                $('div').prepend('<span></span>');
+            }
     })
 </script>
 </body>

@@ -70,8 +70,42 @@ router.get('/baixiu/MenuManger',function (req,res) {
 });
 //菜单管理->菜单删除
 router.get('/baixiu/menuDelete',function (req,res) {
-   var id = req.query.id;
-   
-
+   var sql = 'select *  from mnues m where m.parent_id = '+req.query.id+' and m.del_flag = 0';
+    DbUtils.queryData(sql,function (result) {
+       if(result.length == 0){
+            //查不出结果说明满足删除条件，执行修改数据库的sql
+           var updateSql = 'update mnues m set m.del_flag = 1 where m.id = '+req.query.id;
+           DbUtils.queryData(updateSql,function (updateResult) {
+               var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
+               DbUtils.queryData(sql,function (queryResult) {
+                   for(var i = 0;i<queryResult.length;i++){
+                       utils.addList(queryResult,queryResult[i]);
+                   }
+                   // 将result中所有节点parent_id值不为空的给踢出掉
+                   var array = [];
+                   for(var i = 0;i<queryResult.length;i++){
+                       if(!queryResult[i]['parent_id']){
+                           array.push(queryResult[i]);
+                       }
+                   }
+                   var sessionJson = {};
+                   sessionJson.user = req.session.user[0];
+                   sessionJson.dataJsonArr = array;
+                   req.session.userInfo = JSON.stringify(sessionJson);
+                   var dataJson = {};
+                   dataJson.dataJsonArr = array;
+                   dataJson.status = 0;
+                   dataJson.desc = '成功';
+                   res.json(dataJson);
+               });
+           });
+       }else{
+           //可以查出结果集，说明改节点为父节点，并且对应的部分子节点没有删除完
+           var errResult = {};
+           errResult.status = 1;
+           errResult.desc = '该目录下的部分子目录未被删除，请先删除对应的子目录';
+           res.json(errResult);
+       }
+    });
 });
 module.exports = router;

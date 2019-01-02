@@ -51,10 +51,24 @@ function mnueDelete(id) {
         data:{id},
         dataType:'json',
         success:function (data) {
+            // 删除成功，重新绚烂菜单节点
+            if(data.status == 1){
+                alert(data.desc);
+            }else {
+                var rootNode = $('.aside .nav');
+                var tbody = $('.mnue-manger table tbody');
+                rootNode.html('');
+                tbody.html('');
+                for (var i = 0; i < data.dataJsonArr.length; i++) {
+                    //循环遍历集合元素,添加菜单目录。
+                    utils.addMnues(rootNode,data.dataJsonArr[i]);
+                    utils.addTableMnues(tbody, data.dataJsonArr[i], null, 0);
+                }
+            }
 
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
-            alert("请求失败！");
+            // alert("请求失败！");
         }
     });
 }

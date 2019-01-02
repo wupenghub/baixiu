@@ -23,11 +23,11 @@
     </nav>
     <div class="container-fluid">
         <div>
-            <ul class="nav nav-tabs" role="tablist">
+            <ul class="nav nav-tabs mnue-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#mnue_list"  data-toggle="tab">菜单列表</a></li>
-                <li role="presentation"><a href="#mnue_add"  data-toggle="tab">菜单添加</a></li>
+                <li role="presentation" ><a href="#mnue_add"  data-toggle="tab">菜单添加</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content mnue-content">
                 <div class="tab-pane active" id="mnue_list">
                     <table class="table table-bordered">
                         <thead>
@@ -45,30 +45,41 @@
                         </tbody>
                     </table>
                 </div>
-                <div  class="tab-pane" id="mnue_add"><form>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputFile">File input</label>
-                        <input type="file" id="exampleInputFile">
-                        <p class="help-block">Example block-level help text here.</p>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox"> Check me out
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form></div>
+                <div  class="tab-pane" id="mnue_add">
+                    <ul>
+                        <li>
+                            <div class="line_content">
+                                <label>上级菜单：</label>
+                                <div class="right">
+                                    <input type="text" class="search_text"  readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search"></button>
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="line_content">
+                                <label>名称：</label>
+                                <div class="right">
+                                    <input type="text" class="mnue_desc">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="line_content">
+                                <label>链接：</label>
+                                <div class="right">
+                                    <input type="text" class="mnue_url">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-info save">保存</button>
+                    <button type="button" class="btn btn-default back">返回</button>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 

@@ -30,6 +30,75 @@
   height: 5px;
   margin-right: 10px;
 }
+.mnue-manger .modal .modal-content {
+  padding: 10px 0 0 10px;
+  width: 200px;
+  height: 100px;
+  font-size: 10px;
+}
+.mnue-manger .modal .modal-content .title {
+  margin-bottom: 10px;
+}
+.mnue-manger .modal .modal-content .warn {
+  padding-left: 12px;
+}
+.mnue-manger .modal .modal-content .btn {
+  margin: 0 auto;
+  width: 100%;
+}
+.mnue-manger .modal .modal-content .btn button {
+  width: 35%;
+  padding: 0 ;
+}
+.mnue-manger .tab-content {
+  background-color: #fff;
+}
+.mnue-manger .tab-content .tab-pane ul {
+  list-style: none;
+  padding: 0;
+}
+.mnue-manger .tab-content .tab-pane ul li {
+  border-bottom: 1px dashed #cccccc;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content {
+  padding: 20px 0;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content label {
+  float: left;
+  text-align: right;
+  width: 160px;
+  margin-right: 20px;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content .right {
+  overflow: hidden;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content .right input {
+  height: 25px;
+  float: left;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cccccc;
+  border-radius: 3px;
+  font-size: 12px;
+  padding-left: 5px;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content .right input.search_text {
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  background-color: #f3f3f3;
+}
+.mnue-manger .tab-content .tab-pane ul li .line_content .right button {
+  height: 25px;
+  float: left;
+  top: 0px;
+  background-color: #fff;
+  padding: 0;
+  border: 1px solid #cccccc;
+  width: 40px;
+}
+.mnue-manger .tab-content .tab-pane .save {
+  margin-left: 118px;
+}
 .mnue-manger .table > thead > tr > th,
 .mnue-manger .table > tbody > tr > th,
 .mnue-manger .table > tfoot > tr > th,

@@ -11,6 +11,19 @@ $(function () {
         utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
         utils.addTableMnues(tbody,dataJson.dataJsonArr[i],null,0);
     }
+    $('.mnue-manger .save').on('click',function () {
+        //判断必填信息是否已经填写
+        if(!$('.mnue-manger .search_text').val()){
+            alert('请选择上级菜单');
+            return;
+        }
+        if(!$('.mnue-manger .mnue_desc').val()){
+            alert('请填写菜单名称');
+            return;
+        }
+        //所有验证通过，发送请求进行
+        addMnues(null);
+    });
 });
 function toggle(obj,jsonObj) {
     findAllID(obj,jsonObj);
@@ -55,23 +68,74 @@ function mnueDelete(id) {
             if(data.status == 1){
                 alert(data.desc);
             }else {
-                var rootNode = $('.aside .nav');
-                var tbody = $('.mnue-manger table tbody');
-                rootNode.html('');
-                tbody.html('');
-                for (var i = 0; i < data.dataJsonArr.length; i++) {
-                    //循环遍历集合元素,添加菜单目录。
-                    utils.addMnues(rootNode,data.dataJsonArr[i]);
-                    utils.addTableMnues(tbody, data.dataJsonArr[i], null, 0);
-                }
+                addMnueList(data.dataJsonArr);
             }
-
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
             // alert("请求失败！");
         }
     });
 }
+//添加菜单节点事件，在增删改之后调用
+function addMnueList(array) {
+    var rootNode = $('.aside .nav');
+    var tbody = $('.mnue-manger table tbody');
+    rootNode.html('');
+    tbody.html('');
+    for (var i = 0; i < array.length; i++) {
+        //循环遍历集合元素,添加菜单目录。
+        utils.addMnues(rootNode,array[i]);
+        utils.addTableMnues(tbody, array[i], null, 0);
+    }
+}
 //添加子菜单点击事件
-function sonMnueAdd(id) {
+function sonMnueAdd(obj) {
+    //跳转到添加子菜单的页面
+    $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
+    $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
+    $('.mnue-manger .mnue-content div:first-child').removeClass('active');
+    $('.mnue-manger .mnue-content div:last-child').addClass('active');
+    //将点击链接的节点信息描述设置到文本框中
+    $('.mnue-manger .search_text').val(obj.mnue_desc);
+    //先接触原先点击事件
+    $('.mnue-manger .save').unbind();
+    $('.mnue-manger .save').on('click',function () {
+        //判断必填信息是否已经填写
+        if(!$('.mnue-manger .search_text').val()){
+            alert('请选择上级菜单');
+            return;
+        }
+        if(!$('.mnue-manger .mnue_desc').val()){
+            alert('请填写菜单名称');
+            return;
+        }
+        //所有验证通过，发送请求进行
+        addMnues(obj);
+    });
+}
+//添加子菜单ajax请求
+function addMnues(obj) {
+    $.ajax({
+        url:'/baixiu/sonMnueAdd',
+        type:'post',
+        dataType:'json',
+        data:{
+            id:obj.id,
+            mnueDesc:$('.mnue-manger .mnue_desc').val(),
+            parentId:obj.id,
+            url:$('.mnue-manger .mnue_url').val()
+        },
+        success:function (data) {
+            if(data.status == 0){
+                //添加成功
+                addMnueList(data.dataJsonArr);
+            }else{
+                //添加失败
+                alert('添加失败！');
+            }
+        },
+        error:function () {
+            alert('出现异常！');
+        }
+    })
 }

@@ -86,8 +86,8 @@ var utils = {
                 '<td></td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify('+dataObj.id+')">修改</a>'+
-                '<a href="javascript:;" class="mnue-delete" onclick="mnueDelete('+dataObj.id+')">删除</a>'+
-                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd('+dataObj.id+')">添加下级菜单</a>'+
+                '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete('+dataObj.id+')">删除</a>'+
+                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd('+JSON.stringify(dataObj).replace(/\"/g,"'")+')">添加下级菜单</a>'+
                 '</td>' +
                 '</tr>');
             parentNode.append(dirObj);
@@ -110,8 +110,8 @@ var utils = {
                 '<td></td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify('+dataObj.id+')">修改</a>'+
-                '<a href="javascript:;" class="mnue-delete" onclick="mnueDelete('+dataObj.id+')">删除</a>'+
-                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd('+dataObj.id+')">添加下级菜单</a>'+
+                '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete('+dataObj.id+')">删除</a>'+
+                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd('+JSON.stringify(dataObj).replace(/\"/g,"'")+')">添加下级菜单</a>'+
                 '</td>' +
                 '</tr>';
             parentNode.append(html);

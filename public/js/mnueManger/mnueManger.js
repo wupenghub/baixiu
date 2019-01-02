@@ -24,6 +24,12 @@ $(function () {
         //所有验证通过，发送请求进行
         addMnues(null);
     });
+    $('.mnue-manger .back').on('click',function () {
+        $('.mnue-manger .mnue-tabs li:first-child').addClass('active');
+        $('.mnue-manger .mnue-tabs li:last-child').removeClass('active');
+        $('.mnue-manger .mnue-content div:first-child').addClass('active');
+        $('.mnue-manger .mnue-content div:last-child').removeClass('active');
+    });
 });
 function toggle(obj,jsonObj) {
     findAllID(obj,jsonObj);
@@ -129,6 +135,11 @@ function addMnues(obj) {
             if(data.status == 0){
                 //添加成功
                 addMnueList(data.dataJsonArr);
+                //跳转到添加子菜单的页面
+                $('.mnue-manger .mnue-tabs li:first-child').addClass('active');
+                $('.mnue-manger .mnue-tabs li:last-child').removeClass('active');
+                $('.mnue-manger .mnue-content div:first-child').addClass('active');
+                $('.mnue-manger .mnue-content div:last-child').removeClass('active');
             }else{
                 //添加失败
                 alert('添加失败！');

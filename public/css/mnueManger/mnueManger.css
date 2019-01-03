@@ -333,3 +333,6 @@ span.no-content {
 .mnue-manger-tree .modal-body ul {
   list-style: none;
 }
+.mnue-manger-tree .modal-body ul li {
+  padding: 5px 0;
+}

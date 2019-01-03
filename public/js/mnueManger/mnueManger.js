@@ -1,4 +1,6 @@
 var hiddenList = [];
+var mnueObj = null;
+var isUpdate = 'N';
 $(function () {
     var data = $("#template").html().replace(/&#34;/g,'"');
     var dataJson = JSON.parse(data);
@@ -22,7 +24,7 @@ $(function () {
             return;
         }
         //所有验证通过，发送请求进行
-        addMnues(null);
+        addMnues(mnueObj);
     });
     $('.mnue-manger .back').on('click',function () {
         $('.mnue-manger .mnue-tabs li:first-child').addClass('active');
@@ -31,7 +33,7 @@ $(function () {
         $('.mnue-manger .mnue-content div:last-child').removeClass('active');
     });
 });
-function toggle(obj,jsonObj) {
+/*function toggle(obj,jsonObj) {
     findAllID(obj,jsonObj);
     var isOpen = $('#mnuesManger'+jsonObj.id).attr('data-open');
     if(isOpen == 'on') {
@@ -50,6 +52,26 @@ function toggle(obj,jsonObj) {
         $('#mnuesManger'+jsonObj.id).attr('data-open','on');
     }
     hiddenList = [];
+}*/
+function toggle(flag,obj,jsonObj) {
+    findAllID(obj,jsonObj);
+    var isOpen = $(flag+jsonObj.id).attr('data-open');
+    if(isOpen == 'on') {
+        for(var i = 0;i<hiddenList.length;i++){
+            $(flag + hiddenList[i]).hide();
+        }
+        $(obj).attr("class","glyphicon glyphicon-menu-right");
+        $(flag+jsonObj.id).attr('data-open','off');
+    }else{
+        for(var i = 0;i<hiddenList.length;i++){
+            // if($('#mnuesManger' + hiddenList[i]).is(':visible')){
+            $(flag + hiddenList[i]).show();
+            // }
+        }
+        $(obj).attr("class","glyphicon glyphicon-menu-down");
+        $(flag+jsonObj.id).attr('data-open','on');
+    }
+    hiddenList = [];
 }
 function findAllID(obj, jsonObj) {
     if (jsonObj.sonList) {
@@ -61,6 +83,7 @@ function findAllID(obj, jsonObj) {
 }
 //修改菜单点击事件
 function mnueModify(id) {
+    isUpdate = 'Y';
 }
 //删除菜单点击事件
 function mnueDelete(id) {
@@ -96,6 +119,7 @@ function addMnueList(array) {
 }
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
+    isUpdate = 'N';
     //跳转到添加子菜单的页面
     $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
     $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
@@ -103,7 +127,7 @@ function sonMnueAdd(obj) {
     $('.mnue-manger .mnue-content div:last-child').addClass('active');
     //将点击链接的节点信息描述设置到文本框中
     $('.mnue-manger .search_text').val(obj.mnue_desc);
-    //先接触原先点击事件
+    //先解除原先点击事件
     $('.mnue-manger .save').unbind();
     $('.mnue-manger .save').on('click',function () {
         //判断必填信息是否已经填写
@@ -121,6 +145,10 @@ function sonMnueAdd(obj) {
 }
 //添加子菜单ajax请求
 function addMnues(obj) {
+    if(!obj){
+        alert('无法获取到父节点！');
+        return;
+    }
     $.ajax({
         url:'/baixiu/sonMnueAdd',
         type:'post',
@@ -129,7 +157,8 @@ function addMnues(obj) {
             id:obj.id,
             mnueDesc:$('.mnue-manger .mnue_desc').val(),
             parentId:obj.id,
-            url:$('.mnue-manger .mnue_url').val()
+            url:$('.mnue-manger .mnue_url').val(),
+            isUpdate:isUpdate
         },
         success:function (data) {
             if(data.status == 0){
@@ -149,4 +178,20 @@ function addMnues(obj) {
             alert('出现异常！');
         }
     })
+}
+function mnueTreeInModel() {
+    var data = $("#template").html().replace(/&#34;/g,'"');
+    var dataJson = JSON.parse(data);
+    $('.mnue-manger-tree .mnue-manger-model').html('');
+    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+        //循环遍历集合元素,添加菜单目录。
+        utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),dataJson.dataJsonArr[i],null,0);
+    }
+
+}
+function chooseMnue(obj) {
+    isUpdate = 'N';
+    mnueObj = obj;
+    $('.mnue-manger .search_text').val(mnueObj.mnue_desc);
+    $('.mnue-manger-tree').modal('hide');
 }

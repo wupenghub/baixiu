@@ -108,7 +108,7 @@ router.get('/baixiu/menuDelete',function (req,res) {
        }
     });
 });
-//菜单管理->菜单添加
+//菜单管理->菜单添加与修改
 router.post('/baixiu/sonMnueAdd',function (req,res) {
     //先判断此id在数据库中是否存在
     var querySql = 'select count(1) count from mnues m where m.id = '+req.body.id+' and m.del_flag = 0';
@@ -116,7 +116,12 @@ router.post('/baixiu/sonMnueAdd',function (req,res) {
         var data = {};
         if(result && result[0].count > 0 ){
             //查询有此记录，执行添加目录sql
-            var inserSql = 'insert into mnues value(null,1,"'+req.body.mnueDesc+'",'+req.body.id+',"'+req.body.url+'",0)';
+            var inserSql = '';
+            if(req.body.isUpdate == 'N') {
+                inserSql = 'insert into mnues value(null,1,"' + req.body.mnueDesc + '",' + req.body.id + ',"' + req.body.url + '",0)';
+            }else{
+                inserSql = 'UPDATE mnues m set m.mnue_desc = "'+ req.body.mnueDesc +'",m.parent_id = 2,m.url=\'123\' where m.id = 7;\n'
+            }
             DbUtils.queryData(inserSql,function (result) {
                 data.status = 0;
                 data.desc='添加成功';

@@ -52,7 +52,7 @@
                                 <label>上级菜单：</label>
                                 <div class="right">
                                     <input type="text" class="search_text"  readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search"></button>
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -91,7 +91,49 @@
     <ul class="nav">
     </ul>
 </div>
-
+<!-- Modal -->
+<div class="modal fade mnue-manger-tree" id="mnue_tree" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="mnue-manger-model">
+                    <li>
+                        <span class="glyphicon glyphicon-menu-down"></span>
+                        <a href="#">点击</a>
+                    </li>
+                    <li>
+                        <span class="no-content"></span>
+                         <a href="#">点击</a>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-menu-down"></span>
+                        <a href="#">点击</a>
+                    </li>
+                    <li>
+                        <span class="no-content"></span>
+                        <a href="#">点击</a>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-menu-down"></span>
+                        <a href="#">点击</a>
+                    </li>
+                    <li>
+                        <span class="no-content"></span>
+                        <a href="#">点击</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/public/vendors/jquery/jquery.js"></script>
 <script src="/public/vendors/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 <script src="/public/vendors/util/utils.js"></script>

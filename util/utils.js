@@ -111,7 +111,48 @@ var utils = {
                 $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
             }
         }
-}
+},
+    //在弹框界面添加菜单结构
+    addTableInModel(parentNode,dataObj,spanNoContent,index){
+        if(dataObj.sonList && dataObj.sonList.length > 0){//包含子节点
+            //如果该父节点中包含其他子节点，先添加父节点
+            var dirObj = $('<tr id="mnuesMangerModel'+dataObj.id+'" class="mnuesMangerModel'+dataObj.parent_id+'">' +
+                '<td class="first_td">'  +
+                '<span class="glyphicon glyphicon-menu-down" onclick="toggle(this,\'mnuesManger'+dataObj.id+'\')"></span>' +
+                '<a href="#">' + dataObj.mnue_desc+ '</a>' +
+                '</td>'+
+                '<td>'+dataObj.url+'</td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '</tr>');
+            parentNode.append(dirObj);
+            for(var i = 0;i<index;i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+            for(var i = 0;i<dataObj.sonList.length;i++){
+                //递归将当前目录传进，进一步添加目录
+                this.addTableMnues(parentNode,dataObj.sonList[i],$('<span class="no-content"></span>'),index+1);
+            }
+        }else{//不包含子节点
+            var html = '<tr id="mnuesManger'+dataObj.id+'" class="mnuesManger'+dataObj.parent_id+'">' +
+                '<td class="first_td">'  +
+                '<span class="no-content"></span>' +
+                '<a href="#">' + dataObj.mnue_desc+ '</a>' +
+                '</td>'+
+                '<td>'+dataObj.url+'</td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '<td></td>'  +
+                '</tr>';
+            parentNode.append(html);
+            for(var i = 0;i<index;i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+        }
+    }
 
 };
 module.exports = utils;

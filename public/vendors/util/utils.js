@@ -1,4 +1,5 @@
 var utils = {
+    parentObj:{},
     addList(result, obj) {
         //判断当前节点是否有父节点
         if (obj['parent_id']) {
@@ -85,7 +86,7 @@ var utils = {
                 '<td></td>' +
                 '<td></td>' +
                 '<td>' +
-                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + dataObj.id + ')">修改</a>' +
+                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + dataObj.id + ')">删除</a>' +
                 '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">添加下级菜单</a>' +
                 '</td>' +
@@ -109,7 +110,7 @@ var utils = {
                 '<td></td>' +
                 '<td></td>' +
                 '<td>' +
-                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + dataObj.id + ')">修改</a>' +
+                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + dataObj.id + ')">删除</a>' +
                 '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">添加下级菜单</a>' +
                 '</td>' +
@@ -146,6 +147,17 @@ var utils = {
                 $('#mnueTreeInModelLi' + dataObj.id).prepend($('<span class="no-content"></span>'));
             }
         }
+    },
+    //根据子节点找到相应的父节点
+    findParentBySon(jsonArray,son){
+        for(var i = 0;i<jsonArray.length;i++){
+            if(jsonArray[i].sonList&&jsonArray[i].sonList.length > 0){
+                if(jsonArray[i].id == son.parent_id){
+                    utils.parentObj = jsonArray[i];
+                    return;
+                }
+                utils.findParentBySon(jsonArray[i].sonList,son);
+            }
+        }
     }
-
 };

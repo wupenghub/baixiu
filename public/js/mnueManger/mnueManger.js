@@ -33,26 +33,6 @@ $(function () {
         $('.mnue-manger .mnue-content div:last-child').removeClass('active');
     });
 });
-/*function toggle(obj,jsonObj) {
-    findAllID(obj,jsonObj);
-    var isOpen = $('#mnuesManger'+jsonObj.id).attr('data-open');
-    if(isOpen == 'on') {
-        for(var i = 0;i<hiddenList.length;i++){
-            $('#mnuesManger' + hiddenList[i]).hide();
-        }
-        $(obj).attr("class","glyphicon glyphicon-menu-right");
-        $('#mnuesManger'+jsonObj.id).attr('data-open','off');
-    }else{
-        for(var i = 0;i<hiddenList.length;i++){
-            // if($('#mnuesManger' + hiddenList[i]).is(':visible')){
-            $('#mnuesManger' + hiddenList[i]).show();
-            // }
-        }
-        $(obj).attr("class","glyphicon glyphicon-menu-down");
-        $('#mnuesManger'+jsonObj.id).attr('data-open','on');
-    }
-    hiddenList = [];
-}*/
 function toggle(flag,obj,jsonObj) {
     findAllID(obj,jsonObj);
     var isOpen = $(flag+jsonObj.id).attr('data-open');
@@ -82,8 +62,17 @@ function findAllID(obj, jsonObj) {
     }
 }
 //修改菜单点击事件
-function mnueModify(id) {
+function mnueModify(obj) {
     isUpdate = 'Y';
+    $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
+    $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
+    $('.mnue-manger .mnue-content div:first-child').removeClass('active');
+    $('.mnue-manger .mnue-content div:last-child').addClass('active');
+    //将点击链接的节点信息描述设置到文本框中
+    $('.mnue-manger .mnue_desc').val(obj.mnue_desc);
+    $('.mnue-manger .mnue_url').val(obj.url);
+    utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
+    $('.mnue-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
 }
 //删除菜单点击事件
 function mnueDelete(id) {
@@ -149,6 +138,9 @@ function addMnues(obj) {
         alert('无法获取到父节点！');
         return;
     }
+    if(mnueObj){
+        obj = mnueObj;
+    }
     $.ajax({
         url:'/baixiu/sonMnueAdd',
         type:'post',
@@ -156,8 +148,8 @@ function addMnues(obj) {
         data:{
             id:obj.id,
             mnueDesc:$('.mnue-manger .mnue_desc').val(),
-            parentId:obj.id,
             url:$('.mnue-manger .mnue_url').val(),
+            parentId:utils.parentObj?utils.parentObj.id:'',
             isUpdate:isUpdate
         },
         success:function (data) {
@@ -190,7 +182,6 @@ function mnueTreeInModel() {
 
 }
 function chooseMnue(obj) {
-    isUpdate = 'N';
     mnueObj = obj;
     $('.mnue-manger .search_text').val(mnueObj.mnue_desc);
     $('.mnue-manger-tree').modal('hide');

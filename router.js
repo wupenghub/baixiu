@@ -120,11 +120,12 @@ router.post('/baixiu/sonMnueAdd',function (req,res) {
             if(req.body.isUpdate == 'N') {
                 inserSql = 'insert into mnues value(null,1,"' + req.body.mnueDesc + '",' + req.body.id + ',"' + req.body.url + '",0)';
             }else{
-                inserSql = 'UPDATE mnues m set m.mnue_desc = "'+ req.body.mnueDesc +'",m.parent_id = 2,m.url=\'123\' where m.id = 7;\n'
+                inserSql = 'UPDATE mnues m set m.mnue_desc = "'+ req.body.mnueDesc +'",m.parent_id = '+req.body.parentId+',m.url="'+req.body.url+'" where m.id ='+req.body.id;
             }
+            console.log(inserSql);
             DbUtils.queryData(inserSql,function (result) {
                 data.status = 0;
-                data.desc='添加成功';
+                data.desc= req.body.isUpdate == 'N'?'添加成功':'修改成功';
                 var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
                 DbUtils.queryData(sql,function (queryResult) {
                     for(var i = 0;i<queryResult.length;i++){

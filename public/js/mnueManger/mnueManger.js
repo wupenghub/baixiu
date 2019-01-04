@@ -73,6 +73,21 @@ function mnueModify(obj) {
     $('.mnue-manger .mnue_url').val(obj.url);
     utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
     $('.mnue-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
+    $('.mnue-manger .save').unbind();
+    $('.mnue-manger .save').on('click',function () {
+        //判断必填信息是否已经填写
+        if(!$('.mnue-manger .search_text').val()){
+            alert('请选择上级菜单');
+            return;
+        }
+        if(!$('.mnue-manger .mnue_desc').val()){
+            alert('请填写菜单名称');
+            return;
+        }
+        //所有验证通过，发送请求进行
+        addMnues(obj);
+    });
+
 }
 //删除菜单点击事件
 function mnueDelete(id) {
@@ -104,6 +119,7 @@ function addMnueList(array) {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode,array[i]);
         utils.addTableMnues(tbody, array[i], null, 0);
+        utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'), array[i], null, 0);
     }
 }
 //添加子菜单点击事件
@@ -138,7 +154,7 @@ function addMnues(obj) {
         alert('无法获取到父节点！');
         return;
     }
-    if(mnueObj){
+    if(mnueObj && isUpdate == 'N'){
         obj = mnueObj;
     }
     $.ajax({
@@ -149,7 +165,7 @@ function addMnues(obj) {
             id:obj.id,
             mnueDesc:$('.mnue-manger .mnue_desc').val(),
             url:$('.mnue-manger .mnue_url').val(),
-            parentId:utils.parentObj?utils.parentObj.id:'',
+            parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
             isUpdate:isUpdate
         },
         success:function (data) {
@@ -161,6 +177,8 @@ function addMnues(obj) {
                 $('.mnue-manger .mnue-tabs li:last-child').removeClass('active');
                 $('.mnue-manger .mnue-content div:first-child').addClass('active');
                 $('.mnue-manger .mnue-content div:last-child').removeClass('active');
+                //将返回的集合数据重新渲染到标签中，供后面使用
+                $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
             }else{
                 //添加失败
                 alert('添加失败！');

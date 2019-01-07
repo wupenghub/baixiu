@@ -18,9 +18,9 @@ function getPostsData(offset,pageSize) {
         dataType:'json',
         data:{offset,pageSize},
         success:function (data) {
-            var statusList = template('status-list',data);
-            console.log(statusList);
-            $('.status-options').html(statusList);
+            var obj = $.templates('#statusList');
+            var html = obj.render(data);
+            console.log(html);
         },
         error:function () {
            alert('请求出问题');

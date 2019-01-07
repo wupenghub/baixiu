@@ -106,18 +106,25 @@
     <ul class="nav">
     </ul>
   </div>
-
   <script src="../public/vendors/jquery/jquery.js"></script>
-  <script src="/node_modules/jsrender/jsrender.min.js"></script>
+  <script src="/node_modules/art-template/lib/template-web.js"></script>
   <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
   <script src="/public/vendors/util/utils.js"></script>
   <script src="/public/js/post/posts.js"></script>
   <script type="text/javascript" id="template">{{dataJsonArr}}</script>
-  <script type="text/x-jsrender" id="statusList">
-     {{for statusJsonArr }}
-           <div>{{:title}}</div>
-     {{/for}}
+  <script type="text/art-tempalte" id="statusList">
+    <option value="">所有状态</option>
+    <% for(var i = 0;i<statusJsonArr.length ;i++){%>
+            <option value="<%= statusJsonArr[i].key%>"><%= statusJsonArr[i].val%></option>
+    <% } %>
   </script>
+  <script type="text/art-tempalte" id="categoryList">
+    <option value="">所有分类</option>
+    <% for(var i = 0;i<statusJsonArr.length ;i++){%>
+            <option value="<%= statusJsonArr[i].key%>"><%= statusJsonArr[i].val%></option>
+    <% } %>
+  </script>
+
   <script>NProgress.done()</script>
 </body>
 </html>

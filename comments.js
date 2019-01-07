@@ -28,6 +28,6 @@ app.use('/public/', express.static('./public/'));
 app.use('/node_modules/', express.static('./node_modules/'));
 app.use('/uploads/', express.static('./uploads/'));
 
-app.listen(5000, function () {
+app.listen(3000, function () {
     console.log('Running...');
 });

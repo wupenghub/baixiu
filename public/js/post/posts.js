@@ -8,4 +8,22 @@ $(function () {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
     }
+    //获取文章审阅数据
+    getPostsData(0,20);
 });
+function getPostsData(offset,pageSize) {
+    $.ajax({
+        type:'get',
+        url:'/baixiu/getArticleApprovalList',
+        dataType:'json',
+        data:{offset,pageSize},
+        success:function (data) {
+            var statusList = template('status-list',data);
+            console.log(statusList);
+            $('.status-options').html(statusList);
+        },
+        error:function () {
+           alert('请求出问题');
+        }
+    });
+}

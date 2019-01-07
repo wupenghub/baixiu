@@ -53,11 +53,6 @@ router.post('/baixiu/login',function (req,res) {
     });
 });
 //退出登录
-router.get('/baixiu/loginout',function (req,res) {
-    req.session.destroy();
-    //重定向到主页
-    res.redirect(301, '/');
-});
 //菜单管理
 router.get('/baixiu/MenuManger',function (req,res) {
     //1、判断此用户是否已经登录过
@@ -134,7 +129,6 @@ router.post('/baixiu/sonMnueAdd',function (req,res) {
             }else{
                 inserSql = 'UPDATE mnues m set m.mnue_desc = "'+ req.body.mnueDesc +'",m.parent_id = '+req.body.parentId+',m.url="'+req.body.url+'" where m.id ='+req.body.id;
             }
-            console.log(inserSql);
             DbUtils.queryData(inserSql,function (result) {
                 data.status = 0;
                 data.desc= req.body.isUpdate == 'N'?'添加成功':'修改成功';
@@ -183,5 +177,63 @@ router.get('/baixiu/articleApproval',function (req,res) {
         return;
     }
     res.render('posts.html',{dataJsonArr:req.session.userInfo});
+});
+//获取文章审批的列表
+router.get('/baixiu/getArticleApprovalList',function (req,res) {
+    var returnObj = {};
+    var queryCountSql = 'SELECT\n' +
+        '\tcount(1) "count"\n' +
+        'FROM\n' +
+        '\tposts p\n' +
+        'LEFT JOIN users u ON p.user_id = u.id\n' +
+        'LEFT JOIN categories c ON p.category_id = c.id\n' +
+        'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status`';
+    DbUtils.queryData(queryCountSql,function (result) {
+        if(result&&result[0].count != '0'){
+            returnObj.totalCount = result[0].count;
+            var querySql = 'SELECT ' +
+                'p.title "title",' +
+                'u.nickname "nickname", ' +
+                'c.`name` "categoryName", ' +
+                'p.created "createTime", ' +
+                's.baixiu_val "statusVal" ' +
+                'FROM ' +
+                'posts p ' +
+                'LEFT JOIN users u ON p.user_id = u.id ' +
+                'LEFT JOIN categories c ON p.category_id = c.id ' +
+                'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status` ' +
+                'ORDER BY  p.created DESC '+
+                'LIMIT '+req.query.offset+','+req.query.pageSize;
+            DbUtils.queryData(querySql,function (resultList) {
+                if(resultList&&resultList.length>0) {
+                    returnObj.getlist_status = 0;
+                    returnObj.getlist_desc = '获取数据成功';
+                    returnObj.postsJsonArray = resultList;
+                }else{
+                    returnObj.getlist_status = 1;
+                    returnObj.getlist_desc = '未获取到文章审批信息';
+                }
+                var queryStates = 'SELECT\n' +
+                    '\tb.baixiu_key "key",\n' +
+                    '\tb.baixiu_val "val"\n' +
+                    'FROM\n' +
+                    '\tbaixiu_status_l b';
+                DbUtils.queryData(queryStates,function (statesResult) {
+                    if(statesResult){
+                        returnObj.status_status = 0;
+                        returnObj.status_desc = '状态获取成功';
+                        returnObj.statusJsonArr = statesResult;
+                    }else{
+                        returnObj.status_status = 1;
+                        returnObj.status_desc = '状态信息获取失败';
+                    }
+                    res.json(returnObj);
+                })
+            });
+        }else{
+            returnObj.status = 1;
+            returnObj.getlist_desc = '无法获取存在的文章审批信息';
+        }
+    })
 });
 module.exports = router;

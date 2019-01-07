@@ -8,10 +8,16 @@
   <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
   <link rel="stylesheet" href="../public/css/admin.css">
   <script src="../public/vendors/nprogress/nprogress.js"></script>
+  <script src="../node_modules/art-template/lib/template-web.js"></script>
 </head>
 <body>
   <script>NProgress.start()</script>
   <script type="text/javascript" id="template">{{dataJsonArr}}</script>
+  <script type="text/art-template" id="status-list">
+      {{each statusJsonArr}}
+           <option value="{{$value.key}}">{{$value.val}}</option>
+      {{/each}}
+  </script>
   <div class="main">
     <nav class="navbar">
       <button class="btn btn-default navbar-btn fa fa-bars"></button>
@@ -23,24 +29,17 @@
     <div class="container-fluid">
       <div class="page-title">
         <h1>所有文章</h1>
-        <a href="post-add.html" class="btn btn-primary btn-xs">写文章</a>
+        <a href="/baixiu/articlePublished" class="btn btn-primary btn-xs">写文章</a>
       </div>
-      <!-- 有错误信息时展示 -->
-      <!-- <div class="alert alert-danger">
-        <strong>错误！</strong>发生XXX错误
-      </div> -->
       <div class="page-action">
         <!-- show when multiple checked -->
         <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
         <form class="form-inline">
-          <select name="" class="form-control input-sm">
+          <select name="" class="form-control input-sm category-list">
             <option value="">所有分类</option>
             <option value="">未分类</option>
           </select>
-          <select name="" class="form-control input-sm">
-            <option value="">所有状态</option>
-            <option value="">草稿</option>
-            <option value="">已发布</option>
+          <select name="" class="form-control input-sm status-options">
           </select>
           <button class="btn btn-default btn-sm">筛选</button>
         </form>

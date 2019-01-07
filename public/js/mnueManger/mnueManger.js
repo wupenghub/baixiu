@@ -103,6 +103,7 @@ function mnueDelete(id) {
             }else {
                 addMnueList(data.dataJsonArr);
             }
+            $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
             // alert("请求失败！");

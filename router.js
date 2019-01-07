@@ -70,6 +70,12 @@ router.get('/baixiu/MenuManger',function (req,res) {
 });
 //菜单管理->菜单删除
 router.get('/baixiu/menuDelete',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req,res);
+    if(!user){
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
    var sql = 'select *  from mnues m where m.parent_id = '+req.query.id+' and m.del_flag = 0';
     DbUtils.queryData(sql,function (result) {
        if(result.length == 0){
@@ -110,6 +116,12 @@ router.get('/baixiu/menuDelete',function (req,res) {
 });
 //菜单管理->菜单添加与修改
 router.post('/baixiu/sonMnueAdd',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req,res);
+    if(!user){
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
     //先判断此id在数据库中是否存在
     var querySql = 'select count(1) count from mnues m where m.id = '+req.body.id+' and m.del_flag = 0';
     DbUtils.queryData(querySql,function (result) {
@@ -153,5 +165,23 @@ router.post('/baixiu/sonMnueAdd',function (req,res) {
             res.json(data);
         }
     });
+});
+//功能->文章->文章发表
+router.get('/baixiu/articlePublished',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req,res);
+    if(!user){
+        return;
+    }
+    res.render('post-add.html',{dataJsonArr:req.session.userInfo});
+});
+//功能->文章->文章审批
+router.get('/baixiu/articleApproval',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req,res);
+    if(!user){
+        return;
+    }
+    res.render('posts.html',{dataJsonArr:req.session.userInfo});
 });
 module.exports = router;

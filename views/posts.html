@@ -7,11 +7,12 @@
   <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
   <link rel="stylesheet" href="../public/css/admin.css">
+  <link rel="stylesheet" href="/public/css/posts/posts.css">
   <script src="../public/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
   <script>NProgress.start()</script>
-  <div class="main">
+  <div class="posts main">
     <nav class="navbar">
       <button class="btn btn-default navbar-btn fa fa-bars"></button>
       <ul class="nav navbar-nav navbar-right">
@@ -25,16 +26,13 @@
         <a href="/baixiu/articlePublished" class="btn btn-primary btn-xs">写文章</a>
       </div>
       <div class="page-action">
-        <!-- show when multiple checked -->
-        <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+        <a class="btn btn-danger btn-sm" href="javascript:;">批量删除</a>
         <form class="form-inline">
-          <select name="" class="form-control input-sm category-list">
-            <option value="">所有分类</option>
-            <option value="">未分类</option>
+          <select id="category-list" class="form-control input-sm category-list">
           </select>
-          <select name="" class="form-control input-sm status-options">
+          <select id="status-options" class="form-control input-sm status-options">
           </select>
-          <button class="btn btn-default btn-sm">筛选</button>
+          <button type="button" class="btn btn-default btn-sm" onclick="seachPostsList()">筛选</button>
         </form>
         <ul class="pagination pagination-sm pull-right">
           <li><a href="#">上一页</a></li>
@@ -57,42 +55,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -113,18 +75,35 @@
   <script src="/public/js/post/posts.js"></script>
   <script type="text/javascript" id="template">{{dataJsonArr}}</script>
   <script type="text/art-tempalte" id="statusList">
-    <option value="">所有状态</option>
+    <option value="all">所有状态</option>
     <% for(var i = 0;i<statusJsonArr.length ;i++){%>
-            <option value="<%= statusJsonArr[i].key%>"><%= statusJsonArr[i].val%></option>
+      <option value="<%= statusJsonArr[i].key%>"  <%= returnData.postId == statusJsonArr[i].key ?selected = "selected":'' %> ><%= statusJsonArr[i].val%></option>
     <% } %>
   </script>
   <script type="text/art-tempalte" id="categoryList">
-    <option value="">所有分类</option>
-    <% for(var i = 0;i<statusJsonArr.length ;i++){%>
-            <option value="<%= statusJsonArr[i].key%>"><%= statusJsonArr[i].val%></option>
+    <option value="all"  <%= returnData.categoryId == 'all'?selected = "selected":'' %> >所有分类</option>
+      <% for(var i = 0;i<categoryJsonArr.length ;i++){%>
+        <option value="<%= categoryJsonArr[i].slug%>" <%= returnData.categoryId == categoryJsonArr[i].slug ?selected = "selected":'' %> ><%= categoryJsonArr[i].name%></option>
+      <% } %>
+  </script>
+  <script type="text/art-template" id="postsList">
+    <% for(var i = 0;i<postsJsonArray.length ;i++){ %>
+        <tr>
+          <td class="text-center"><input type="checkbox"></td>
+          <td><%= postsJsonArray[i].title %></td>
+          <td><%= postsJsonArray[i].nickname %></td>
+          <td><%= postsJsonArray[i].categoryName %></td>
+          <td class="text-center"><%= postsJsonArray[i].createTime %></td>
+          <td class="text-center"><%= postsJsonArray[i].statusVal %></td>
+          <td class="text-center">
+            <% if(postsJsonArray[i].statuskey == 'drafted' || postsJsonArray[i].statuskey == 'trashed'){ %>
+              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+            <% } %>
+          </td>
+        </tr>
     <% } %>
   </script>
-
   <script>NProgress.done()</script>
 </body>
 </html>

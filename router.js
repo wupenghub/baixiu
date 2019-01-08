@@ -181,6 +181,7 @@ router.get('/baixiu/articleApproval',function (req,res) {
 //获取文章审批的列表
 router.get('/baixiu/getArticleApprovalList',function (req,res) {
     var returnObj = {};
+    returnObj.returnData = {categoryId:req.query.categoryId,postId:req.query.postId,offset:req.query.offset,pageSize:req.query.pageSize};
     var queryCountSql = 'SELECT\n' +
         '\tcount(1) "count"\n' +
         'FROM\n' +
@@ -191,19 +192,35 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
     DbUtils.queryData(queryCountSql,function (result) {
         if(result&&result[0].count != '0'){
             returnObj.totalCount = result[0].count;
-            var querySql = 'SELECT ' +
-                'p.title "title",' +
-                'u.nickname "nickname", ' +
-                'c.`name` "categoryName", ' +
-                'p.created "createTime", ' +
-                's.baixiu_val "statusVal" ' +
-                'FROM ' +
-                'posts p ' +
-                'LEFT JOIN users u ON p.user_id = u.id ' +
-                'LEFT JOIN categories c ON p.category_id = c.id ' +
-                'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status` ' +
-                'ORDER BY  p.created DESC '+
-                'LIMIT '+req.query.offset+','+req.query.pageSize;
+            var querySql = 'SELECT\n' +
+                '\tp.title "title",\n' +
+                '\t(CASE\n' +
+                'WHEN u.nickname IS NULL THEN\n' +
+                '\t\'匿名\'\n' +
+                'ELSE\n' +
+                '\tu.nickname\n' +
+                'END ) AS \'nickname\',\n' +
+                ' c.`name` "categoryName",\n' +
+                'DATE_FORMAT(p.created,"%Y-%m-%d") "createTime",'+
+                ' p.id "id",\n' +
+                's.baixiu_key "statuskey",\n'+
+                ' s.baixiu_val "statusVal"\n' +
+                'FROM\n' +
+                '\tposts p\n' +
+                'LEFT JOIN users u ON p.user_id = u.id\n' +
+                'LEFT JOIN categories c ON p.category_id = c.id\n' +
+                'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status`\n' +
+                'where 1 = 1\n' ;
+
+            if(req.query.categoryId != 'all'){
+                querySql += ' AND c.slug = "'+req.query.categoryId+'" '
+            }
+            if(req.query.postId != 'all'){
+                querySql += ' AND s.baixiu_key = "'+req.query.postId+'" '
+            }
+            console.log(req.query.categoryId+','+req.query.postId);
+            querySql += ' ORDER BY p.created DESC\n';
+            querySql += 'LIMIT '+req.query.offset+',\n' + req.query.pageSize;
             DbUtils.queryData(querySql,function (resultList) {
                 if(resultList&&resultList.length>0) {
                     returnObj.getlist_status = 0;
@@ -227,7 +244,18 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
                         returnObj.status_status = 1;
                         returnObj.status_desc = '状态信息获取失败';
                     }
-                    res.json(returnObj);
+                    var categoryListSql = 'select c.slug,c.name FROM categories c';
+                    DbUtils.queryData(categoryListSql,function (categoryListResult) {
+                        if(categoryListResult){
+                            returnObj.category_status = 0;
+                            returnObj.category_desc = '分类数据获取成功';
+                            returnObj.categoryJsonArr = categoryListResult;
+                        }else{
+                            returnObj.category_status = 1;
+                            returnObj.category_desc = '分类数据获取失败';
+                        }
+                        res.json(returnObj);
+                    });
                 })
             });
         }else{

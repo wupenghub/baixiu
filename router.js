@@ -188,7 +188,14 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
         '\tposts p\n' +
         'LEFT JOIN users u ON p.user_id = u.id\n' +
         'LEFT JOIN categories c ON p.category_id = c.id\n' +
-        'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status`';
+        'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status`'+
+        ' where p.del_flag = 0';
+    if(req.query.categoryId != 'all'){
+        queryCountSql += ' AND c.slug = "'+req.query.categoryId+'" '
+    }
+    if(req.query.postId != 'all'){
+        queryCountSql += ' AND s.baixiu_key = "'+req.query.postId+'" '
+    }
     DbUtils.queryData(queryCountSql,function (result) {
         if(result&&result[0].count != '0'){
             returnObj.totalCount = result[0].count;

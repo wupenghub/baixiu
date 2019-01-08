@@ -1,3 +1,4 @@
+var returnData = null;
 $(function () {
     var data = $("#template").html().replace(/&#34;/g,'"');
     var dataJson = JSON.parse(data);
@@ -28,8 +29,9 @@ function getPostsData(offset,pageSize,categoryId,postId) {
             var postsListHtml = template('postsList',data);
             $('.posts table tbody').html(postsListHtml);
             //渲染分页页签
+            returnData = data.returnData;
             data.returnData.totalCount = data.totalCount;
-            utils.pageList(data.returnData,$('.pages-nav'));
+            utils.pageList(data,$('.pages-nav'));
             //给文章信息绑定删除按钮
             bindDelete(offset,pageSize);
         },
@@ -60,7 +62,11 @@ function bindDelete(offset,pageSize) {
             data:{offset,pageSize,categoryId,postId,articleId},
             success:function (data) {
                 //删除成功，重新请求数据刷新界面
-                getPostsData(1,20,categoryId,postId);
+                if(!returnData) {
+                    getPostsData(1, 20, categoryId, postId);
+                }else{
+                    getPostsData(returnData.offset,returnData.pageSize,categoryId, postId);
+                }
             },
             error:function (e) {
                 alert('请求出错！');

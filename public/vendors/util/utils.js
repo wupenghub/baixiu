@@ -164,12 +164,35 @@ var utils = {
     //分页页码显示
     pageList(pageObj,parentNode){
         var pageList = '<li><a href="#">上一页</a></li>';
-        console.log(pageObj.offset);
-        for(var i = 0;i<utils.showNum;i++){
-            if(i+1 == pageObj.offset){
-                pageList += '<li class="active" data-><a href="#" >'+(i+1)+'</a></li>';
+        var totalPage = Math.ceil(pageObj.totalCount / pageObj.returnData.pageSize);
+        console.log(totalPage)
+        var currentPage = parseInt(pageObj.returnData.offset);
+        var leftArea = currentPage - Math.floor(utils.showNum/2);
+        var rightArea = currentPage + Math.floor(utils.showNum/2);
+        if(pageObj.totalCount <= pageObj.returnData.pageSize){
+            leftArea = 1;
+            rightArea = 1;
+        }
+        if(leftArea < 1){
+            leftArea = 1;
+            rightArea = utils.showNum;
+            if(totalPage < rightArea){
+                rightArea = totalPage;
+            }
+        }
+        if(rightArea > totalPage){
+            rightArea = totalPage;
+            leftArea = rightArea -utils.showNum + 1;
+            if(leftArea < 1){
+                leftArea = 1;
+            }
+        }
+        rightArea = rightArea > totalPage ? totalPage : rightArea;
+        for(var i = leftArea;i<= rightArea;i++){
+            if(i == currentPage){
+                pageList += '<li class="active" data-><a href="#" >'+i+'</a></li>';
             }else{
-                pageList += '<li><a href="#" >'+(i+1)+'</a></li>';
+                pageList += '<li><a href="#" >'+i+'</a></li>';
             }
         }
         pageList += ' <li><a href="#">下一页</a></li>';

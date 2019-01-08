@@ -97,8 +97,8 @@
           <td class="text-center"><%= postsJsonArray[i].statusVal %></td>
           <td class="text-center">
             <% if(postsJsonArray[i].statuskey == 'drafted' || postsJsonArray[i].statuskey == 'trashed'){ %>
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+              <a href="javascript:;" class="btn btn-default btn-xs post-edit" data-flag="<%= postsJsonArray[i].id %>">编辑</a>
+              <a href="javascript:;" class="btn btn-danger btn-xs post-delete" data-flag="<%= postsJsonArray[i].id %>">删除</a>
             <% } %>
           </td>
         </tr>

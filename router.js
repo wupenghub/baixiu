@@ -210,7 +210,8 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
                 'LEFT JOIN users u ON p.user_id = u.id\n' +
                 'LEFT JOIN categories c ON p.category_id = c.id\n' +
                 'LEFT JOIN baixiu_status_l s ON s.baixiu_key = p.`status`\n' +
-                'where 1 = 1\n' ;
+                'where 1 = 1\n' +
+                ' and p.del_flag = 0';
 
             if(req.query.categoryId != 'all'){
                 querySql += ' AND c.slug = "'+req.query.categoryId+'" '
@@ -218,9 +219,8 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
             if(req.query.postId != 'all'){
                 querySql += ' AND s.baixiu_key = "'+req.query.postId+'" '
             }
-            console.log(req.query.categoryId+','+req.query.postId);
             querySql += ' ORDER BY p.created DESC\n';
-            querySql += 'LIMIT '+req.query.offset+',\n' + req.query.pageSize;
+            querySql += ' LIMIT '+req.query.offset+',\n' + req.query.pageSize;
             DbUtils.queryData(querySql,function (resultList) {
                 if(resultList&&resultList.length>0) {
                     returnObj.getlist_status = 0;
@@ -263,6 +263,28 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
             returnObj.getlist_desc = '无法获取存在的文章审批信息';
         }
     })
+});
+//删除文章审批数据
+router.get('/baixiu/articleDelete',function (req,res) {
+    var returnObj = {};
+    returnObj.returnData = {
+        categoryId:req.query.categoryId,
+        postId:req.query.postId,
+        offset:req.query.offset,
+        pageSize:req.query.pageSize,
+        articleId:req.query.articleId
+    };
+    var deleteSql = 'update posts p set p.del_flag = 1 where p.id = '+ req.query.articleId;
+    DbUtils.queryData(deleteSql,function (result) {
+        if(result.changedRows > 0){
+            returnObj.status = 0;
+            returnObj.desc = '删除成功';
+        }else{
+            returnObj.status = 1;
+            returnObj.desc = '删除失败';
+        }
+        res.json(returnObj);
+    });
 });
 
 module.exports = router;

@@ -220,7 +220,8 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
                 querySql += ' AND s.baixiu_key = "'+req.query.postId+'" '
             }
             querySql += ' ORDER BY p.created DESC\n';
-            querySql += ' LIMIT '+req.query.offset+',\n' + req.query.pageSize;
+            querySql += ' LIMIT '+((req.query.offset-1)*req.query.pageSize)+',\n' + req.query.pageSize;
+            console.log(querySql)
             DbUtils.queryData(querySql,function (resultList) {
                 if(resultList&&resultList.length>0) {
                     returnObj.getlist_status = 0;

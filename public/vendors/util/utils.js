@@ -1,5 +1,6 @@
 var utils = {
     parentObj:{},
+    showNum:5,
     addList(result, obj) {
         //判断当前节点是否有父节点
         if (obj['parent_id']) {
@@ -159,5 +160,23 @@ var utils = {
                 utils.findParentBySon(jsonArray[i].sonList,son);
             }
         }
+    },
+    //分页页码显示
+    pageList(pageObj,parentNode){
+        var pageList = '<li><a href="#">上一页</a></li>';
+        console.log(pageObj.offset);
+        for(var i = 0;i<utils.showNum;i++){
+            if(i+1 == pageObj.offset){
+                pageList += '<li class="active" data-><a href="#" >'+(i+1)+'</a></li>';
+            }else{
+                pageList += '<li><a href="#" >'+(i+1)+'</a></li>';
+            }
+        }
+        pageList += ' <li><a href="#">下一页</a></li>';
+       parentNode.html(pageList);
+       parentNode.unbind();
+       parentNode.on('click','a',function (event) {
+           getPostsData($(event.target).html(),20,$('#category-list').val(),$('#status-options').val());
+       });
     }
 };

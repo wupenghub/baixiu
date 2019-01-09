@@ -1,6 +1,7 @@
 var utils = {
     parentObj:{},
     showNum:5,
+    pageSize:20,
     addList(result, obj) {
         //判断当前节点是否有父节点
         if (obj['parent_id']) {
@@ -163,9 +164,8 @@ var utils = {
     },
     //分页页码显示
     pageList(pageObj,parentNode){
-        var pageList = '<li><a href="#">上一页</a></li>';
+        var pageList = '<li id="per-page"><a href="#">上一页</a></li>';
         var totalPage = Math.ceil(pageObj.totalCount / pageObj.returnData.pageSize);
-        console.log(totalPage)
         var currentPage = parseInt(pageObj.returnData.offset);
         var leftArea = currentPage - Math.floor(utils.showNum/2);
         var rightArea = currentPage + Math.floor(utils.showNum/2);
@@ -190,16 +190,37 @@ var utils = {
         rightArea = rightArea > totalPage ? totalPage : rightArea;
         for(var i = leftArea;i<= rightArea;i++){
             if(i == currentPage){
-                pageList += '<li class="active" data-><a href="#" >'+i+'</a></li>';
+                pageList += '<li class="active"><a href="#" >'+i+'</a></li>';
             }else{
                 pageList += '<li><a href="#" >'+i+'</a></li>';
             }
         }
-        pageList += ' <li><a href="#">下一页</a></li>';
+       pageList += ' <li id="next-page"><a href="#">下一页</a></li>';
        parentNode.html(pageList);
+        if(currentPage <= 1) {
+            $('#per-page').addClass('disabled');
+            $('#per-page').css('disabled','disabled');
+        }else if(currentPage >= totalPage){
+            $('#next-page').addClass('disabled');
+        }else{
+            $('#per-page').removeClass('disabled');
+            $('#next-page').removeClass('disabled');
+        }
+        $('#per-page').unbind();
+        $('#per-page').on('click',function (e) {
+            currentPage--;
+            currentPage = currentPage < 1?1:currentPage;
+            getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
+        });
+        $('#next-page').unbind();
+        $('#next-page').on('click',function (e) {
+            currentPage++;
+            currentPage = currentPage > totalPage ? totalPage:currentPage;
+            getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
+        });
        parentNode.unbind();
        parentNode.on('click','a',function (event) {
-           getPostsData($(event.target).html(),20,$('#category-list').val(),$('#status-options').val());
+           getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
        });
     }
 };

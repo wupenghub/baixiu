@@ -10,7 +10,7 @@ $(function () {
         utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
     }
     //获取文章审阅数据
-    getPostsData(1,20,'all','all');
+    getPostsData(1,utils.pageSize,'all','all');
 });
 function getPostsData(offset,pageSize,categoryId,postId) {
     $.ajax({
@@ -27,6 +27,7 @@ function getPostsData(offset,pageSize,categoryId,postId) {
             $('.category-list').html(categoryListHtml);
             //渲染文章审批信息
             var postsListHtml = template('postsList',data);
+            $('.posts table tbody').html('');
             $('.posts table tbody').html(postsListHtml);
             //渲染分页页签
             returnData = data.returnData;
@@ -44,7 +45,7 @@ function getPostsData(offset,pageSize,categoryId,postId) {
 function seachPostsList() {
     var categoryValue = $('#category-list').val();
     var postStatus = $('#status-options').val();
-    getPostsData(1,20,categoryValue,postStatus);
+    getPostsData(1,utils.pageSize,categoryValue,postStatus);
 }
 //注册删除事件
 function bindDelete(offset,pageSize) {
@@ -63,7 +64,7 @@ function bindDelete(offset,pageSize) {
             success:function (data) {
                 //删除成功，重新请求数据刷新界面
                 if(!returnData) {
-                    getPostsData(1, 20, categoryId, postId);
+                    getPostsData(1, utils.pageSize, categoryId, postId);
                 }else{
                     getPostsData(returnData.offset,returnData.pageSize,categoryId, postId);
                 }

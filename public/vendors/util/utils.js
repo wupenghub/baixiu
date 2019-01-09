@@ -190,9 +190,9 @@ var utils = {
         rightArea = rightArea > totalPage ? totalPage : rightArea;
         for(var i = leftArea;i<= rightArea;i++){
             if(i == currentPage){
-                pageList += '<li class="active"><a href="#" >'+i+'</a></li>';
+                pageList += '<li class="active"><a href="#" class="pageNums">'+i+'</a></li>';
             }else{
-                pageList += '<li><a href="#" >'+i+'</a></li>';
+                pageList += '<li><a href="#" class="pageNums">'+i+'</a></li>';
             }
         }
        pageList += ' <li id="next-page"><a href="#">下一页</a></li>';
@@ -219,7 +219,7 @@ var utils = {
             getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
         });
        parentNode.unbind();
-       parentNode.on('click','a',function (event) {
+       parentNode.on('click','.pageNums',function (event) {
            getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
        });
     }

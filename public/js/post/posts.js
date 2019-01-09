@@ -27,7 +27,6 @@ function getPostsData(offset,pageSize,categoryId,postId) {
             $('.category-list').html(categoryListHtml);
             //渲染文章审批信息
             var postsListHtml = template('postsList',data);
-            $('.posts table tbody').html('');
             $('.posts table tbody').html(postsListHtml);
             //渲染分页页签
             returnData = data.returnData;

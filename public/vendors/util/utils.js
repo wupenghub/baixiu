@@ -187,7 +187,7 @@ var utils = {
                 leftArea = 1;
             }
         }
-        rightArea = rightArea > totalPage ? totalPage : rightArea;
+        // rightArea = rightArea > totalPage ? totalPage : rightArea;
         for(var i = leftArea;i<= rightArea;i++){
             if(i == currentPage){
                 pageList += '<li class="active"><a href="#" class="pageNums">'+i+'</a></li>';

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var DbUtils = require('./DbUtils');
 var utils = require('./util/utils');
+var mail = require('./util/mail');
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -53,6 +54,15 @@ router.post('/baixiu/login',function (req,res) {
     });
 });
 //退出登录
+//忘记密码
+router.get('/baixiu/forgetPwd',function (req,res) {
+    res.render('forgetPwd.html');
+});
+//重置密码接口
+router.get('/baixiu/resetPwd',function (req,res) {
+    var html = '<p>尊敬的'+req.query.email+'您好，欢迎使用密码找回功能,请点击<a href="#">密码重置</a>链接进行密码重置</p>';
+    mail.sendMain(req.query.email,'找回密码',html);
+});
 //菜单管理
 router.get('/baixiu/MenuManger',function (req,res) {
     //1、判断此用户是否已经登录过

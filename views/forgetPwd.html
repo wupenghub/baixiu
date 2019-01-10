@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Sign in &laquo; Admin</title>
+    <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/forgetPwd/forgetPwd.css">
+</head>
+<body>
+<div class="forget_pwd">
+    <form class="login-wrap">
+        <img class="avatar" src="/public/img/default.png">
+        <span class="tip"></span>
+        <div class="form-group">
+            <label for="email" class="sr-only">邮箱</label>
+            <input id="email" name="email" type="email" class="form-control" placeholder="请输入注册的邮箱号" autofocus>
+        </div>
+        <a id="find-pwd" class="btn btn-primary btn-block"  href="javascript:;">发送邮件找回密码</a>
+    </form>
+</div>
+</body>
+<script src="/public/vendors/jquery/jquery.js"></script>
+<script src="/public/js/forgetPwd/forgetPwd.js"></script>
+</html>

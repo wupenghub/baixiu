@@ -42,10 +42,14 @@ $(function () {
                 passWord:$('.reset_pwd #pwd').val()
             },
             success:function (data) {
-
+                if(data.status == 0){
+                    window.location='/baixiu/jumpToLogin';
+                }else {
+                    alert('密码修改失败');
+                }
             },
             error:function () {
-
+                alert('密码修改失败');
             }
         });
         return false;

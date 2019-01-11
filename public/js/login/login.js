@@ -35,8 +35,20 @@ $(function () {
         if(!reg.test($('#email').val())){
             $('.tip').html('邮箱格式不正确').show();
             return;
-        }else{
-            $('.tip').hide();
         }
-    })
+        $('.tip').hide();
+        // 验证用户名是否存在
+        utils.isExitUser($('.login #email').val(),function (data) {
+            if(data.user) {
+                $('.login .avatar').attr('src', data.user.avatar);
+                $('.tip').hide();
+                $('.login #login').attr('disabled',false);
+            }else{
+                $('.login .avatar').attr('src', '/public/img/default.png');
+                $('.tip').html('用户名系统不存在').show();
+                $('.login #login').attr('disabled',true);
+            }
+        });
+    });
+
 })

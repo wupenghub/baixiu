@@ -63,6 +63,23 @@ router.get('/baixiu/resetPwd',function (req,res) {
     var html = '<p>尊敬的'+req.query.email+'您好，欢迎使用密码找回功能,请点击<a href="#">密码重置</a>链接进行密码重置</p>';
     mail.sendMain(req.query.email,'找回密码',html);
 });
+//验证用户名是否存在
+router.post('/baixiu/isExitUser',function (req,res) {
+    var userName = req.body.userName;
+    var querySql = 'select * from users u where u.email ="'+userName+'"';
+    DbUtils.queryData(querySql,function (result) {
+        var returnData = {};
+       if(result && result.length>0){
+           returnData.status = 0;
+           returnData.desc = '查询存有此用户';
+           returnData.user = result[0];
+       }else{
+           returnData.status = 1;
+           returnData.desc = '查询不存在此用户';
+       }
+       res.json(returnData);
+    });
+});
 //菜单管理
 router.get('/baixiu/MenuManger',function (req,res) {
     //1、判断此用户是否已经登录过
@@ -238,7 +255,6 @@ router.get('/baixiu/getArticleApprovalList',function (req,res) {
             }
             querySql += ' ORDER BY p.created DESC\n';
             querySql += ' LIMIT '+((req.query.offset-1)*req.query.pageSize)+',\n' + req.query.pageSize;
-            console.log(querySql);
             DbUtils.queryData(querySql,function (resultList) {
                 if(resultList&&resultList.length>0) {
                     returnObj.getlist_status = 0;

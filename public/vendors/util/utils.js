@@ -222,5 +222,22 @@ var utils = {
        parentNode.on('click','.pageNums',function (event) {
            getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
        });
+    },
+    // 验证用户名是否存在
+    isExitUser(userName,fun){
+        $.ajax({
+            type:'post',
+            url:'/baixiu/isExitUser',
+            dataType:'json',
+            data:{
+                userName
+            },
+            success:function (data) {
+                fun(data);
+            },
+            error:function () {
+                alert('请求失败！');
+            }
+        });
     }
 };

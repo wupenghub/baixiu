@@ -32,11 +32,15 @@ router.get('/', function (req, res) {
         res.render('index.html',{dataJson:JSON.stringify(dataJson)});
     });
 });
+//访问登录界面
+router.get('/baixiu/toLogin',function (req,res) {
+    res.render('login.html');
+})
 //登录接口
 router.post('/baixiu/login',function (req,res) {
     var emil = req.body.email;
     var password = req.body.password;
-    password = md5(md5(password))+'p~1i';
+    password = md5(md5(password)+'p~1i');
     var loginSql = 'select * from users u where u.`email` = "'+emil+'" and u.`password` = "'+password+'" ';
     DbUtils.queryData(loginSql,function (result) {
         var loginData = {};
@@ -78,12 +82,22 @@ router.get('/baixiu/pwdReset',function (req,res) {
 router.post('/baixiu/pwdUpdate',function (req,res) {
     var userName = req.body.userName;
     var passWord = req.body.passWord;
-    passWord = md5(md5(passWord))+'p~1i';
+    passWord = md5(md5(passWord)+'p~1i');
     var updateSql = 'UPDATE users u set u.`password` = "'+passWord+'" WHERE u.email = "'+userName+'"';
+    var resultData = {};
     DbUtils.queryData(updateSql,function (result) {
-        console.log(updateSql);
-        console.log(result);
+        resultData.status = 0;
+        resultData.desc = '密码更新成功';
+        res.json(resultData);
+    },function (err) {
+        resultData.status = 1;
+        resultData.desc = '密码更新失败';
+        res.json(resultData);
     });
+});
+//修改成功跳转路由
+router.get('/baixiu/jumpToLogin',function (req,res) {
+    res.render('jumpToLogin.html');
 });
 //验证用户名是否存在
 router.post('/baixiu/isExitUser',function (req,res) {

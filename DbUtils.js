@@ -26,14 +26,16 @@ var Dbutils = {
     /*closeDb() {
         connection.end();
     },*/
-    queryData(sql, getResult){
+    queryData(sql, getResult,errResult){
         pool.getConnection(function(err,connect){//通过getConnection()方法进行数据库连接
             if(err){
                 console.log(`mysql链接失败${err}`);
+                errResult(err);
             }else{
                 connect.query(sql,function(err,result){
                     if(err){
                         console.log(`SQL error:${err}`)
+                        errResult(err);
                     }else{
                         getResult(result);
                         pool.releaseConnection(connect)//释放连接池中的数据库连接

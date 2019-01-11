@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <title>Title</title>
+    <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <style>
+        p{
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        p span{
+            color: red;
+            font-size: 16px;
+        }
+        p a{
+            font-size: 16px;
+            font-style: italic;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<p>密码修改成功,系统将在<span class="second">5</span>后自动跳转到登录界面,您也可以直接点击<a href="/baixiu/toLogin">跳转</a>到登录界面</p>
+</body>
+<script src="/public/vendors/jquery/jquery.js"></script>
+<script>
+    var totalTime = 5000;
+    window.setInterval(function () {
+        totalTime -= 1000;
+        $('p span').html(totalTime/1000);
+        if(totalTime == 0){
+            window.location = '/baixiu/toLogin';
+        }
+
+    },1000);
+</script>
+</html>

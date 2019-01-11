@@ -61,7 +61,9 @@ router.get('/baixiu/forgetPwd',function (req,res) {
 //重置密码接口
 router.get('/baixiu/resetPwd',function (req,res) {
     var html = '<p>尊敬的'+req.query.email+'您好，欢迎使用密码找回功能,请点击<a href="#">密码重置</a>链接进行密码重置</p>';
-    mail.sendMain(req.query.email,'找回密码',html);
+    mail.sendMain(req.query.email,'找回密码',html,function (data) {
+        res.json(data);
+    });
 });
 //验证用户名是否存在
 router.post('/baixiu/isExitUser',function (req,res) {

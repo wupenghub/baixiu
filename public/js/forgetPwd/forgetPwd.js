@@ -14,14 +14,17 @@ $(function () {
         }
         $('.tip').hide();
         //验证满足条件之后开始请求登录接口，获取登录接口
-        console.log(123)
         $.ajax({
             type: 'get',
             url:'/baixiu/resetPwd',
             data: {email:$('.forget_pwd #email').val()},
             dataType: "json",
             success: function (data) {
-
+                if(data.status == 0){
+                    alert('邮件发送成功，请在邮件中进行密码修改。');
+                    return;
+                }
+                alert('邮件发送失败，请重新发送。');
             },
             error:function (XMLHttpRequest, textStatus, errorThrown) {
 
@@ -46,7 +49,6 @@ $(function () {
                $('.forget_pwd .avatar').attr('src','/public/img/default.png');
                $('.tip').html('用户名系统不存在').show();
                $('#find-pwd').attr('disabled',true);
-
            }
        });
     });

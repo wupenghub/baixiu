@@ -1,24 +1,12 @@
 $(function () {
     var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-    $('#find-pwd').unbind();
-    $('#find-pwd').on('click',function () {
-        // 本地验证登录信息
-        if(!$('.forget_pwd #email').val()){
-            $('.tip').html('用户名不能为空').show();
-            return;
-        }
-
-        if(!reg.test($('.forget_pwd #email').val())){
-            $('.tip').html('邮箱格式不正确').show();
-            return;
-        }
-        $('.tip').hide();
-        //验证满足条件之后开始请求登录接口，获取登录接口
+    $('.forget_pwd #find-pwd').unbind();
+    $('.forget_pwd #find-pwd').on('click',function () {
         $.ajax({
             type: 'get',
             url:'/baixiu/resetPwd',
             data: {email:$('.forget_pwd #email').val()},
-            dataType: "json",
+            dataType: 'json',
             success: function (data) {
                 if(data.status == 0){
                     alert('邮件发送成功，请在邮件中进行密码修改。');
@@ -27,11 +15,11 @@ $(function () {
                 alert('邮件发送失败，请重新发送。');
             },
             error:function (XMLHttpRequest, textStatus, errorThrown) {
-
+                alert('邮件发送失败，请重新发送。');
             }
 
         });
-
+        return false;
     });
     $('.forget_pwd #email').on('blur',function () {
         if(!reg.test($('.forget_pwd #email').val())){

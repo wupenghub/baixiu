@@ -3,6 +3,7 @@ var router = express.Router();
 var DbUtils = require('./DbUtils');
 var utils = require('./util/utils');
 var mail = require('./util/mail');
+var md5=require('md5-node');
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -35,6 +36,7 @@ router.get('/', function (req, res) {
 router.post('/baixiu/login',function (req,res) {
     var emil = req.body.email;
     var password = req.body.password;
+    password = md5(md5(password))+'p~1i';
     var loginSql = 'select * from users u where u.`email` = "'+emil+'" and u.`password` = "'+password+'" ';
     DbUtils.queryData(loginSql,function (result) {
         var loginData = {};
@@ -60,9 +62,27 @@ router.get('/baixiu/forgetPwd',function (req,res) {
 });
 //重置密码接口
 router.get('/baixiu/resetPwd',function (req,res) {
-    var html = '<p>尊敬的'+req.query.email+'您好，欢迎使用密码找回功能,请点击<a href="#">密码重置</a>链接进行密码重置</p>';
+    var html = '<p>尊敬的'+req.query.email+'您好，欢迎使用密码找回功能,请点击<a href="http://10.1.16.162:3000/baixiu/pwdReset?userName='+req.query.email+'">密码重置</a>链接进行密码重置</p>';
     mail.sendMain(req.query.email,'找回密码',html,function (data) {
         res.json(data);
+    });
+});
+//修改密码界面路由
+router.get('/baixiu/pwdReset',function (req,res) {
+    var userName = req.query.userName;
+    DbUtils.queryData('select * from users u where u.email = "'+userName+'"',function (result) {
+        res.render('resetpwd.html',{user:result[0]});
+    });
+});
+//修改密码路由
+router.post('/baixiu/pwdUpdate',function (req,res) {
+    var userName = req.body.userName;
+    var passWord = req.body.passWord;
+    passWord = md5(md5(passWord))+'p~1i';
+    var updateSql = 'UPDATE users u set u.`password` = "'+passWord+'" WHERE u.email = "'+userName+'"';
+    DbUtils.queryData(updateSql,function (result) {
+        console.log(updateSql);
+        console.log(result);
     });
 });
 //验证用户名是否存在

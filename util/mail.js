@@ -29,8 +29,8 @@ module.exports ={
             }
             returnData.status = 0;
             returnData.desc = '邮件发送成功';
-            fun(returnData);
             console.log('Message %s sent: %s', info.messageId, info.response);
+            fun(returnData);
         })
     }
 };

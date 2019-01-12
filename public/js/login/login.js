@@ -22,7 +22,11 @@ $(function () {
             data: {email:$('#email').val(),password:$('#password').val()},
             dataType: "json",
             success: function (data) {
-                window.location.href= '/';
+                if(data.login_state == 0) {
+                    window.location.href = '/';
+                }else{
+                    alert(data.login_desc);
+                }
             },
             error:function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("请求失败！");

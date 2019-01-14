@@ -1,0 +1,36 @@
+{
+  "name": "letao",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --open --port 3000 --contentBase src --hot"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-plugin-component": "^1.1.1",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^2.30.1",
+    "moment": "^2.22.2",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "vue": "^2.5.17",
+    "vue-loader": "^15.4.2",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.17",
+    "webpack-dev-server": "^2.9.7"
+  },
+  "dependencies": {
+    "art-template": "^4.13.2",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "mint-ui": "^2.2.13",
+    "node-sass": "^4.9.3",
+    "vue-resource": "^1.5.1",
+    "vuex": "^3.0.1"
+  }
+}

@@ -24,7 +24,7 @@ $(function () {
             return;
         }
         //所有验证通过，发送请求进行
-        addMnues(mnueObj);
+        addMnues(window.obj);
     });
     $('.mnue-manger .back').on('click',function () {
         $('.mnue-manger .mnue-tabs li:first-child').addClass('active');
@@ -85,6 +85,7 @@ function mnueModify(obj) {
             return;
         }
         //所有验证通过，发送请求进行
+        window.obj = obj;
         addMnues(obj);
     });
 
@@ -126,6 +127,7 @@ function addMnueList(array) {
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
+    window.obj = obj;
     //跳转到添加子菜单的页面
     $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
     $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
@@ -151,21 +153,22 @@ function sonMnueAdd(obj) {
 }
 //添加子菜单ajax请求
 function addMnues(obj) {
-    if(!obj){
+    /*if(!obj){
         alert('无法获取到父节点！');
         return;
     }
     if(mnueObj && isUpdate == 'N'){
         obj = mnueObj;
-    }
+    }*/
     $.ajax({
         url:'/baixiu/sonMnueAdd',
         type:'post',
         dataType:'json',
         data:{
-            id:obj.id,
+            id:window.obj.id,
             mnueDesc:$('.mnue-manger .mnue_desc').val(),
             url:$('.mnue-manger .mnue_url').val(),
+            // parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
             parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
             isUpdate:isUpdate
         },
@@ -199,9 +202,10 @@ function mnueTreeInModel() {
         utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),dataJson.dataJsonArr[i],null,0);
     }
 
-}
+};
 function chooseMnue(obj) {
+    window.obj = obj;
     mnueObj = obj;
-    $('.mnue-manger .search_text').val(mnueObj.mnue_desc);
+    $('.mnue-manger .search_text').val(window.obj.mnue_desc);
     $('.mnue-manger-tree').modal('hide');
 }

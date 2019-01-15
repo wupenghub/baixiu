@@ -81,14 +81,14 @@ router.post('/baixiu/register', function (req, res) {
         } else {
             returnData.query_status = 0;
             returnData.query_desc = '查询不存在此用户，可以注册';
-            var updateSql = 'insert into users (slug,email,password,nickname,avatar,bio,status) VALUES(null,"' + userName + '","' + password + '",null,null,null,"waitactivated")';
+            var updateSql = 'insert into users (slug,email,password,nickname,avatar,bio,status) VALUES(null,"' + userName + '","' + password + '",null,"/public/img/default.png",null,"waitactivated")';
             DbUtils.queryData(updateSql, function (result) {
                 if (result.insertId > 0) {
                     returnData.register_status = 0;
                     returnData.register_desc = '注册成功';
                     returnData.email = userName;
                     //注册成功发送激活邮件
-                    var html = '<p>尊敬的' + userName + '您好，欢迎使用激活账号,请点击<a href="http://192.168.1.8:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
+                    var html = '<p>尊敬的' + userName + '您好，欢迎使用激活账号,请点击<a href="http://47.96.76.172:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
                     mail.sendMain(userName, '账号激活', html, function (data) {
                         returnData.mailSend_status = data.status;
                         returnData.mailSend_desc = data.desc;
@@ -106,7 +106,7 @@ router.post('/baixiu/register', function (req, res) {
 });
 //激活账号邮件接口
 router.get('/baixiu/activatedAccount', function (req, res) {
-    var html = '<p>尊敬的' + req.query.email + '您好，欢迎使用激活账号,请点击<a href="http://192.168.1.8:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
+    var html = '<p>尊敬的' + req.query.email + '您好，欢迎使用激活账号,请点击<a href="http://47.96.76.172:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
     mail.sendMain(userName, '账号激活', html, function (data) {
         returnData.mailSend_status = data.status;
         returnData.mailSend_status = data.desc;
@@ -271,6 +271,7 @@ router.post('/baixiu/sonMnueAdd', function (req, res) {
             } else {
                 inserSql = 'UPDATE mnues m set m.mnue_desc = "' + req.body.mnueDesc + '",m.parent_id = ' + req.body.parentId + ',m.url="' + req.body.url + '" where m.id =' + req.body.id;
             }
+            console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';

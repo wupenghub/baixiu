@@ -17,13 +17,13 @@ var utils = {
                             if (result[i]['sonList'][j].id == obj.id) {
                                 index == j;
                                 isContain = true;
-                                // 如果包含了该元素，再次判断,该元素是否发生过改变
+                               /* // 如果包含了该元素，再次判断,该元素是否发生过改变
                                 if (result[i]['sonList'][j].length != obj.length) {
                                     //发生过改变，重新替换父节点中对应的子节点
                                     result[i]['sonList'][j] = obj;
                                     //并且让父节点进一步通知其对应的父节点
                                     this.addList(result, result[i]);
-                                }
+                                }*/
                                 break;
                             }
                         }
@@ -36,7 +36,7 @@ var utils = {
                         result[i]['sonList'] = [];
                         //父节点添加当前节点作为子节点
                         result[i]['sonList'].push(obj);
-                        this.addList(result, result[i]);
+                        // this.addList(result, result[i]);
                     }
                     break;
                 }

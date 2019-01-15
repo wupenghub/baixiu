@@ -23,7 +23,7 @@ module.exports={
             {test:/\.css$/,use:["style-loader","css-loader"]},
             { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
             {test:/\.vue$/,use:"vue-loader"},
-            { test: /\.(jpg|png|gif|bmp|jpeg|ttf)$/, use: 'url-loader?limit=7631&name=[hash:8]-[name].[ext]'}
+            { test: /\.(jpg|png|gif|bmp|jpeg|ttf|otf|eot|svg|woff|woff2)$/, use: 'url-loader?limit=7631&name=[hash:8]-[name].[ext]'}
         ]
     }
 };

@@ -1,5 +1,6 @@
 <template>
     <div class="home_page">
+        <!--首页轮播图部分-->
         <div class="mui-slider">
             <div class="mui-slider-group mui-slider-loop">
                 <div class="mui-slider-item mui-slider-item-duplicate">
@@ -31,7 +32,20 @@
                 <div class="mui-indicator"></div>
             </div>
         </div>
+        <!--产品推荐部分-->
+        <div class="recommended">
+            <ul class="product_list">
+                <li><a href="javascript:;"><img src="../../images/nav1.png"></a></li>
+                <li><a href="javascript:;"><img src="../../images/nav2.png"></a></li>
+                <li><a href="javascript:;"><img src="../../images/nav3.png"></a></li>
+                <li><a href="javascript:;"><img src="../../images/nav4.png"></a></li>
+                <li><a href="javascript:;"><img src="../../images/nav5.png"></a></li>
+                <li><a href="javascript:;"><img src="../../images/nav6.png"></a></li>
+            </ul>
+        </div>
+        <div style="height: 200px"></div>
     </div>
+
 </template>
 
 <script>
@@ -59,6 +73,29 @@
             .mui-slider-item{
                 img{
 
+                }
+            }
+        }
+        .recommended{
+            padding: 8px;
+            .product_list{
+                list-style: none;
+                li{
+                    float: left;
+                    width: 33.333%;
+                    height: 122px;
+                    a{
+                        width: 100%;
+                        height: 100%;
+                        display: inline-block;
+                        img{
+                            width: 100%;
+                            height: 100%;
+                            text-align: center;
+                            display: inline-block;
+                            /*background: url("../../images/nav1.png") center no-repeat;*/
+                        }
+                    }
                 }
             }
         }

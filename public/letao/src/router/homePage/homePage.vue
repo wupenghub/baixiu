@@ -34,7 +34,7 @@
         </div>
         <!--产品推荐部分-->
         <div class="recommended">
-            <ul class="product_list">
+            <ul class="product_list mui-clearfix">
                 <li><a href="javascript:;"><img src="../../images/nav1.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav2.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav3.png"></a></li>
@@ -43,9 +43,7 @@
                 <li><a href="javascript:;"><img src="../../images/nav6.png"></a></li>
             </ul>
         </div>
-        <div style="height: 200px"></div>
     </div>
-
 </template>
 
 <script>
@@ -93,7 +91,6 @@
                             height: 100%;
                             text-align: center;
                             display: inline-block;
-                            /*background: url("../../images/nav1.png") center no-repeat;*/
                         }
                     }
                 }

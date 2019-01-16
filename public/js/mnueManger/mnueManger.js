@@ -31,11 +31,21 @@ $(function () {
         $('.mnue-manger .mnue-tabs li:last-child').removeClass('active');
         $('.mnue-manger .mnue-content div:first-child').addClass('active');
         $('.mnue-manger .mnue-content div:last-child').removeClass('active');
+        init();
     });
     $('#mnue-add').off('click').on('click',function () {
         isUpdate = 'N';
     });
+    $('#mnue-list').off('click').on('click',function () {
+        init();
+    });
+
 });
+function init() {
+    $('.mnue-manger .mnue_desc').val('');
+    $('.mnue-manger .mnue_url').val('');
+    $('.mnue-manger .search_text').val('');
+}
 function toggle(flag,obj,jsonObj) {
     findAllID(obj,jsonObj);
     var isOpen = $(flag+jsonObj.id).attr('data-open');
@@ -67,6 +77,7 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
+    window.obj = obj;
     $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
     $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
     $('.mnue-manger .mnue-content div:first-child').removeClass('active');
@@ -76,6 +87,7 @@ function mnueModify(obj) {
     $('.mnue-manger .mnue_url').val(obj.url);
     utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
     $('.mnue-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
+    mnueObj = utils.parentObj;
     $('.mnue-manger .save').unbind();
     $('.mnue-manger .save').on('click',function () {
         //判断必填信息是否已经填写
@@ -88,7 +100,6 @@ function mnueModify(obj) {
             return;
         }
         //所有验证通过，发送请求进行
-        window.obj = obj;
         addMnues(obj);
     });
 
@@ -163,7 +174,6 @@ function addMnues(obj) {
     if(mnueObj && isUpdate == 'N'){
         obj = mnueObj;
     }*/
-    alert(isUpdate);
     $.ajax({
         url:'/baixiu/sonMnueAdd',
         type:'post',
@@ -191,9 +201,11 @@ function addMnues(obj) {
                 //添加失败
                 alert('添加失败！');
             }
+            init();
         },
         error:function () {
             alert('出现异常！');
+            init();
         }
     })
 }
@@ -208,8 +220,12 @@ function mnueTreeInModel() {
 
 };
 function chooseMnue(obj) {
-    window.obj = obj;
-    mnueObj = obj;
-    $('.mnue-manger .search_text').val(window.obj.mnue_desc);
+   if(isUpdate == 'Y'){
+       mnueObj = obj;
+       $('.mnue-manger .search_text').val(mnueObj.mnue_desc);
+   }else{
+       window.obj = obj;
+       $('.mnue-manger .search_text').val(window.obj.mnue_desc);
+   }
     $('.mnue-manger-tree').modal('hide');
 }

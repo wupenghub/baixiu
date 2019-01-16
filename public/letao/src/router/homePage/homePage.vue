@@ -34,13 +34,63 @@
         </div>
         <!--产品推荐部分-->
         <div class="recommended">
-            <ul class="product_list mui-clearfix">
+            <ul class="recommended_product_list mui-clearfix">
                 <li><a href="javascript:;"><img src="../../images/nav1.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav2.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav3.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav4.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav5.png"></a></li>
                 <li><a href="javascript:;"><img src="../../images/nav6.png"></a></li>
+            </ul>
+        </div>
+        <!--产品列表界面-->
+        <div class="product_list">
+            <ul class="mui-clearfix">
+                <li>
+                    <a href="javascript:;">
+                        <img src="../../images/product.jpg"/>
+                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
+                        <p>
+                            <span class="now_price">
+                                ￥500
+                            </span>
+                            <span class="old_price">
+                                ￥999
+                            </span>
+                        </p>
+                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;">
+                        <img src="../../images/product.jpg"/>
+                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
+                        <p>
+                            <span class="now_price">
+                                ￥500
+                            </span>
+                            <span class="old_price">
+                                ￥999
+                            </span>
+                        </p>
+                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;">
+                        <img src="../../images/product.jpg"/>
+                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
+                        <p>
+                            <span class="now_price">
+                                ￥500
+                            </span>
+                            <span class="old_price">
+                                ￥999
+                            </span>
+                        </p>
+                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -65,6 +115,7 @@
 
 <style scoped lang="scss">
     .home_page{
+        background-color: #fff;
         .mui-slider{
             height: 256px;
             width: 100%;
@@ -75,8 +126,8 @@
             }
         }
         .recommended{
-            padding: 8px;
-            .product_list{
+            padding: 5px;
+            .recommended_product_list{
                 list-style: none;
                 li{
                     float: left;
@@ -93,6 +144,45 @@
                             display: inline-block;
                         }
                     }
+                }
+            }
+        }
+        .product_list{
+            padding: 5px;
+            ul{
+                list-style: none;
+                li{
+                    box-shadow: 2px 2px #f3f3f3;
+                    border: 1px solid #f3f3f3;
+                    width: 48%;
+                    text-align: center;
+                    padding:5px 0;
+                    a{
+                        display: block;
+                        img{
+                            display: block;
+                            width: 187px;
+                            height: 187px;
+                        }
+                        p{
+                            .now_price{
+                                color: red;
+                            }
+                            .old_price{
+                                font-size: 12px;
+                                text-decoration: line-through;
+                            }
+                        }
+                        button{
+                            background: #006699;
+                        }
+                    }
+                }
+                li:nth-child(2n){
+                    float: right;
+                }
+                li:nth-child(2n+1){
+                    float: left;
                 }
             }
         }

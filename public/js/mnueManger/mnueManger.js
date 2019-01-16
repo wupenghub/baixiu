@@ -32,6 +32,9 @@ $(function () {
         $('.mnue-manger .mnue-content div:first-child').addClass('active');
         $('.mnue-manger .mnue-content div:last-child').removeClass('active');
     });
+    $('#mnue-add').off('click').on('click',function () {
+        isUpdate = 'N';
+    });
 });
 function toggle(flag,obj,jsonObj) {
     findAllID(obj,jsonObj);
@@ -160,6 +163,7 @@ function addMnues(obj) {
     if(mnueObj && isUpdate == 'N'){
         obj = mnueObj;
     }*/
+    alert(isUpdate);
     $.ajax({
         url:'/baixiu/sonMnueAdd',
         type:'post',

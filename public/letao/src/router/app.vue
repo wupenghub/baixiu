@@ -55,7 +55,7 @@
 </script>
 <style scoped lang="scss">
     .container{
-        padding: 40px 0;
+        padding: 40px 0 45px 0;
         header{
             width: 100%;
             height: 40px;

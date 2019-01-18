@@ -3,26 +3,14 @@
         <!--首页轮播图部分-->
         <div class="mui-slider">
             <div class="mui-slider-group mui-slider-loop">
-                <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img src="../../images/banner4.png">
+                <div  class="mui-slider-item mui-slider-item-duplicate">
+                    <img :src="bannerList[bannerList.length-1]">
                 </div>
-                <div class="mui-slider-item">
-                    <!-- 具体内容 -->
-                    <img src="../../images/banner1.png">
+                <div v-for="bannerItem in bannerList" class="mui-slider-item">
+                    <img :src="bannerItem.productImageUrl">
                 </div>
-                <div class="mui-slider-item">
-                    <img src="../../images/banner2.png">
-                </div>
-                <div class="mui-slider-item">
-                    <!-- 具体内容 -->
-                    <img src="../../images/banner3.png">
-                </div>
-                <div class="mui-slider-item">
-                    <img src="../../images/banner4.png">
-                </div>
-                <div class="mui-slider-item mui-slider-item-duplicate">
-                    <!-- 具体内容 -->
-                    <img src="../../images/banner1.png">
+                <div  class="mui-slider-item mui-slider-item-duplicate">
+                    <img :src="bannerList[0]">
                 </div>
             </div>
             <div class="mui-slider-indicator">
@@ -46,46 +34,16 @@
         <!--产品列表界面-->
         <div class="product_list">
             <ul class="mui-clearfix">
-                <li>
+                <li v-for="item in productList">
                     <a href="javascript:;">
-                        <img src="../../images/product.jpg"/>
-                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
+                        <img :src="item.productImageUrl"/>
+                        <p>{{item.productDesc}}</p>
                         <p>
                             <span class="now_price">
-                                ￥500
+                                ￥{{item.productPrice}}
                             </span>
                             <span class="old_price">
-                                ￥999
-                            </span>
-                        </p>
-                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:;">
-                        <img src="../../images/product.jpg"/>
-                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
-                        <p>
-                            <span class="now_price">
-                                ￥500
-                            </span>
-                            <span class="old_price">
-                                ￥999
-                            </span>
-                        </p>
-                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:;">
-                        <img src="../../images/product.jpg"/>
-                        <p>adidas阿迪达斯 男式 场下休闲篮球鞋S83700</p>
-                        <p>
-                            <span class="now_price">
-                                ￥500
-                            </span>
-                            <span class="old_price">
-                                ￥999
+                                ￥{{item.productPreferentialPrice}}
                             </span>
                         </p>
                         <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
@@ -98,22 +56,33 @@
 
 <script>
     import mui from '../../lib/mui/js/mui.min';
+    import utils from '../../utils.js';
+
     mui('.mui-slider').slider({
         interval:1000//自动轮播周期，若为0则不自动播放，默认为0；
     });
     export default {
         data(){
-            return {};
+            return {
+                bannerList:[],
+                productList:[],
+            };
         },
         created(){
             mui('.mui-slider').slider({
                 interval:1000//自动轮播周期，若为0则不自动播放，默认为0；
             });
             //发送ajax请求获取首页数据
-            this.$http.get('/letao/homePage',{}).then(function (response) {
-                
+            this.$http.get(utils.serverName+'/letao/homePage',{}).then(function (response) {
+                if(response.body.banner){
+                    if(response.body.banner.banner_list&&response.body.banner.banner_list.length>0){
+                        this.bannerList = response.body.banner.banner_list;
+                    }
+                    if(response.body.productList.product_list&&response.body.productList.product_list.length>0){
+                        this.productList = response.body.productList.product_list;
+                    }
+                }
             },function (response) {
-
             });
         }
     }

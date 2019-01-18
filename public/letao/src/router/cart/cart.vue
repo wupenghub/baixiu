@@ -4,7 +4,7 @@
             <li class="product_item">
                 <div class="product_item_left">
                     <img src="../../images/detail.jpg" class="product_img" alt="">
-                    <input type="checkbox" class="product_check" id="">
+                    <input type="checkbox" class="product_check">
                 </div>
                 <div class="product_item_right">
                     <p>李宁闪击篮球鞋驭</p>
@@ -17,7 +17,7 @@
             <li class="product_item">
                 <div class="product_item_left">
                     <img src="../../images/detail.jpg" class="product_img" alt="">
-                    <input type="checkbox" class="product_check" id="">
+                    <input type="checkbox" class="product_check">
                 </div>
                 <div class="product_item_right">
                     <p>李宁闪击篮球鞋驭帅10镭射队尚4男韦德之道空袭中高帮队尚3.5球鞋</p>
@@ -30,7 +30,7 @@
             <li class="product_item">
                 <div class="product_item_left">
                     <img src="../../images/detail.jpg" class="product_img" alt="">
-                    <input type="checkbox" class="product_check" id="">
+                    <input type="checkbox" class="product_check">
                 </div>
                 <div class="product_item_right">
                     <p>李宁闪击篮球鞋驭帅10镭射队尚4男韦德之道空袭中高帮队尚3.5球鞋</p>
@@ -43,7 +43,7 @@
             <li class="product_item">
                 <div class="product_item_left">
                     <img src="../../images/detail.jpg" class="product_img" alt="">
-                    <input type="checkbox" class="product_check" id="">
+                    <input type="checkbox" class="product_check">
                 </div>
                 <div class="product_item_right">
                     <p>李宁闪击篮球鞋驭帅10镭射队尚4男韦德之道空袭中高帮队尚3.5球鞋</p>
@@ -56,7 +56,7 @@
             <li class="product_item">
                 <div class="product_item_left">
                     <img src="../../images/detail.jpg" class="product_img" alt="">
-                    <input type="checkbox" class="product_check" id="">
+                    <input type="checkbox" class="product_check">
                 </div>
                 <div class="product_item_right">
                     <p>李宁闪击篮球鞋驭帅10镭射队尚4男韦德之道空袭中高帮队尚3.5球鞋</p>

@@ -48,6 +48,8 @@
                     this.title = '购物车';
                 }else if(newval == '/member'){
                     this.title = '会员';
+                }else if(newval == '/goodDetail'){
+                    this.title = '商品详情';
                 }
             }
         }

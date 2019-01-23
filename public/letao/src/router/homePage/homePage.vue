@@ -3,13 +3,13 @@
         <!--首页轮播图部分-->
         <div class="mui-slider">
             <div class="mui-slider-group mui-slider-loop">
-                <div  class="mui-slider-item mui-slider-item-duplicate">
+                <div class="mui-slider-item mui-slider-item-duplicate">
                     <img :src="bannerList[bannerList.length-1]">
                 </div>
                 <div v-for="bannerItem in bannerList" class="mui-slider-item">
                     <img :src="bannerItem.productImageUrl">
                 </div>
-                <div  class="mui-slider-item mui-slider-item-duplicate">
+                <div class="mui-slider-item mui-slider-item-duplicate">
                     <img :src="bannerList[0]">
                 </div>
             </div>
@@ -46,7 +46,7 @@
                                 ￥{{item.productPreferentialPrice}}
                             </span>
                         </p>
-                        <button type="button" class="mui-btn mui-btn-primary">立即购买</button>
+                        <button type="button" class="mui-btn mui-btn-primary" @click="goDetail()">立即购买</button>
                     </a>
                 </li>
             </ul>
@@ -58,61 +58,66 @@
     import mui from '../../lib/mui/js/mui.min';
     import utils from '../../utils.js';
 
-    mui('.mui-slider').slider({
-        interval:1000//自动轮播周期，若为0则不自动播放，默认为0；
-    });
     export default {
-        data(){
+        data() {
             return {
-                bannerList:[],
-                productList:[],
+                bannerList: [],
+                productList: [],
             };
         },
-        created(){
-            mui('.mui-slider').slider({
-                interval:1000//自动轮播周期，若为0则不自动播放，默认为0；
-            });
+        created() {
             //发送ajax请求获取首页数据
-            this.$http.get(utils.serverName+'/letao/homePage',{}).then(function (response) {
-                if(response.body.banner){
-                    if(response.body.banner.banner_list&&response.body.banner.banner_list.length>0){
+            this.$http.get(utils.serverName + '/letao/homePage', {}).then(function (response) {
+                if (response.body.banner) {
+                    if (response.body.banner.banner_list && response.body.banner.banner_list.length > 0) {
                         this.bannerList = response.body.banner.banner_list;
                     }
-                    if(response.body.productList.product_list&&response.body.productList.product_list.length>0){
+                    if (response.body.productList.product_list && response.body.productList.product_list.length > 0) {
                         this.productList = response.body.productList.product_list;
                     }
                 }
-            },function (response) {
+            }, function (response) {
+
             });
+        },
+        mounted() {
+            mui('.mui-slider').slider({
+                interval: 1000//自动轮播周期，若为0则不自动播放，默认为0；
+            });
+        },
+        methods:{
+            goDetail(id){
+                this.$router.push({name:'goodDetail',params:{id}});
+            }
         }
     }
 </script>
 
 <style scoped lang="scss">
-    .home_page{
+    .home_page {
         background-color: #fff;
-        .mui-slider{
+        .mui-slider {
             height: 256px;
             width: 100%;
-            .mui-slider-item{
-                img{
+            .mui-slider-item {
+                img {
 
                 }
             }
         }
-        .recommended{
+        .recommended {
             padding: 5px;
-            .recommended_product_list{
+            .recommended_product_list {
                 list-style: none;
-                li{
+                li {
                     float: left;
                     width: 33.333%;
                     height: 122px;
-                    a{
+                    a {
                         width: 100%;
                         height: 100%;
                         display: inline-block;
-                        img{
+                        img {
                             width: 100%;
                             height: 100%;
                             text-align: center;
@@ -122,41 +127,43 @@
                 }
             }
         }
-        .product_list{
+        .product_list {
             padding: 5px;
-            ul{
+            ul {
                 list-style: none;
-                li{
+                li {
                     box-shadow: 2px 2px #f3f3f3;
                     border: 1px solid #f3f3f3;
                     width: 48%;
                     text-align: center;
-                    padding:5px 0;
-                    a{
+                    padding: 5px 0;
+                    a {
                         display: block;
-                        img{
+                        img {
                             display: block;
                             width: 187px;
                             height: 187px;
                         }
-                        p{
-                            .now_price{
+                        p {
+                            .now_price {
                                 color: red;
                             }
-                            .old_price{
+                            .old_price {
                                 font-size: 12px;
                                 text-decoration: line-through;
                             }
                         }
-                        button{
+                        button {
                             background: #006699;
                         }
                     }
                 }
-                li:nth-child(2n){
+            ;
+                li:nth-child(2n) {
                     float: right;
                 }
-                li:nth-child(2n+1){
+            ;
+                li:nth-child(2n+1) {
                     float: left;
                 }
             }

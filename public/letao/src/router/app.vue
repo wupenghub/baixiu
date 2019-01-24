@@ -7,7 +7,7 @@
         <div class="content">
             <router-view></router-view>
         </div>
-        <footer>
+        <footer v-show="!isDetail">
             <router-link  to="/homePage"  id="home-page">
                 <span class="icon fa fa-home" id="home-page-icon"></span>
                 <span class="home_page">首页</span>
@@ -32,27 +32,61 @@
     export default {
         data(){
             return {
-                title:'首页'
+                title:'首页',
+                isDetail:false,
+                pathname:'/'
             };
         },
         watch:{
             "$route.path": function (newval) {
-                if(newval != '/homePage') {
+                    if(newval != '/homePage') {
+                        document.getElementById("home-page").classList.remove("now");
+                    }
+                    if(newval == '/homePage'){
+                        this.title = '首页';
+                        this.isDetail = false;
+                    }else if(newval == '/category'){
+                        this.title = '分类';
+                        this.isDetail = false;
+                    }else if(newval == '/cart'){
+                        this.title = '购物车';
+                        this.isDetail = false;
+                    }else if(newval == '/member'){
+                        this.title = '会员';
+                        this.isDetail = false;
+                    }else if(newval == '/goodDetail'){
+                        this.title = '商品详情';
+                        this.isDetail = true;
+                    }
+                }
+            },
+            beforeMount(){
+
+            },
+            mounted(){
+                console.log(window.location.href)
+                /*this.pathName = window.location.href;
+                if(this.pathName.indexOf('homePage') < 0) {
                     document.getElementById("home-page").classList.remove("now");
                 }
-                if(newval == '/homePage'){
+                if(this.pathName.indexOf('homePage') > -1){
                     this.title = '首页';
-                }else if(newval == '/category'){
+                    this.isDetail = false;
+                }else if(this.pathName.indexOf('category') > -1){
                     this.title = '分类';
-                }else if(newval == '/cart'){
+                    this.isDetail = false;
+                }else if(this.pathName.indexOf('cart') > -1){
                     this.title = '购物车';
-                }else if(newval == '/member'){
+                    this.isDetail = false;
+                }else if(this.pathName.indexOf('member') > -1){
                     this.title = '会员';
-                }else if(newval == '/goodDetail'){
+                    this.isDetail = false;
+                }else if(this.pathName.indexOf('goodDetail') > -1){
                     this.title = '商品详情';
+                    this.isDetail = true;
                 }
+                console.log(this.title+'======'+this.isDetail);*/
             }
-        }
     }
 </script>
 <style scoped lang="scss">

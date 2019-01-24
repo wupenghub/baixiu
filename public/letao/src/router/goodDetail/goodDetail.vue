@@ -23,7 +23,9 @@
         </div>
         <!--商品详情模块-->
         <div class="good_detail_info">
-            <span>日常穿戴</span>
+            <p class="good_detail_info_title">
+                日常穿戴
+            </p>
         </div>
         <footer class="mui-clearfix">
             <div class="good_detail_left mui-clearfix">
@@ -75,6 +77,15 @@
                 img {
 
                 }
+            }
+        }
+        .good_detail_info{
+            border-top: 1px solid #f3f3f3;
+            .good_detail_info_title{
+                padding: 10px;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 18px;
             }
         }
         footer{

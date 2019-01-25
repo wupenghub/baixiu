@@ -46,7 +46,7 @@
                                 ￥{{item.productPreferentialPrice}}
                             </span>
                         </p>
-                        <button type="button" class="mui-btn mui-btn-primary" @click="goDetail()">立即购买</button>
+                        <button type="button" class="mui-btn mui-btn-primary" @click="goDetail(item.id)">立即购买</button>
                     </a>
                 </li>
             </ul>
@@ -62,7 +62,7 @@
         data() {
             return {
                 bannerList: [],
-                productList: [],
+                productList: []
             };
         },
         created() {

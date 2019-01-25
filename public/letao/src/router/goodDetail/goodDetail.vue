@@ -4,16 +4,13 @@
         <div class="mui-slider">
             <div class="mui-slider-group mui-slider-loop">
                 <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img src="../../images/active2.png">
+                    <img :src="detailBannerList[detailBannerList.length-1]">
+                </div>
+                <div v-for="detailBannerItem in detailBannerList" class="mui-slider-item">
+                    <img :src="detailBannerItem">
                 </div>
                 <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img src="../../images/active1.png">
-                </div>
-                <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img src="../../images/active2.png">
-                </div>
-                <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img src="../../images/active1.png">
+                    <img :src="detailBannerList[0]">
                 </div>
             </div>
             <div class="mui-slider-indicator">
@@ -24,7 +21,7 @@
         <!--商品详情模块-->
         <div class="good_detail_info">
             <p class="good_detail_info_title">
-                日常穿戴
+                {{this.detailData.result&&this.detailData.result.product_desc}}
             </p>
         </div>
         <footer class="mui-clearfix">
@@ -52,12 +49,23 @@
 
 <script>
     import mui from '../../lib/mui/js/mui.min';
+    import utils from '../../utils.js';
+
     export default {
         data() {
-            return {}
+            return {
+                id:this.$route.params.id,
+                detailData:{},
+                detailBannerList:[]
+            }
         },
         created(){
+            this.$http.post(utils.serverName + '/letao/goodDetail',{id:this.id}).then(function (response) {
+                this.detailData = response.body;
+                this.detailBannerList = this.detailData.result.image_detail_url?this.detailData.result.image_detail_url.split(','):'http://localhost:5000/images/banner1.png';
+            },function (error) {
 
+            });
         },
         mounted(){
             mui('.good_detail .mui-slider').slider({
@@ -73,11 +81,6 @@
         .mui-slider {
             height: 289px;
             width: 100%;
-            .mui-slider-item {
-                img {
-
-                }
-            }
         }
         .good_detail_info{
             border-top: 1px solid #f3f3f3;

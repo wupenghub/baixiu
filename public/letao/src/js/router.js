@@ -26,7 +26,7 @@ var vueRouter = new VueRouter({
             component:member
         },
         {
-            path:'/goodDetail',component:goodDetail,name:'goodDetail'
+            path:'/goodDetail/:id',component:goodDetail,name:'goodDetail'
         }
     ],
     linkActiveClass:'now'

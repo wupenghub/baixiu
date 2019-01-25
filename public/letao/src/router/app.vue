@@ -64,7 +64,7 @@
 
             },
             mounted(){
-                console.log(window.location.href)
+                console.log(window.location.href);
                 /*this.pathName = window.location.href;
                 if(this.pathName.indexOf('homePage') < 0) {
                     document.getElementById("home-page").classList.remove("now");

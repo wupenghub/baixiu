@@ -39,22 +39,23 @@
         },
         watch:{
             "$route.path": function (newval) {
+                console.log(newval)
                     if(newval != '/homePage') {
                         document.getElementById("home-page").classList.remove("now");
                     }
-                    if(newval == '/homePage'){
+                    if(newval.indexOf('/homePage') != -1){
                         this.title = '首页';
                         this.isDetail = false;
-                    }else if(newval == '/category'){
+                    }else if(newval.indexOf('/category') != -1 ){
                         this.title = '分类';
                         this.isDetail = false;
-                    }else if(newval == '/cart'){
+                    }else if(newval.indexOf('/cart') != -1){
                         this.title = '购物车';
                         this.isDetail = false;
-                    }else if(newval == '/member'){
+                    }else if(newval.indexOf('/member') != -1){
                         this.title = '会员';
                         this.isDetail = false;
-                    }else if(newval == '/goodDetail'){
+                    }else if(newval.indexOf('/goodDetail')!=-1){
                         this.title = '商品详情';
                         this.isDetail = true;
                     }

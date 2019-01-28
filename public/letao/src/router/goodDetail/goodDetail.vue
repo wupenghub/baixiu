@@ -14,6 +14,7 @@
                 </div>
             </div>
             <div class="mui-slider-indicator">
+                <div v-for="(item,index) in detailBannerList" class="mui-indicator mui-active"></div>
                 <div class="mui-indicator mui-active"></div>
                 <div class="mui-indicator"></div>
             </div>
@@ -62,7 +63,8 @@
         created(){
             this.$http.post(utils.serverName + '/letao/goodDetail',{id:this.id}).then(function (response) {
                 this.detailData = response.body;
-                this.detailBannerList = this.detailData.result.image_detail_url?this.detailData.result.image_detail_url.split(','):'http://localhost:5000/images/banner1.png';
+                this.detailBannerList = this.detailData.result.image_detail_url?this.detailData.result.image_detail_url.split(','):['http://localhost:5000/images/banner1.png'];
+                console.log(this.detailBannerList);
             },function (error) {
 
             });

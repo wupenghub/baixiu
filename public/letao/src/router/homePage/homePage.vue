@@ -92,7 +92,7 @@
         methods: {
             goDetail(id) {
                 this.$router.push({name: 'goodDetail', params: {id}});
-                this.$emit('goDetail');
+                this.$emit('goDetail',true);
             }
         }
     }

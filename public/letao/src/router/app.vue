@@ -5,7 +5,7 @@
             <span class="title">{{title}}</span>
         </header>
         <div class="content">
-            <router-view @goDetail="goDetail()"></router-view>
+            <router-view @goDetail="goDetail"></router-view>
         </div>
         <footer v-show="!isDetail">
             <router-link to="/homePage" id="home-page">
@@ -65,31 +65,10 @@
         },
         mounted() {
             console.log(window.location.href);
-            /*this.pathName = window.location.href;
-            if(this.pathName.indexOf('homePage') < 0) {
-                document.getElementById("home-page").classList.remove("now");
-            }
-            if(this.pathName.indexOf('homePage') > -1){
-                this.title = '首页';
-                this.isDetail = false;
-            }else if(this.pathName.indexOf('category') > -1){
-                this.title = '分类';
-                this.isDetail = false;
-            }else if(this.pathName.indexOf('cart') > -1){
-                this.title = '购物车';
-                this.isDetail = false;
-            }else if(this.pathName.indexOf('member') > -1){
-                this.title = '会员';
-                this.isDetail = false;
-            }else if(this.pathName.indexOf('goodDetail') > -1){
-                this.title = '商品详情';
-                this.isDetail = true;
-            }
-            console.log(this.title+'======'+this.isDetail);*/
         },
         methods: {
-            goDetail() {
-                this.isDetail = true;
+            goDetail(flag) {
+                this.isDetail = flag;
             }
         }
     }

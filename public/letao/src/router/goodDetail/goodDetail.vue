@@ -74,8 +74,7 @@
             }, function (error) {
 
             });
-            console.log('=====');
-            this.$emit('goDetail');
+            this.$emit('goDetail',true);
         },
         mounted() {
             mui('.good_detail .mui-slider').slider({

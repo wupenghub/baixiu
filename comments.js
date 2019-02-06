@@ -9,6 +9,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 app.engine('html', require('express-art-template'));
 app.set('views', './views');
+app.disable('view cache');
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
@@ -38,7 +39,6 @@ app.use(leTaoGoodDetail);
 app.use('/public/', express.static('./public/'));
 app.use('/node_modules/', express.static('./node_modules/'));
 app.use('/uploads/', express.static('./uploads/'));
-
 app.listen(3000, function () {
     console.log('Running...');
 });

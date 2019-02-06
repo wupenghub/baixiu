@@ -40,10 +40,10 @@
                         <p>{{item.productDesc}}</p>
                         <p>
                             <span class="now_price">
-                                ￥{{item.productPrice}}
+                                ￥{{item.productPreferentialPrice}}
                             </span>
                             <span class="old_price">
-                                ￥{{item.productPreferentialPrice}}
+                                ￥{{item.productPrice}}
                             </span>
                         </p>
                         <button type="button" class="mui-btn mui-btn-primary" @click="goDetail(item.id)">立即购买</button>
@@ -79,15 +79,20 @@
             }, function (response) {
 
             });
+            console.log('刷新');
+
         },
         mounted() {
             mui('.home_page .mui-slider').slider({
                 interval: 1000//自动轮播周期，若为0则不自动播放，默认为0；
             });
+            this.$emit('goDetail');
+            console.log('刷新');
         },
-        methods:{
-            goDetail(id){
-                this.$router.push({name:'goodDetail',params:{id}});
+        methods: {
+            goDetail(id) {
+                this.$router.push({name: 'goodDetail', params: {id}});
+                this.$emit('goDetail');
             }
         }
     }

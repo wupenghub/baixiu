@@ -9,7 +9,6 @@ $(function () {
             data: {email: $('#email').val(), password: $('#password').val()},
             dataType: "json",
             success: function (data) {
-                console.log(data);
                 if(data.register_status == 0){
                     alert('注册成功');
                     if(data.mailSend_status == 0){

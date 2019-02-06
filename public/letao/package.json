@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --open  --port 5000 --contentBase src --hot"
+    "dev": "webpack-dev-server --open --host 192.168.0.101 --port 5000 --contentBase src --hot"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,8 @@
     "vue-loader": "^15.4.2",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.17",
-    "webpack-dev-server": "^2.9.7"
+    "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
     "art-template": "^4.13.2",

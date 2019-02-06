@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import appVue from '../router/app';
+import appVue from '../router/app.vue';
 import VueRouter from 'vue-router';
 import vueRouter from './router.js';
 // 引入mui插件
@@ -15,8 +15,6 @@ Vue.use(VueResource);
 Vue.use(VueRouter);
 var vue = new Vue({
     el: "#app",
-    render: function (createElement) {
-        return createElement(appVue);
-    },
+    render: letao => letao(appVue),
     router: vueRouter
 });

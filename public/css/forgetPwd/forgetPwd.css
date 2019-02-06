@@ -1,0 +1,16 @@
+.forget_pwd .tip {
+  color: red;
+  font-size: 10px;
+  display: block;
+  margin-bottom: 10px;
+}
+.forget_pwd .registerOrReset {
+  float: right;
+}
+.forget_pwd .registerOrReset a {
+  display: inline-block;
+  margin: 5px 0 0 5px;
+  text-decoration: underline;
+  color: #666666;
+  font-size: 12px;
+}

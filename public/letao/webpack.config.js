@@ -1,7 +1,7 @@
 const path = require("path");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 var htmlWebpackPlugin = require('html-webpack-plugin');
-
+const webpack = require('webpack'); // 新增
 module.exports={
     entry:path.join(__dirname,"./src/js/main.js"),
     output:{
@@ -16,7 +16,9 @@ module.exports={
         new htmlWebpackPlugin({
             template: path.join(__dirname, './src/index.html'), // 指定模板文件路径
             filename: 'index.html' // 设置生成的内存页面的名称
-        })
+        }),
+        new webpack.NamedModulesPlugin(), // 新增
+        new webpack.HotModuleReplacementPlugin() //新增
     ],
     module:{
         rules:[

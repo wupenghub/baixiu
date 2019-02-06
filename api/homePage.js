@@ -49,7 +49,7 @@ router.get('/letao/homePage', function (req, res) {
                 returnData.productList.product_list.push(productItem);
             }
         }
-        res.json(returnData);
+        res.status(200).json(returnData);
     },function (err) {
         returnData.status = 1;
         returnData.desc = '网络请求失败';

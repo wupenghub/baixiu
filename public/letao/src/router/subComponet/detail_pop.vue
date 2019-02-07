@@ -12,6 +12,7 @@
                 <div class="container mui-clearfix">
                     <img class="product_logo" :src="detailData.result&&detailData.result.image_url">
                     <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
+                    <input type="hidden" ref="total_num" :value="detailData.result&&detailData.result.totalNum"/>
                     <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
                     <div class="content">
                         <span>尺寸：</span>
@@ -19,15 +20,9 @@
                             <li class="size" v-for="item in sizeArray">{{item}}</li>
                         </ul>
                         <div class="count_div mui-clearfix">
-                            <p class="count_div_left">数量：<span class="total_count">剩余{{totalCount}}件</span>
+                            <p class="count_div_left">数量：<span class="total_count">剩余{{detailData.result && detailData.result.totalNum}}件</span>
                             <p/>
-                            <div class="count_div_right mui-numbox" data-numbox-step="1" data-numbox-min="1" :data-numbox-max="totalCount">
-                                <!-- "-"按钮，点击可减小当前数值 -->
-                                <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
-                                <input class="mui-numbox-input" type="number"/>
-                                <!-- "+"按钮，点击可增大当前数值 -->
-                                <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
-                            </div>
+                            <num_box ref="num_box" class="count_div_right" :defaultValue="1" :step="1" :minValue="1"></num_box>
                         </div>
                     </div>
                     <div class="footer mui-clearfix">
@@ -43,6 +38,7 @@
 
 <script>
     import mui from '../../lib/mui/js/mui.min';
+    import numBox from '../subComponet/numbox.vue';
     export default {
         data: function () {
             return {
@@ -51,14 +47,15 @@
                 popHeight: 0,
                 sizeArray: [],
                 initialNumber:0,
-                totalCount:5,
-                currentCount : 1
+                currentCount : 1,
+                totalNum:0
             }
         },
         created() {
         },
         methods: {
             addCart() {
+                console.log(this.$refs.num_box.getValue());
             },
             buyNow() {
                 this.show = true;
@@ -67,6 +64,8 @@
             beforeEnter(el) {
                 // 设置动画开始之前的初始位置
                 this.screenHeight = this.$refs.detail_pop.offsetHeight;
+                this.totalNum = this.$refs.total_num.value;
+                console.log(this.totalNum);
                 this.popHeight = document.querySelector('.container').offsetHeight;
                 var translateStartHeight = parseInt(this.screenHeight) + parseInt(this.popHeight);
                 el.style.transform = "translate(0, " + translateStartHeight + "px)"
@@ -80,11 +79,9 @@
                 done();
             },
             afterEnter(el) {
-                //初始化Numbox控件
-                mui('.mui-numbox').numbox().setValue(this.initialNumber);
-                mui('.mui-numbox').numbox().setOption('stap',1);
-                // 动画完成之后调用
                 var sizeArr = this.$refs.size.value.split('-');
+                this.totalNum = this.$refs.total_num.value;
+                this.$refs.num_box.setMaxValue(this.totalNum);
                 this.sizeArray = [];
                 for (var i = sizeArr[0]; i <= sizeArr[1]; i++) {
                     this.sizeArray.push(parseInt(i));
@@ -136,6 +133,9 @@
                 },
                 immediate: true
             }
+        },
+        components: {
+            'num_box': numBox
         }
     }
 </script>

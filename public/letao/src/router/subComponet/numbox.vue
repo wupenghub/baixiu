@@ -35,6 +35,9 @@
             },
             getValue(){
                 return this.number;
+            },
+            setMaxValue(maxValue){
+                this.numBoxMaxValue = maxValue;
             }
         },
         props: ['defaultValue', 'step','maxValue','minValue'],

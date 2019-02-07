@@ -11,7 +11,7 @@
             <div v-show="show">
                 <div class="container mui-clearfix">
                     <img class="product_logo" :src="detailData.result&&detailData.result.image_url">
-                    <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size"/>
+                    <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
                     <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
                     <div class="content">
                         <span>尺寸：</span>

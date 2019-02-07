@@ -39,7 +39,6 @@
         },
         watch: {
             "$route.path": function (newval) {
-                console.log(newval)
                 if (newval != '/homePage') {
                     document.getElementById("home-page").classList.remove("now");
                 }
@@ -64,7 +63,6 @@
 
         },
         mounted() {
-            console.log(window.location.href);
         },
         methods: {
             goDetail(flag) {

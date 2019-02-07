@@ -16,7 +16,7 @@
     export default {
         data: function () {
             return {
-                number: 1,
+                number: 0,
                 numBoxDefaultValue:0,
                 numBoxstep:0,
                 numBoxMaxValue:0,
@@ -24,7 +24,6 @@
             }
         },
         created() {
-            this.$root.$on('getValue');
         },
         methods: {
             minus(){
@@ -38,14 +37,18 @@
             },
             setMaxValue(maxValue){
                 this.numBoxMaxValue = maxValue;
+            },
+            setDefaultVale(value){
+                this.number = value;
             }
         },
         props: ['defaultValue', 'step','maxValue','minValue'],
         mounted() {
-            this.numBoxDefaultValue = this.$refs.defaultValue.value;
+            this.number = parseInt(this.$refs.defaultValue.value);
             this.numBoxstep = this.$refs.step.value;
             this.numBoxMaxValue = this.$refs.maxValue.value;
             this.numBoxMinValue = this.$refs.minValue.value;
+            console.log(this.number + 'mounted')
         },
         watch: {
             number: {

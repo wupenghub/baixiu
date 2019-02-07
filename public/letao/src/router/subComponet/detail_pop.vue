@@ -13,6 +13,8 @@
                     <img class="product_logo" :src="detailData.result&&detailData.result.image_url">
                     <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
                     <input type="hidden" ref="total_num" :value="detailData.result&&detailData.result.totalNum"/>
+                    <input type="hidden" ref="product_item_code"
+                           :value="detailData.result&&detailData.result.product_item_code"/>
                     <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
                     <div class="content">
                         <span>尺寸：</span>
@@ -20,9 +22,11 @@
                             <li class="size" v-for="item in sizeArray">{{item}}</li>
                         </ul>
                         <div class="count_div mui-clearfix">
-                            <p class="count_div_left">数量：<span class="total_count">剩余{{detailData.result && detailData.result.totalNum}}件</span>
+                            <p class="count_div_left">数量：<span
+                                    class="total_count">剩余{{totalNum}}件</span>
                             <p/>
-                            <num_box ref="num_box" class="count_div_right" :defaultValue="1" :step="1" :minValue="1"></num_box>
+                            <num_box ref="num_box" class="count_div_right" :defaultValue="1" :step="1"
+                                     :minValue="0"></num_box>
                         </div>
                     </div>
                     <div class="footer mui-clearfix">
@@ -39,6 +43,8 @@
 <script>
     import mui from '../../lib/mui/js/mui.min';
     import numBox from '../subComponet/numbox.vue';
+    import utils from '../../utils.js';
+
     export default {
         data: function () {
             return {
@@ -46,9 +52,10 @@
                 screenHeight: 0,
                 popHeight: 0,
                 sizeArray: [],
-                initialNumber:0,
-                currentCount : 1,
-                totalNum:0
+                initialNumber: 0,
+                currentCount: 1,
+                totalNum: 0,
+                productItemCode: 0
             }
         },
         created() {
@@ -65,7 +72,6 @@
                 // 设置动画开始之前的初始位置
                 this.screenHeight = this.$refs.detail_pop.offsetHeight;
                 this.totalNum = this.$refs.total_num.value;
-                console.log(this.totalNum);
                 this.popHeight = document.querySelector('.container').offsetHeight;
                 var translateStartHeight = parseInt(this.screenHeight) + parseInt(this.popHeight);
                 el.style.transform = "translate(0, " + translateStartHeight + "px)"
@@ -81,16 +87,36 @@
             afterEnter(el) {
                 var sizeArr = this.$refs.size.value.split('-');
                 this.totalNum = this.$refs.total_num.value;
+                this.productItemCode = this.$refs.product_item_code.value;
                 this.$refs.num_box.setMaxValue(this.totalNum);
+                this.$refs.num_box.setDefaultVale(1);
                 this.sizeArray = [];
                 for (var i = sizeArr[0]; i <= sizeArr[1]; i++) {
                     this.sizeArray.push(parseInt(i));
                 }
                 //事件委托，给li标签绑定点击事件
                 var sizeUl = this.$refs.size_ul;
+                var _this = this;
                 sizeUl.onclick = function (ev) {
                     var ev = ev || window.event;
                     var target = ev.target || ev.srcElement;
+                    if (target.nodeName.toLowerCase() == 'li') {
+                        //发送请求获取对应尺寸的数据信息
+                        _this.$http.get(utils.serverName + '/letao/getGoodDetail', {
+                            params: {
+                                productItemCode: _this.productItemCode,
+                                size: target.innerHTML
+                            }
+                        }).then(function (response) {
+                            var data = response.body;
+                            this.totalNum = data.resultArray.length;
+                            this.$refs.num_box.setMaxValue(this.totalNum);
+                            this.$refs.num_box.setDefaultVale(this.totalNum > 0 ? 1 : 0);
+                        }, function (error) {
+
+                        });
+                    }
+
                     sizeUl.childNodes.forEach(function (value) {
                         if (target.nodeName.toLowerCase() == 'li') {
                             value.classList.remove('now');

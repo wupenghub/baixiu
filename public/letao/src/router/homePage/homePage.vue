@@ -4,13 +4,13 @@
         <div class="mui-slider">
             <div class="mui-slider-group mui-slider-loop">
                 <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img :src="bannerList[bannerList.length-1]">
+                    <img :src="bannerList[bannerList.length-1]&&bannerList[bannerList.length-1].productImageUrl">
                 </div>
                 <div v-for="bannerItem in bannerList" class="mui-slider-item">
                     <img :src="bannerItem.productImageUrl">
                 </div>
                 <div class="mui-slider-item mui-slider-item-duplicate">
-                    <img :src="bannerList[0]">
+                    <img :src="bannerList[0]&&bannerList[0].productImageUrl">
                 </div>
             </div>
             <div class="mui-slider-indicator">

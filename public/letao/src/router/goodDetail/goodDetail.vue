@@ -49,6 +49,7 @@
             <detail_pop :detailData="detailData" :isShow="show" @fun="changePop()">
 
             </detail_pop>
+        <load :showLoading="showLoading"></load>
         <!--</div>-->
     </div>
 </template>
@@ -57,6 +58,7 @@
     import mui from '../../lib/mui/js/mui.min';
     import utils from '../../utils.js';
     import detail_pop from '../subComponet/detail_pop.vue';
+    import load from '../subComponet/loading.vue';
 
     export default {
         data() {
@@ -64,15 +66,18 @@
                 id: this.$route.params.id,
                 detailData: {},
                 detailBannerList: [],
-                show:false
+                show:false,
+                showLoading:false
             }
         },
         created() {
+            this.showLoading = true;
             this.$http.post(utils.serverName + '/letao/goodDetail', {id: this.id}).then(function (response) {
+                this.showLoading = false;
                 this.detailData = response.body;
                 this.detailBannerList = this.detailData.result.image_detail_url ? this.detailData.result.image_detail_url.split(',') : ['http://localhost:5000/images/banner1.png'];
             }, function (error) {
-
+                this.showLoading = false;
             });
             this.$emit('goDetail',true);
         },
@@ -90,7 +95,8 @@
             }
         },
         components: {
-            'detail_pop': detail_pop
+            'detail_pop': detail_pop,
+            load
         }
     }
 </script>

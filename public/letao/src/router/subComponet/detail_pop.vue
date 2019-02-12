@@ -1,5 +1,6 @@
 <template>
     <div class="detail_pop" ref="detail_pop" v-show="show" @click="hidePop($event)">
+        <load :showLoading="showLoading"></load>
         <transition name="detail-pop"
                     @before-enter="beforeEnter"
                     @enter="enter"
@@ -41,10 +42,9 @@
 </template>
 
 <script>
-    import mui from '../../lib/mui/js/mui.min';
     import numBox from '../subComponet/numbox.vue';
     import utils from '../../utils.js';
-
+    import load from '../subComponet/loading.vue';
     export default {
         data: function () {
             return {
@@ -55,7 +55,8 @@
                 initialNumber: 0,
                 currentCount: 1,
                 totalNum: 0,
-                productItemCode: 0
+                productItemCode: 0,
+                showLoading:false
             }
         },
         created() {
@@ -102,18 +103,20 @@
                     var target = ev.target || ev.srcElement;
                     if (target.nodeName.toLowerCase() == 'li') {
                         //发送请求获取对应尺寸的数据信息
+                        // _this.showLoading = true;
                         _this.$http.get(utils.serverName + '/letao/getGoodDetail', {
                             params: {
                                 productItemCode: _this.productItemCode,
                                 size: target.innerHTML
                             }
                         }).then(function (response) {
+                            // _this.showLoading = false;
                             var data = response.body;
                             this.totalNum = data.resultArray.length;
                             this.$refs.num_box.setMaxValue(this.totalNum);
                             this.$refs.num_box.setDefaultVale(this.totalNum > 0 ? 1 : 0);
                         }, function (error) {
-
+                            // _this.showLoading = false
                         });
                     }
 
@@ -146,8 +149,7 @@
                     this.show = false;
                     this.$emit("fun");
                 }
-            }
-
+            },
         },
         props: ['detailData', 'isShow'],
         mounted() {
@@ -161,7 +163,8 @@
             }
         },
         components: {
-            'num_box': numBox
+            'num_box': numBox,
+            load
         }
     }
 </script>
@@ -174,7 +177,7 @@
         bottom: 0;
         width: 100%;
         height: 100%;
-        z-index: 99999;
+        z-index: 100;
         .container {
             min-height: 400px;
             width: 100%;

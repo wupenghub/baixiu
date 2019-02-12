@@ -51,23 +51,27 @@
                 </li>
             </ul>
         </div>
+        <load :showLoading="showLoading"></load>
     </div>
 </template>
 
 <script>
     import mui from '../../lib/mui/js/mui.min';
     import utils from '../../utils.js';
-
+    import load from '../subComponet/loading.vue';
     export default {
         data() {
             return {
                 bannerList: [],
-                productList: []
+                productList: [],
+                showLoading:false
             };
         },
         created() {
             //发送ajax请求获取首页数据
+            this.showLoading = true;
             this.$http.get(utils.serverName + '/letao/homePage', {}).then(function (response) {
+                this.showLoading = false;
                 if (response.body.banner) {
                     if (response.body.banner.banner_list && response.body.banner.banner_list.length > 0) {
                         this.bannerList = response.body.banner.banner_list;
@@ -76,10 +80,9 @@
                         this.productList = response.body.productList.product_list;
                     }
                 }
-            }, function (response) {
-
+            }, function () {
+                this.showLoading = false;
             });
-            console.log('刷新');
 
         },
         mounted() {
@@ -94,12 +97,16 @@
                 this.$router.push({name: 'goodDetail', params: {id}});
                 this.$emit('goDetail',true);
             }
+        },
+        components:{
+            load
         }
     }
 </script>
 
 <style scoped lang="scss">
     .home_page {
+        position: relative;
         background-color: #fff;
         .mui-slider {
             height: 256px;

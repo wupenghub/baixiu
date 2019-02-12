@@ -88,7 +88,7 @@ router.post('/baixiu/register', function (req, res) {
                     returnData.register_desc = '注册成功';
                     returnData.email = userName;
                     //注册成功发送激活邮件
-                    var html = '<p>尊敬的' + userName + '您好，欢迎使用激活账号,请点击<a href="http://47.96.76.172:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
+                    var html = '<p>尊敬的' + userName + '您好，欢迎使用激活账号,请点击<a href="http://localhost:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
                     mail.sendMain(userName, '账号激活', html, function (data) {
                         returnData.mailSend_status = data.status;
                         returnData.mailSend_desc = data.desc;
@@ -106,7 +106,7 @@ router.post('/baixiu/register', function (req, res) {
 });
 //激活账号邮件接口
 router.get('/baixiu/activatedAccount', function (req, res) {
-    var html = '<p>尊敬的' + req.query.email + '您好，欢迎使用激活账号,请点击<a href="http://47.96.76.172:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
+    var html = '<p>尊敬的' + req.query.email + '您好，欢迎使用激活账号,请点击<a href="http://localhost:3000/baixiu/activated?userName=' + userName + '">激活账号</a>链接进行账号激活</p>';
     mail.sendMain(userName, '账号激活', html, function (data) {
         returnData.mailSend_status = data.status;
         returnData.mailSend_status = data.desc;

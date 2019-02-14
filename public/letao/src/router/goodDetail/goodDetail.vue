@@ -46,9 +46,7 @@
         </footer>
         <!--商品详情弹出模块-->
         <!--<div class="pop">-->
-            <detail_pop :detailData="detailData" :isShow="show" @fun="changePop()">
-
-            </detail_pop>
+        <detail_pop :detailData="detailData" :isShow="show" @fun="changePop()"></detail_pop>
         <load :showLoading="showLoading"></load>
         <!--</div>-->
     </div>
@@ -147,7 +145,6 @@
                         font-size: 10px;
                     }
                 }
-
             }
             .good_detail_right {
                 float: left;

@@ -18,7 +18,7 @@
            this.clientHeight = document.body.clientHeight;
             var loadView = this.$refs.loading_icon;
             var loadHeight = loadView.offsetHeight;
-            var marginTop = (this.clientHeight - loadHeight)/2
+            var marginTop = (this.clientHeight - loadHeight)/2;
             loadView.style.marginTop = marginTop+'px';
         },
         props:['showLoading']
@@ -38,14 +38,16 @@
             display: block;
             text-align: center;
             color: #ffffff;
-            animation: rotate 5s;
+            animation: rotate 1s linear infinite;
             -webkit-animation: rotate 1s linear infinite;
         }
         @keyframes rotate{
             from{
+                transform:rotateZ(0deg);
                 -webkit-transform:rotateZ(0deg);
             }
             to{
+                transform:rotateZ(360deg);
                 -webkit-transform:rotateZ(360deg);
             }
            /* 0%   {color: red;}

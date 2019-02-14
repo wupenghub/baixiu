@@ -45,6 +45,7 @@
     import numBox from '../subComponet/numbox.vue';
     import utils from '../../utils.js';
     import load from '../subComponet/loading.vue';
+    import mui from '../../lib/mui/js/mui.min';
     export default {
         data: function () {
             return {
@@ -56,7 +57,8 @@
                 currentCount: 1,
                 totalNum: 0,
                 productItemCode: 0,
-                showLoading:false
+                showLoading:false,
+                checkLi:null
             }
         },
         created() {
@@ -64,9 +66,24 @@
         methods: {
             addCart() {
                 console.log(this.$refs.num_box.getValue());
+                if(!this.checkTheContent()){
+                    return;
+                }
+                mui.toast('加入购物车成功',{ duration:'long', type:'div' });
             },
             buyNow() {
                 this.show = true;
+            },
+            checkTheContent(){
+                if(!this.checkLi){
+                    mui.toast('您还未选择尺码',{ duration:'long', type:'div' });
+                    return false;
+                }
+                if(parseInt(this.$refs.num_box.getValue()) < 1){
+                    mui.toast('您还未选择商品数量',{ duration:'long', type:'div' });
+                    return false;
+                }
+                return true;
             },
             // el 表示要执行动画的那个DOM元素, 是原生的 js DOM 对象
             beforeEnter(el) {
@@ -104,6 +121,7 @@
                     if (target.nodeName.toLowerCase() == 'li') {
                         //发送请求获取对应尺寸的数据信息
                         // _this.showLoading = true;
+                        _this.checkLi = target;
                         _this.$http.get(utils.serverName + '/letao/getGoodDetail', {
                             params: {
                                 productItemCode: _this.productItemCode,

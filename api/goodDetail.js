@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var DbUtils = require('../DbUtils');
 var md5 = require('md5-node');
+var apiUtils = require('./apiUtils.js');
 router.post('/leTao/goodDetail', function (req, res) {
     var querySql = 'SELECT\n' +
         '\tp.*, CONCAT(\n' +
@@ -81,4 +82,27 @@ router.get('/leTao/getGoodDetail',function (req,res) {
         res.json(returnData);
     });
 });
+router.post('/leTao/addCart',function (req,res) {
+    var userName = req.body.userName;
+    var resultData = {};
+    if(!userName){
+        resultData.status = 1;
+        resultData.desc = '用户未登录';
+        res.status(200).json(resultData);
+        return;
+    }
+    var sessionUser =  req.session[userName];
+    console.log("userName:"+userName+"   sessionUser:"+req.session['wupengforIT@163.com']);
+    if(!sessionUser){
+        resultData.status = 1;
+        resultData.desc = '用户未登录';
+        res.status(200).json(resultData);
+        return;
+    }
+    resultData.status = 0;
+    resultData.desc = '用户已经登录';
+    resultData.sessionUser = sessionUser;
+    res.status(200).json(resultData);
+});
+
 module.exports = router;

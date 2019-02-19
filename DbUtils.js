@@ -9,7 +9,7 @@ const db_config={
 };
 let pool=mysql.createPool(db_config);
 /*var connection = mysql.createConnection({
-    host: '47.96.76.172',
+    host: 'localhost',
     user: 'root',
     password: '4217aBc!',
     database: 'baixiu'

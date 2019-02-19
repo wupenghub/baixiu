@@ -5,7 +5,7 @@ import category from '../router/category/category.vue';
 import cart from '../router/cart/cart.vue';
 import member from '../router/member/member.vue';
 import goodDetail from '../router/goodDetail/goodDetail.vue';
-
+import login from '../router/login/login.vue';
 var vueRouter = new VueRouter({
     routes:[
         {path:"/",redirect:"/homePage"},
@@ -27,6 +27,10 @@ var vueRouter = new VueRouter({
         },
         {
             path:'/goodDetail/:id',component:goodDetail,name:'goodDetail'
+        },
+        {
+            path:'/login',
+            component:login
         }
     ],
     linkActiveClass:'now'

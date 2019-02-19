@@ -30,9 +30,11 @@ app.use(session({
  */
 var leTaoHomePage = require('./api/homePage.js');
 var leTaoGoodDetail = require('./api/goodDetail.js');
+var leTaoLogin = require('./api/login.js');
 app.use(router);
 app.use(leTaoHomePage);
 app.use(leTaoGoodDetail);
+app.use(leTaoLogin);
 /**
  * ===============================乐淘接口引入接口=====================================
  */

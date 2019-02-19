@@ -56,6 +56,8 @@
                     this.isDetail = false;
                 } else if (newval.indexOf('/goodDetail') != -1) {
                     this.title = '商品详情';
+                } else if(newval.indexOf('/login') != -1){
+                    this.title = '登录';
                 }
             }
         },

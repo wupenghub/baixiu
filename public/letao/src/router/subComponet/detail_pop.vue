@@ -65,15 +65,28 @@
         },
         methods: {
             addCart() {
-                console.log(this.$refs.num_box.getValue());
                 if(!this.checkTheContent()){
                     return;
                 }
-                mui.toast('加入购物车成功',{ duration:'long', type:'div' });
+                console.log(utils.userName);
+                this.$http.post(utils.serverName + '/leTao/addCart',  {userName: utils.userName}).then(function (response) {
+                   var data = response.body;
+                   if(data.status == 1){
+                       this.$router.push({
+                           path: '/login'
+                       })
+                   }else if(data.status == 0){
+                       console.log('用户已经登录');
+                   }
+                }, function (error) {
+                    this.showLoading = false;
+                });
+
             },
             buyNow() {
                 this.show = true;
             },
+            //对提交的内容进行验证
             checkTheContent(){
                 if(!this.checkLi){
                     mui.toast('您还未选择尺码',{ duration:'long', type:'div' });

@@ -57,7 +57,6 @@
     import utils from '../../utils.js';
     import detail_pop from '../subComponet/detail_pop.vue';
     import load from '../subComponet/loading.vue';
-
     export default {
         data() {
             return {

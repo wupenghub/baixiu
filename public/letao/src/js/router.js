@@ -29,7 +29,7 @@ var vueRouter = new VueRouter({
             path:'/goodDetail/:id',component:goodDetail,name:'goodDetail'
         },
         {
-            path:'/login',
+            path:'/login/:id',
             component:login
         }
     ],

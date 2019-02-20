@@ -31,6 +31,9 @@
                     }else if(data.status == 0){
                         mui.toast('登录成功',{ duration:'long', type:'div' });
                         utils.userName = data.loginUser.email;
+                        this.$router.push({
+                            path: '/goodDetail/'+this.$route.params.id
+                        })
                     }
                     this.showLoading = false;
                 }, function (error) {

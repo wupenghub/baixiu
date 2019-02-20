@@ -14,6 +14,7 @@
                     <img class="product_logo" :src="detailData.result&&detailData.result.image_url">
                     <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
                     <input type="hidden" ref="total_num" :value="detailData.result&&detailData.result.totalNum"/>
+                    <input type="hidden" ref="product_id" :value="detailData.result&&detailData.result.id"/>
                     <input type="hidden" ref="product_item_code"
                            :value="detailData.result&&detailData.result.product_item_code"/>
                     <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
@@ -68,12 +69,11 @@
                 if(!this.checkTheContent()){
                     return;
                 }
-                console.log(utils.userName);
                 this.$http.post(utils.serverName + '/leTao/addCart',  {userName: utils.userName}).then(function (response) {
                    var data = response.body;
                    if(data.status == 1){
                        this.$router.push({
-                           path: '/login'
+                           path: '/login/'+this.$refs.product_id.value
                        })
                    }else if(data.status == 0){
                        console.log('用户已经登录');
@@ -168,8 +168,7 @@
                 var translateStartHeight = parseInt(this.screenHeight) + parseInt(this.popHeight);
                 el.style.transform = "translate(0, " + translateStartHeight + "px)";
                 el.style.transition = "all 0.5s ease";
-                done()
-
+                done();
             },
             afterLeave(el) {
                 // 动画完成之后调用

@@ -12,28 +12,31 @@
             <div v-show="show">
                 <div class="container mui-clearfix">
                     <img class="product_logo" :src="detailData.result&&detailData.result.image_url">
-                    <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
-                    <input type="hidden" ref="total_num" :value="detailData.result&&detailData.result.totalNum"/>
-                    <input type="hidden" ref="product_id" :value="detailData.result&&detailData.result.id"/>
-                    <input type="hidden" ref="product_item_code"
-                           :value="detailData.result&&detailData.result.product_item_code"/>
-                    <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
-                    <div class="content">
-                        <span>尺寸：</span>
-                        <ul class="mui-clearfix" ref="size_ul">
-                            <li class="size" v-for="item in sizeArray">{{item}}</li>
-                        </ul>
-                        <div class="count_div mui-clearfix">
-                            <p class="count_div_left">数量：<span
-                                    class="total_count">剩余{{totalNum}}件</span>
-                            <p/>
-                            <num_box ref="num_box" class="count_div_right" :defaultValue="1" :step="1"
-                                     :minValue="0"></num_box>
+                    <div class="container_inner">
+                        <input type="hidden" ref="size" :value="detailData.result&&detailData.result.product_size_area"/>
+                        <input type="hidden" ref="total_num" :value="detailData.result&&detailData.result.totalNum"/>
+                        <input type="hidden" ref="product_id" :value="detailData.result&&detailData.result.id"/>
+                        <input type="hidden" ref="product_item_code"
+                               :value="detailData.result&&detailData.result.product_item_code"/>
+                        <p class="price">￥{{detailData.result && detailData.result.product_preferential_price}}</p>
+                        <div class="content">
+                            <span>尺寸：</span>
+                            <ul class="mui-clearfix" ref="size_ul">
+                                <li class="size" v-for="item in sizeArray">{{item}}</li>
+                            </ul>
+                            <div class="count_div mui-clearfix">
+                                <p class="count_div_left">数量：<span
+                                        class="total_count">剩余{{totalNum}}件</span>
+                                <p/>
+                                <num_box ref="num_box" class="count_div_right" :defaultValue="1" :step="1"
+                                         :minValue="0"></num_box>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer mui-clearfix">
-                        <a href="javascript:;" class="add_cart" @click="addCart()">加入购物车</a>
-                        <a href="javascript:;" class="second_buy" @click="buyNow()">立即购买</a>
+                        <div class="footer mui-clearfix">
+                            <a href="javascript:;" class="add_cart" @click="addCart()">加入购物车</a>
+                            <a href="javascript:;" class="second_buy" @click="buyNow()">立即购买</a>
+                        </div>
+                        <div style="height: 800px;"></div>
                     </div>
                 </div>
             </div>
@@ -201,6 +204,7 @@
 
 <style scoped lang="scss">
     .detail_pop {
+        overflow:hidden ;
         position: absolute;
         background: rgba(0, 0, 0, .7);
         left: 0;
@@ -209,7 +213,7 @@
         height: 100%;
         z-index: 100;
         .container {
-            min-height: 400px;
+            height: 400px;
             width: 100%;
             position: absolute;
             background: #ffffff;
@@ -219,58 +223,62 @@
                 position: absolute;
                 top: -20px;
                 left: 10px;
-                display: block;
                 width: 100px;
             }
-            .price {
-                color: red;
-                position: absolute;
-                left: 120px;
-                top: 10px;
-            }
-            .content {
-                margin-top: 45px;
-                font-size: 14px;
-                color: #999999;
-                ul {
-                    list-style: none;
-                    margin-top: 10px;
-                    li {
-                        float: left;
-                        width: 40px;
-                        height: 30px;
-                        border-radius: 3px;
-                        border: 1px solid #c0c0c0;
-                        text-align: center;
-                        line-height: 30px;
-                        margin: 0 0 10px 10px;
-                    }
+            .container_inner{
+                overflow-y:scroll;
+                height: 400px;
+                width: 100%;
+                .price {
+                    color: red;
+                    position: absolute;
+                    left: 120px;
+                    top: 10px;
                 }
-                .count_div {
-                    height: 45px;
-                    .count_div_left {
-                        float: left;
-                        line-height: 45px;
-                        .total_count {
-                            color: red;
-                            line-height: 45px;
+                .content {
+                    margin-top: 45px;
+                    font-size: 14px;
+                    color: #999999;
+                    ul {
+                        list-style: none;
+                        margin-top: 10px;
+                        li {
+                            float: left;
+                            width: 40px;
+                            height: 30px;
+                            border-radius: 3px;
+                            border: 1px solid #c0c0c0;
+                            text-align: center;
+                            line-height: 30px;
+                            margin: 0 0 10px 10px;
                         }
                     }
-                    .count_div_right {
-                        float: right;
-                        margin-top: -6px;
+                    .count_div {
+                        height: 45px;
+                        .count_div_left {
+                            float: left;
+                            line-height: 45px;
+                            .total_count {
+                                color: red;
+                                line-height: 45px;
+                            }
+                        }
+                        .count_div_right {
+                            float: right;
+                            margin-top: -6px;
+                        }
                     }
-                }
-                .size {
-                    &.now {
-                        background: #e4393c;
-                        border-color: #e4393c;
-                        color: white;
+                    .size {
+                        &.now {
+                            background: #e4393c;
+                            border-color: #e4393c;
+                            color: white;
+                        }
                     }
                 }
             }
             .footer {
-                position: absolute;
+                position: fixed;
                 bottom: 0;
                 width: 100%;
                 text-align: center;

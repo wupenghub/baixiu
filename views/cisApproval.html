@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Posts &laquo; Admin</title>
+    <link rel="stylesheet" href="../public/vendors/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="../public/vendors/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="../public/vendors/nprogress/nprogress.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
+    <link rel="stylesheet" href="../public/css/posts/posts.css">
+    <script src="../public/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+<script>NProgress.start()</script>
+<div class="posts main">
+    <nav class="navbar">
+        <button class="btn btn-default navbar-btn fa fa-bars"></button>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
+            <li><a href="login.html"><i class="fa fa-sign-out"></i>退出</a></li>
+        </ul>
+    </nav>
+    <div class="container-fluid">
+        <div class="page-title">
+            <h1>CIS人员权限配置</h1>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="downLoadTemplte()">模板下载</button>
+        <form style="margin-top: 20px" id="uploadFile">
+            <div class="form-group">
+                <label for="cis_division">输入上线公司区域代码：</label>
+                <input type="text"  id="cis_division" name="cisdiv">
+            </div>
+            <div class="form-group">
+                <label for="desc">输入上线公司区域描述：</label>
+                <input type="text"  id="desc" name="desc">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">上传模板</label>
+                <input type="file" id="exampleInputFile" name="templateFile">
+            </div>
+            <button type="button" class="btn btn-default" style="width:122px" onclick="uploadData()" >上传</button>
+        </form>
+
+    </div>
+</div>
+
+<div class="aside">
+    <div class="profile">
+        <img class="avatar">
+        <h3 class="name"></h3>
+    </div>
+    <ul class="nav">
+    </ul>
+</div>
+<script src="../public/vendors/jquery/jquery.js"></script>
+<script src="../node_modules/art-template/lib/template-web.js"></script>
+<script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="../public/vendors/util/utils.js"></script>
+<script src="../public/js/cis/cisApproval.js"></script>
+<script>NProgress.done()</script>
+</body>
+</html>

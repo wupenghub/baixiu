@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+var oracledb = require('oracledb');
 const db_config={
     connectionLimit: 5,
     host:"47.96.76.172",
@@ -6,6 +7,12 @@ const db_config={
     password:"4217aBc!",
     port:"3306",
     database:"baixiu"
+};
+const db_config_cis={
+    connectionLimit: 5,
+    user:"cisadm",
+    password:"cisadm",
+    connectString : "120.78.213.19:1521/ccbstg"
 };
 let pool=mysql.createPool(db_config);
 /*var connection = mysql.createConnection({
@@ -44,6 +51,49 @@ var Dbutils = {
                 });
             }
         });
-    }
+    },
+    queryCisData(sql, getResult,errResult){
+        oracledb.getConnection(
+            db_config_cis,
+            function(err, connection){
+                if (err) {
+                    errResult(err);
+                    return;
+                }
+                connection.execute(sql,
+                    function(err, result){
+                        if (err) {
+                            errResult(err);
+                            doRelease(connection);
+                            return;
+                        }
+                        getResult(Dbutils.changeJsonObj(result));
+                    });
+            });
+
+        function doRelease(connection)
+        {
+            connection.close(
+                function(err) {
+                    if (err) {
+                        console.error(err.message);
+                    }
+                });
+        }
+    },
+    changeJsonObj(result){
+        var resultMetaData =  result.metaData;
+        var resultRows = result.rows;
+        var returnObjArray = [];
+        for(var i=0;i<resultRows.length;i++){//第i行
+            var obj = {};
+            for(var j = 0;j<resultMetaData.length;j++){//第j列
+                obj[resultMetaData[j].name] = resultRows[i][j];
+            }
+            returnObjArray.push(obj);
+        }
+
+        return returnObjArray;
+    },
 };
 module.exports = Dbutils;

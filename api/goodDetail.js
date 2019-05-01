@@ -92,7 +92,6 @@ router.post('/leTao/addCart',function (req,res) {
         return;
     }
     var sessionUser =  req.session[userName];
-    console.log("userName:"+userName+"   sessionUser:"+req.session['wupengforIT@163.com']);
     if(!sessionUser){
         resultData.status = 1;
         resultData.desc = '用户未登录';

@@ -441,5 +441,8 @@ router.get('/baixiu/articleDelete', function (req, res) {
         res.json(returnObj);
     });
 });
-
+//CIS系统人员权限管理模块
+router.get('/baixiu/cisApproval',function (req,res) {
+    res.render('cisApproval.html');
+});
 module.exports = router;

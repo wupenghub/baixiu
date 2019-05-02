@@ -1,18 +1,16 @@
-let ejsExcel=require('ejsexcel');
+var fs = require('fs');
+var xlsx = require('xlsx');
 module.exports = {
-    readExcel(path,workBookIndex,readSuccess,readErr){
-        let exBuf=fs.readFileSync(path);
-        ejsExcel.getExcelArr(exBuf).then(exlJson=>{
-            let workBook=exlJson;
-            let workSheets=workBook[workBookIndex];
-            console.log(workSheets.length);
-            workSheets.forEach((item,rIndex)=>{
-                readSuccess(rIndex,item);
-
-            })
-        }).catch(error=>{
-            readErr(error);
-        });
+    readExcel(path, sheetNameArr, readSuccess) {
+        const workbook = xlsx.readFile(path);
+        // 根据表名获取对应某张表
+        const excelInfoData = {};
+        for (var i = 0; i < sheetNameArr.length; i++) {
+            const worksheet = workbook.Sheets[sheetNameArr[i]];
+            var sheetInfo = xlsx.utils.sheet_to_json(worksheet);
+            excelInfoData[sheetNameArr[i]] = sheetInfo;
+        }
+        readSuccess(excelInfoData);
     }
 
 };

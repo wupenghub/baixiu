@@ -45,10 +45,9 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
             }
         }
     });
-    cisUtils.test(userArray)
+    // cisUtils.test(userArray);
     //生成用户的cisId
-    // var firstIndex = 1000001;
-    // generateCisId(userArray);
+    cisUtils.generateCisId(userArray);
     res.json({status: 1});
 });
 

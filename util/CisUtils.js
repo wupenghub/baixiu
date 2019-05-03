@@ -1,4 +1,5 @@
 /**=================================用户组权限开始================================*/
+var pinyin = require('pinyin');
 var cisUtils = {
     addUserGroupPermissions(userArray, userGroupPermissionsArray, cisDivDesc) {
         for (var i = 0; i < userGroupPermissionsArray.length; i++) {
@@ -132,6 +133,30 @@ var cisUtils = {
             var userDisp = user.dispGroup || [];
             console.log(user.userName + ':用户权限' + userGroup.length + "个，调度组：" + userDisp.length + "个，待办事项角色：" + userRolls.length + "个");
         }
+    },
+    generateCisId(userArray, cisDivCode) {
+        var firstIndex = 1000001;
+        for (var i = 0; i < userArray.length; i++) {
+            var user = userArray[i];
+            user.userId = cisDivCode + (firstIndex++);
+            user.userCode = cisUtils.wordChangePinyin(user.userName);
+        }
+    },
+    wordChangePinyin(userName) {
+        var userCode = '';
+        for (var i = 0; i < userName.length; i++) {
+            if (userName.length > 2) {
+                if (i == 0) {
+                    userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
+                } else {
+                    userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL}).toString().substring(0, 1);
+                }
+            }else{
+                userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
+            }
+        }
+        return userCode.toLocaleUpperCase();
     }
-}
+
+};
 module.exports = cisUtils;

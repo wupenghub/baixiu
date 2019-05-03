@@ -138,7 +138,7 @@ var cisUtils = {
         var firstIndex = 1000001;
         for (var i = 0; i < userArray.length; i++) {
             var user = userArray[i];
-            user.userId = cisDivCode + (firstIndex++);
+            user.userId = cisDivCode + (firstIndex++).toString();
             user.userCode = cisUtils.wordChangePinyin(user.userName);
         }
     },
@@ -156,6 +156,59 @@ var cisUtils = {
             }
         }
         return userCode.toLocaleUpperCase();
+    },
+    exportCisConfig(userArray){
+        var userGroupHead = ['USER_ID','USR_GRP_ID','VERSION'];
+        var userDispHead = ['USER_ID','DISP_GRP_CD','VERSION'];
+        var userRollHead = ['USER_ID','ROLE_ID','VERSION'];
+        var userGroupData = [];
+        var userDispData = [];
+        var userRollData = [];
+        userGroupData.push(userGroupHead);
+        userDispData.push(userDispHead);
+        userRollData.push(userRollHead);
+        for(var i = 0;i<userArray.length;i++){
+            var user = userArray[i];
+            var userGroup = user.userGroupPermissArr;
+            var userDisp = user.dispGroup;
+            var userRoll = user.userRolls;
+            if(userGroup){
+                for(var j = 0;j<userGroup.length;j++){
+                    var obj = [];
+                    obj.push(user.userId);
+                    obj.push(userGroup[j]);
+                    obj.push('1');
+                    obj.push(user.userName);
+                    userGroupData.push(obj);
+                }
+            }
+            if(userDisp){
+                for(var j = 0;j<userDisp.length;j++){
+                    var obj = [];
+                    obj.push(user.userId);
+                    obj.push(userDisp[j]);
+                    obj.push('1');
+                    obj.push(user.userName);
+                    userDispData.push(obj);
+                }
+            }
+            if(userRoll){
+                for(var j = 0;j<userRoll.length;j++){
+                    var obj = [];
+                    obj.push(user.userId);
+                    obj.push(userRoll[j]);
+                    obj.push('1');
+                    obj.push(user.userName);
+                    userRollData.push(obj);
+                }
+            }
+
+        }
+        var cisObjData = {};
+        cisObjData.userGroup = userGroupData;
+        cisObjData.userDisp = userDispData;
+        cisObjData.userRoll = userRollData;
+        return cisObjData;
     }
 
 };

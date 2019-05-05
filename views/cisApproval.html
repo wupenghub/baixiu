@@ -24,7 +24,7 @@
         <div class="page-title">
             <h1>CIS人员权限配置</h1>
         </div>
-        <button type="button" class="btn btn-primary" onclick="downLoadTemplte()">模板下载</button>
+        <button type="button" class="btn btn-primary" onclick="downLoadTemplte('人员收集模板.xls')">模板下载</button>
         <form style="margin-top: 20px" id="uploadFile" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="cis_division">输入上线公司区域代码：</label>
@@ -40,7 +40,7 @@
             </div>
             <button type="button" class="btn btn-default" style="width:122px" onclick="uploadData()" >上传</button>
         </form>
-
+        <button type="button" id="downLoad" class="btn btn-default" style="width:122px" >下载</button>
     </div>
 </div>
 
@@ -56,6 +56,8 @@
 <script src="../node_modules/art-template/lib/template-web.js"></script>
 <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
 <script src="../public/vendors/util/utils.js"></script>
+<script src="../node_modules/xlsx/dist/xlsx.core.min.js"></script>
+<script src="../public/vendors/util/ExcelUtils.js"></script>
 <script src="../public/js/cis/cisApproval.js"></script>
 <script>NProgress.done()</script>
 </body>

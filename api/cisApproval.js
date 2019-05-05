@@ -8,21 +8,10 @@ var multipartMiddleware = multipart();
 var fs = require('fs');
 let excelUtils = require('../util/ExcelUtils.js');
 var cisUtils = require('../util/CisUtils.js');
+var async = require("async");
 //下载模板
 router.post('/baixiu/cisTemplateDownLoad', function (req, res) {
-    var file = './' + req.body.filename;
-    res.writeHead(200, {
-        'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-        'Content-Disposition': 'attachment; filename=' + encodeURI(req.body.filename),//告诉浏览器这是一个需要下载的文件
-    });//设置响应头
-    var readStream = fs.createReadStream(file);//得到文件输入流
-    readStream.on('data', (chunk) => {
-        res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-    });
-    readStream.on('end', () => {
-        res.end();
-    });
-
+    exportFile(res, req.body.filename);
 });
 router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     var tmp_path = req.files.templateFile.path;
@@ -45,13 +34,51 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
             }
         }
     });
-    // cisUtils.test(userArray);
     //生成用户的cisId
-    cisUtils.generateCisId(userArray);
-    res.json({status: 1});
+    cisUtils.generateCisId(userArray, cisDivCode);
+    // cisUtils.test(userArray);
+    //导出用户组权限，调度组，待办事项角色
+    var data = cisUtils.exportCisConfig(userArray);
+    var a = excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
+    res.json({status:1})
+    // var b = exportFile(res,cisDivDesc + "人员配置.xlsx");
+    // async.series([a, b]);
 });
 
+function exportFile(res, fileName) {
+    var file = './' + fileName;
+    res.writeHead(200, {
+        'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+        'Content-Disposition': 'attachment; filename=' + encodeURI(fileName),//告诉浏览器这是一个需要下载的文件
+    });//设置响应头
+    var readStream = fs.createReadStream(file);//得到文件输入流
+    readStream.on('data', (chunk) => {
+        res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+    });
+    readStream.on('end', () => {
+        res.end();
+    });
+    /*var file = './' + fileName;
+    fs.exists(file, function (exists) {
+        if (exists) {
+            res.writeHead(200, {
+                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                'Content-Disposition': 'attachment; filename=' + encodeURI(fileName),//告诉浏览器这是一个需要下载的文件
+            });//设置响应头
+            var readStream = fs.createReadStream(file);//得到文件输入流
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+            });
+        }
+        else {
+            res.end('文件还未生成，请稍等');
+        }
 
+    });*/
+}
 
 
 module.exports = router;

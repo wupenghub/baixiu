@@ -1,5 +1,6 @@
 /**=================================用户组权限开始================================*/
 var pinyin = require('pinyin');
+var DbUtils = require('../DbUtils');
 var cisUtils = {
     addUserGroupPermissions(userArray, userGroupPermissionsArray, cisDivDesc) {
         for (var i = 0; i < userGroupPermissionsArray.length; i++) {
@@ -73,10 +74,6 @@ var cisUtils = {
                     }
                 }
                 if (contain) {
-                    // var userPart = isDispGroup ? user.dispGroup : user.userRolls;
-                    // if (user && userPart && userPart.length > 0) {
-                    //     addUserObj(user, item, cisDivDesc, isDispGroup);
-                    // }
                     if (user) {
                         if (isDispGroup) {
                             if (!user.dispGroup) {
@@ -118,13 +115,10 @@ var cisUtils = {
             userDispArray.push(cisDivDesc + cisUtils.removeBlank(dispDesc).replace(cisDivDesc, ''));
         }
     },
-
     /**=================================调度组和待办事项角色结束=================================*/
-
     removeBlank(value) {
         return value.replace(/\s/g, "");
     },
-
     test(userArray) {
         for (var i = 0; i < userArray.length; i++) {
             var user = userArray[i];
@@ -209,7 +203,21 @@ var cisUtils = {
         cisObjData.userDisp = userDispData;
         cisObjData.userRoll = userRollData;
         return cisObjData;
-    }
+    },
+    matchCode(userArray,cisDivDesc) {
+        var userGroupSql = "select l.usr_grp_id,l.descr from sc_user_group_l l where l.language_cd = 'ZHS' and l.descr like '"+cisDivDesc+"%'";
+        console.log(userGroupSql);
+        DbUtils.queryCisData(userGroupSql, function (result) {
+            for(var i = 0;i<userArray.length;i++){
+                var user = userArray[i];
+                for(var j = 0;j<result.length;j++){
+                    var userGroupDesc = result[j].DESCR;
+                }
+            }
+        }, function (err) {
+            console.log(err);
+        });
 
-};
+    }
+}
 module.exports = cisUtils;

@@ -39,7 +39,9 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     // cisUtils.test(userArray);
     //导出用户组权限，调度组，待办事项角色
     var data = cisUtils.exportCisConfig(userArray);
-    var a = excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
+    excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
+    //将人员对应的调度组，用户组权限，待办事项角色中文与英文进行对应
+    cisUtils.matchCode(userArray,cisDivDesc);
     res.json({status:1})
     // var b = exportFile(res,cisDivDesc + "人员配置.xlsx");
     // async.series([a, b]);

@@ -12,6 +12,23 @@ function downLoadTemplte(fileName) {
     form.append($("<input></input>").attr("type", "hidden").attr("name", "filename").attr("value", fileName));
     form.appendTo('body').submit().remove();
 }
+function downLoadFileAsynch() {
+    $.ajax({
+        url:"/baixiu/cisTemplateDownLoadAsynch",
+        type:"post",
+        success:function(result){
+            var content = this.response;
+            var aTag = document.createElement('a');
+            var blob = new Blob([content]);
+            var headerName = xhr.getResponseHeader("Content-disposition");
+            var fileName = decodeURIComponent(headerName).substring(20);
+            aTag.download = fileName;
+            aTag.href = URL.createObjectURL(blob);
+            aTag.click();
+            URL.revokeObjectURL(blob);
+        }
+    })
+}
 function uploadData() {
     var formData = new FormData();//获取form值
     formData.append('cisdiv',$('#cis_division').val());

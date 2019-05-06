@@ -42,7 +42,10 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
     //将人员对应的调度组，用户组权限，待办事项角色中文与英文进行对应
     cisUtils.matchCode(userArray,cisDivDesc);
-    res.json({status:1})
+    setTimeout(function () {
+        exportFile(res,cisDivDesc + "人员配置.xlsx");
+    },1000);
+    // res.json({status:1})
     // var b = exportFile(res,cisDivDesc + "人员配置.xlsx");
     // async.series([a, b]);
 });

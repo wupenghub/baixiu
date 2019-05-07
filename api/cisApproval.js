@@ -36,16 +36,20 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     });
     //生成用户的cisId
     cisUtils.generateCisId(userArray, cisDivCode);
+    cisUtils.matchCode(userArray,cisDivDesc,function () {
+        var data = cisUtils.exportCisConfig(userArray);
+        cisUtils.test(userArray);
+        excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
+    });
     // cisUtils.test(userArray);
     //导出用户组权限，调度组，待办事项角色
-    var data = cisUtils.exportCisConfig(userArray);
-    excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
+    // var data = cisUtils.exportCisConfig(userArray);
+    // excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
     //将人员对应的调度组，用户组权限，待办事项角色中文与英文进行对应
-    cisUtils.matchCode(userArray,cisDivDesc);
-    setTimeout(function () {
+  /*  setTimeout(function () {
         exportFile(res,cisDivDesc + "人员配置.xlsx");
-    },1000);
-    // res.json({status:1})
+    },1000);*/
+    res.json({status:1})
     // var b = exportFile(res,cisDivDesc + "人员配置.xlsx");
     // async.series([a, b]);
 });

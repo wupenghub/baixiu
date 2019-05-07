@@ -123,9 +123,9 @@ var cisUtils = {
         for (var i = 0; i < userArray.length; i++) {
             var user = userArray[i];
             var userRolls = user.userRolls || [];
-            var userGroup = user.userGroupPermissArr || [];
+            var userGroup = user.userGroupCode || [];
             var userDisp = user.dispGroup || [];
-            console.log(user.userName + ':用户权限' + userGroup.length + "个，调度组：" + userDisp.length + "个，待办事项角色：" + userRolls.length + "个");
+            // console.log(user.userName + ':用户权限' + userGroup.length);
         }
     },
     generateCisId(userArray, cisDivCode) {
@@ -152,7 +152,7 @@ var cisUtils = {
         return userCode.toLocaleUpperCase();
     },
     exportCisConfig(userArray){
-        var userGroupHead = ['USER_ID','USR_GRP_ID','VERSION'];
+        var userGroupHead = ['USR_GRP_ID','USER_ID','VERSION','EXPIRATION_DT','OWNER_FLG'];
         var userDispHead = ['USER_ID','DISP_GRP_CD','VERSION'];
         var userRollHead = ['USER_ID','ROLE_ID','VERSION'];
         var userGroupData = [];
@@ -163,15 +163,17 @@ var cisUtils = {
         userRollData.push(userRollHead);
         for(var i = 0;i<userArray.length;i++){
             var user = userArray[i];
-            var userGroup = user.userGroupPermissArr;
+            var userGroup = user.userGroupCode;
             var userDisp = user.dispGroup;
             var userRoll = user.userRolls;
             if(userGroup){
                 for(var j = 0;j<userGroup.length;j++){
                     var obj = [];
-                    obj.push(user.userId);
                     obj.push(userGroup[j]);
+                    obj.push(user.userId);
                     obj.push('1');
+                    obj.push('2100/1/1');
+                    obj.push('CM');
                     obj.push(user.userName);
                     userGroupData.push(obj);
                 }
@@ -204,16 +206,28 @@ var cisUtils = {
         cisObjData.userRoll = userRollData;
         return cisObjData;
     },
-    matchCode(userArray,cisDivDesc) {
+    matchCode(userArray,cisDivDesc,fun) {
         var userGroupSql = "select l.usr_grp_id,l.descr from sc_user_group_l l where l.language_cd = 'ZHS' and l.descr like '"+cisDivDesc+"%'";
         console.log(userGroupSql);
         DbUtils.queryCisData(userGroupSql, function (result) {
             for(var i = 0;i<userArray.length;i++){
                 var user = userArray[i];
+                user.userGroupCode = [];
                 for(var j = 0;j<result.length;j++){
                     var userGroupDesc = result[j].DESCR;
+                    var userGroupCode  = result[j].USR_GRP_ID;
+                    if(user.userGroupPermissArr && user.userGroupPermissArr.length>0){
+                        for(var z = 0;z<user.userGroupPermissArr.length;z++){
+                            if(cisUtils.removeBlank(userGroupDesc) == cisUtils.removeBlank(user.userGroupPermissArr[z])){
+                                user.userGroupCode.push(cisUtils.removeBlank(userGroupCode));
+                                break;
+                            }
+                        }
+                    }
+
                 }
             }
+            fun();
         }, function (err) {
             console.log(err);
         });

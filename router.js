@@ -443,6 +443,22 @@ router.get('/baixiu/articleDelete', function (req, res) {
 });
 //CIS系统人员权限管理模块
 router.get('/baixiu/cisApproval',function (req,res) {
-    res.render('cisApproval.html');
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('cisApproval.html', {dataJsonArr: req.session.userInfo});
+    // res.render('cisApproval.html');
 });
+//CIS系统材料单配置
+router.get('/baixiu/cisSqlConfig',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('cisSql.html', {dataJsonArr: req.session.userInfo});
+});
+
 module.exports = router;

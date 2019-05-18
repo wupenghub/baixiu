@@ -10,9 +10,14 @@ const db_config={
 };
 const db_config_cis={
     connectionLimit: 5,
-    user:"cisadm",
+    //贵燃
+    /*user:"cisadm",
     password:"cisadm",
-    connectString : "120.78.213.19:1521/ccbstg"
+    connectString : "120.78.213.19:1521/ccbstg"*/
+    //深燃
+    user:"cisadm",
+   password:"cisadm",
+   connectString : "10.9.3.78:1521/ccbuat"
 };
 let pool=mysql.createPool(db_config);
 /*var connection = mysql.createConnection({

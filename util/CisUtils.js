@@ -201,9 +201,9 @@ var cisUtils = {
 
         }
         var cisObjData = {};
-        cisObjData.userGroup = userGroupData;
-        cisObjData.userDisp = userDispData;
-        cisObjData.userRoll = userRollData;
+        cisObjData['sc_usr_grp_usr'] = userGroupData;
+        cisObjData['ci_disp_grp_rep'] = userDispData;
+        cisObjData['ci_role_user'] = userRollData;
         return cisObjData;
     },
     matchCode(userArray,cisDivDesc,fun) {

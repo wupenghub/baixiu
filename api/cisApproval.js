@@ -13,6 +13,7 @@ var async = require("async");
 router.post('/baixiu/cisTemplateDownLoad', function (req, res) {
     exportFile(res, req.body.filename);
 });
+//人员配置模板
 router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     var tmp_path = req.files.templateFile.path;
     var cisDivCode = req.body.cisdiv;
@@ -52,6 +53,38 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     res.json({status:1})
     // var b = exportFile(res,cisDivDesc + "人员配置.xlsx");
     // async.series([a, b]);
+});
+//生成材料单配置
+router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
+    var tmp_path = req.files.templateFile.path;
+    var cisDiv = req.body.cisDiv;
+    var sqiTypeCode = cisDiv + 'CL';
+    excelUtils.readExcel(tmp_path, ['材料信息'], function (data) {
+        //获取当前最大的材料编码
+        var sql = "select max(to_number(SUBSTR(I.SQI_CD,5))) AS maxNum from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%'";
+        console.log(sql);
+        var sjSqiData = data['材料信息'];
+        console.log(sjSqiData);
+        DbUtils.queryCisData(sql,function (result) {
+            var ciSqiConfigData = {};
+            var startIndex = Number(result[0]&&result[0]['MAXNUM']) + 1;
+            //配置ci_sqi表数据
+            var ciSqiData = ciSqiConfigData['ci_sqi'] || [];
+            ciSqiData.push(['SQI_CD','VERSION','DECIMAL_POSITIONS']);
+            for(var i = 0;i<sjSqiData.length;i++){
+                var sjObj = sjSqiData[i];
+               if(i > 1){
+                    var configObj = [];
+                   configObj.push(sqiTypeCode+startIndex);
+                   configObj.push('1');
+                   configObj.push(sjObj['PRECISION']);
+                   startIndex++;
+               }
+            }
+
+            excelUtils.writeExcel(ciSqiConfigData,cisDiv+'材料配置.xlsx');
+        })
+    });
 });
 
 function exportFile(res, fileName) {

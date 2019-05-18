@@ -3,6 +3,13 @@ $(function () {
         var fileName = $('#desc').val()+'人员配置.xlsx';
         downLoadTemplte(fileName);
     });
+    $('#upload').click(function () {
+        uploadDataByObj({
+            'cisdiv':$('#cis_division').val(),
+            'desc':$('#desc').val(),
+            'templateFile':$("#exampleInputFile")[0].files[0]
+        },"/baixiu/getExcel")
+    })
 });
 function downLoadTemplte(fileName) {
     var url = "/baixiu/cisTemplateDownLoad";
@@ -29,13 +36,36 @@ function downLoadFileAsynch() {
         }
     })
 }
-function uploadData() {
+/*function uploadData() {
     var formData = new FormData();//获取form值
     formData.append('cisdiv',$('#cis_division').val());
     formData.append('desc',$('#desc').val());
     formData.append('templateFile', $("#exampleInputFile")[0].files[0]);
     $.ajax({
         url:"/baixiu/getExcel",
+        type:"post",
+        data: formData,
+        processData: false,  // 不处理数据
+        contentType:false,  // 不设置内容类型
+        success:function(data){
+            console.log(data)
+        },
+        error:function(e){
+            alert("错误！！");
+        }
+    });
+}*/
+function uploadDataByObj(obj,url) {
+    var formData = new FormData();//获取form值
+    for(var item in obj){
+        formData.append(item,obj[item]);
+    }
+
+   /* formData.append('cisdiv',$('#cis_division').val());
+    formData.append('desc',$('#desc').val());
+    formData.append('templateFile', $("#exampleInputFile")[0].files[0]);*/
+    $.ajax({
+        url:url,
         type:"post",
         data: formData,
         processData: false,  // 不处理数据

@@ -64,29 +64,66 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
         var sql = "select max(to_number(SUBSTR(I.SQI_CD,5))) AS maxNum from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%'";
         console.log(sql);
         var sjSqiData = data['材料信息'];
-        console.log(sjSqiData);
         DbUtils.queryCisData(sql,function (result) {
             var ciSqiConfigData = {};
             var startIndex = Number(result[0]&&result[0]['MAXNUM']) + 1;
+            var sqiCdArray = [];
             //配置ci_sqi表数据
-            var ciSqiData = ciSqiConfigData['ci_sqi'] || [];
-            ciSqiData.push(['SQI_CD','VERSION','DECIMAL_POSITIONS']);
-            for(var i = 0;i<sjSqiData.length;i++){
-                var sjObj = sjSqiData[i];
-               if(i > 1){
-                    var configObj = [];
-                   configObj.push(sqiTypeCode+startIndex);
-                   configObj.push('1');
-                   configObj.push(sjObj['PRECISION']);
-                   startIndex++;
-               }
-            }
-
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_sqi',['SQI_CD','VERSION','DECIMAL_POSITIONS'],sjSqiData,sqiTypeCode,startIndex);
+            //配置ci_sqi_l
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_sqi_l',['SQI_CD','LANGUAGE_CD','DESCR','VERSION'],sjSqiData,sqiTypeCode,startIndex);
+           //配置c1_calc_rule
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'c1_calc_rule',['CALC_GRP_CD','CALC_RULE_CD','CR_EXEC_SEQ','REF_CALC_GRP_CD','CALC_RULE_STEP_ALG_CD','CALC_RULE_VAL_ALG_CD','UOM_CD','TOU_CD','SQI_CD','ITEM_TYPE_CD','BF_CD','BUS_OBJ_CD','BO_DATA_AREA','VERSION','DST_ID'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
             excelUtils.writeExcel(ciSqiConfigData,cisDiv+'材料配置.xlsx');
+            res.json({status:1});
+        },function (err) {
+            console.log(err)
+
         })
     });
 });
-
+function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqiTypeCode,startIndex,cisDiv) {
+    var ciSqiData = sqlDataArray[tableName] || [];
+    console.log(sjSqiData);
+    ciSqiData.push(headArray);
+    for(var i = 0;i<sjSqiData.length;i++){
+        var sjObj = sjSqiData[i];
+        if(i > 1){
+            var configObj = [];
+            if(tableName == 'ci_sqi') {
+                configObj.push(sqiTypeCode + startIndex);
+                configObj.push('1');
+                configObj.push(sjObj['PRECISION']);
+                ciSqiData.push(configObj);
+                sqiCdArray.push(sqiTypeCode + startIndex);
+                startIndex++;
+            }else if(tableName == 'ci_sqi_l'){
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ZHS');
+                if(sjObj['ERP_CODE']!= undefined && sjObj['ERP_CODE']!= ''){
+                    configObj.push(sjObj['ERP_CODE']+'_'+sjObj['DESC']);
+                }else{
+                    configObj.push('00000000_'+sjObj['DESC']);
+                }
+                configObj.push('1');
+                ciSqiData.push(configObj);
+                configObj = [];
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ENG');
+                if(sjObj['ERP_CODE']!= undefined && sjObj['ERP_CODE']!= ''){
+                    configObj.push(sjObj['ERP_CODE']+'_'+sjObj['DESC']);
+                }else{
+                    configObj.push('00000000_'+sjObj['DESC']);
+                }                configObj.push('1');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'c1_calc_rule'){
+                configObj.push(cisDiv+'CLFW');
+                configObj.push(sqiCdArray[i-2]);
+            }
+        }
+    }
+    sqlDataArray[tableName] = ciSqiData;
+}
 function exportFile(res, fileName) {
     var file = './' + fileName;
     res.writeHead(200, {

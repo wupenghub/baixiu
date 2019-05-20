@@ -61,28 +61,28 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
     var sqiTypeCode = cisDiv + 'CL';
     excelUtils.readExcel(tmp_path, ['材料信息'], function (data) {
         //获取当前最大的材料编码
-        var sql = "select max(to_number(SUBSTR(I.SQI_CD,5))) AS maxNum from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%'";
+        var sql = "select c.bo_data_area as boData,(select max(to_number(SUBSTR(I.SQI_CD, 5)))from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%') AS maxNum from c1_calc_rule c where rownum = 1";
         console.log(sql);
         var sjSqiData = data['材料信息'];
         DbUtils.queryCisData(sql,function (result) {
             var ciSqiConfigData = {};
             var startIndex = Number(result[0]&&result[0]['MAXNUM']) + 1;
+            var boData = result[0]['BODATA'];
             var sqiCdArray = [];
             //配置ci_sqi表数据
             sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_sqi',['SQI_CD','VERSION','DECIMAL_POSITIONS'],sjSqiData,sqiTypeCode,startIndex);
             //配置ci_sqi_l
             sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_sqi_l',['SQI_CD','LANGUAGE_CD','DESCR','VERSION'],sjSqiData,sqiTypeCode,startIndex);
            //配置c1_calc_rule
-            sqlDataConfig(sqiCdArray,ciSqiConfigData,'c1_calc_rule',['CALC_GRP_CD','CALC_RULE_CD','CR_EXEC_SEQ','REF_CALC_GRP_CD','CALC_RULE_STEP_ALG_CD','CALC_RULE_VAL_ALG_CD','UOM_CD','TOU_CD','SQI_CD','ITEM_TYPE_CD','BF_CD','BUS_OBJ_CD','BO_DATA_AREA','VERSION','DST_ID'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'c1_calc_rule',['CALC_GRP_CD','CALC_RULE_CD','CR_EXEC_SEQ','REF_CALC_GRP_CD','CALC_RULE_STEP_ALG_CD','CALC_RULE_VAL_ALG_CD','UOM_CD','TOU_CD','SQI_CD','ITEM_TYPE_CD','BF_CD','BUS_OBJ_CD','BO_DATA_AREA','VERSION','DST_ID'],sjSqiData,sqiTypeCode,startIndex,cisDiv,boData);
             excelUtils.writeExcel(ciSqiConfigData,cisDiv+'材料配置.xlsx');
             res.json({status:1});
         },function (err) {
             console.log(err)
-
         })
     });
 });
-function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqiTypeCode,startIndex,cisDiv) {
+function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqiTypeCode,startIndex,cisDiv,boData) {
     var ciSqiData = sqlDataArray[tableName] || [];
     console.log(sjSqiData);
     ciSqiData.push(headArray);
@@ -117,8 +117,26 @@ function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqi
                 }                configObj.push('1');
                 ciSqiData.push(configObj);
             }else if(tableName == 'c1_calc_rule'){
-                configObj.push(cisDiv+'CLFW');
-                configObj.push(sqiCdArray[i-2]);
+                configObj.push(cisDiv+'CLFW');//calc_grp_cd
+                configObj.push(sqiCdArray[i-2]);//calc_rule_cd
+                configObj.push(sqiCdArray[i-2].replace(sqiTypeCode,''));//cr_exec_seq
+                configObj.push(' ');//ref_calc_grp_cd
+                configObj.push(' ');//calc_rule_step_alg_cd
+                configObj.push(' ');//calc_rule_val_alg_cd
+                configObj.push(' ');//uom_cd
+                configObj.push(' ');//tou_cd
+                configObj.push(sqiCdArray[i-2]);//sqi_cd
+                configObj.push(' ');//item_type_cd
+                configObj.push(sqiCdArray[i-2]);//bf_cd
+                configObj.push('C1-ServiceQuantity');//bus_obj_cd
+                //重新拼接boDataArea
+                var substrStartIndex = boData.indexOf('<billFactor>')+'<billFactor>'.length;
+                var substrEndIndex = boData.indexOf('</billFactor>');
+                var newBoData = boData.substring(0,substrStartIndex)+sqiCdArray[i-2]+boData.substring(substrEndIndex,boData.length);
+                configObj.push(newBoData);//bo_data_area
+                configObj.push('1');//version
+                configObj.push('OOR_OTHER');//dst_id
+                ciSqiData.push(configObj);
             }
         }
     }

@@ -19,6 +19,8 @@ const db_config_cis={
    password:"cisadm",
    connectString : "10.9.3.78:1521/ccbuat"
 };
+oracledb.fetchAsBuffer = [ oracledb.BLOB ];
+oracledb.fetchAsString = [ oracledb.CLOB ];
 let pool=mysql.createPool(db_config);
 /*var connection = mysql.createConnection({
     host: 'localhost',

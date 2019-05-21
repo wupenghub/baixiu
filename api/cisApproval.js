@@ -61,9 +61,10 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
     var sqiTypeCode = cisDiv + 'CL';
     excelUtils.readExcel(tmp_path, ['材料信息'], function (data) {
         //获取当前最大的材料编码
-        var sql = "select c.bo_data_area as boData,(select max(to_number(SUBSTR(I.SQI_CD, 5)))from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%') AS maxNum from c1_calc_rule c where rownum = 1";
+        var sql = "select c.bo_data_area as boData,(select max(to_number(SUBSTR(I.SQI_CD, 5))) from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%') AS maxNum,(select max(o.cm_id) from cm_org_type o) AS cmId from c1_calc_rule c where rownum = 1";
         console.log(sql);
         var sjSqiData = data['材料信息'];
+        console.log(sjSqiData);
         DbUtils.queryCisData(sql,function (result) {
             var ciSqiConfigData = {};
             var startIndex = Number(result[0]&&result[0]['MAXNUM']) + 1;
@@ -75,6 +76,19 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
             sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_sqi_l',['SQI_CD','LANGUAGE_CD','DESCR','VERSION'],sjSqiData,sqiTypeCode,startIndex);
            //配置c1_calc_rule
             sqlDataConfig(sqiCdArray,ciSqiConfigData,'c1_calc_rule',['CALC_GRP_CD','CALC_RULE_CD','CR_EXEC_SEQ','REF_CALC_GRP_CD','CALC_RULE_STEP_ALG_CD','CALC_RULE_VAL_ALG_CD','UOM_CD','TOU_CD','SQI_CD','ITEM_TYPE_CD','BF_CD','BUS_OBJ_CD','BO_DATA_AREA','VERSION','DST_ID'],sjSqiData,sqiTypeCode,startIndex,cisDiv,boData);
+            //配置c1_calc_rule_l表
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'c1_calc_rule_l',['CALC_GRP_CD','CALC_RULE_CD','LANGUAGE_CD','DESCR_TMPLT','DESCR100','DESCRLONG','VERSION'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            //配置ci_bf表
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_bf',['BF_CD','CHAR_TYPE_CD','VAL_TYPE_FLG','ALLOW_PRO_SW','ERR_IF_NO_VAL_SW','VAL_IN_CONT_SW','APPL_IN_CONT_SW','EXEMPT_IN_CONT_SW','CURRENCY_CD','CHAR_SRC_FLG','VERSION','USE_SUB_SA_CT_SW','BF_TYPE_FLG','TOS_USAGE_FLG','RATE_SEL_DT_ALG_CD'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            //配置ci_bf_l表
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_bf_l',['BF_CD','LANGUAGE_CD','DESCR','VERSION'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            //配置ci_bf_val表
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_bf_val',['BF_CD','CHAR_TYPE_CD','CHAR_VAL','EFFDT','VAL','VERSION','TOU_GRP_CD'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            //配置ci_bf_char表
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'ci_bf_char',['CHAR_TYPE_CD','BF_CD','CHAR_VAL','VERSION','INTV_PF_EXT_ID','INTV_MINUTE','SEASON_TM_SHIFT_CD'],sjSqiData,sqiTypeCode,startIndex,cisDiv);
+            //配置cm_org_type表
+            var cmId = Number(result[0]['CMID']) + 1;
+            sqlDataConfig(sqiCdArray,ciSqiConfigData,'cm_org_type',['CM_ID','CM_TYPE','CM_TYPE_CD','CIS_DIVISION','ACCESS_GRP_CD','CM_ATTR1','CM_ATTR2','CM_ATTR3','CM_ATTR4','CM_ATTR5','CM_ATTR6','CM_ATTR7','CM_ATTR8'],sjSqiData,sqiTypeCode,startIndex,cisDiv,boData,cmId);
             excelUtils.writeExcel(ciSqiConfigData,cisDiv+'材料配置.xlsx');
             res.json({status:1});
         },function (err) {
@@ -82,9 +96,8 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
         })
     });
 });
-function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqiTypeCode,startIndex,cisDiv,boData) {
+function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqiTypeCode,startIndex,cisDiv,boData,cmId) {
     var ciSqiData = sqlDataArray[tableName] || [];
-    console.log(sjSqiData);
     ciSqiData.push(headArray);
     for(var i = 0;i<sjSqiData.length;i++){
         var sjObj = sjSqiData[i];
@@ -114,12 +127,17 @@ function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqi
                     configObj.push(sjObj['ERP_CODE']+'_'+sjObj['DESC']);
                 }else{
                     configObj.push('00000000_'+sjObj['DESC']);
-                }                configObj.push('1');
+                }
+                configObj.push('1');
                 ciSqiData.push(configObj);
             }else if(tableName == 'c1_calc_rule'){
                 configObj.push(cisDiv+'CLFW');//calc_grp_cd
                 configObj.push(sqiCdArray[i-2]);//calc_rule_cd
-                configObj.push(sqiCdArray[i-2].replace(sqiTypeCode,''));//cr_exec_seq
+                var crExecSeq = sqiCdArray[i-2].replace(sqiTypeCode,'');
+                if(crExecSeq.startsWith('0')){
+                    crExecSeq = crExecSeq.replace('0','');
+                }
+                configObj.push(crExecSeq);//cr_exec_seq
                 configObj.push(' ');//ref_calc_grp_cd
                 configObj.push(' ');//calc_rule_step_alg_cd
                 configObj.push(' ');//calc_rule_val_alg_cd
@@ -136,6 +154,109 @@ function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqi
                 configObj.push(newBoData);//bo_data_area
                 configObj.push('1');//version
                 configObj.push('OOR_OTHER');//dst_id
+                ciSqiData.push(configObj);
+            }else if(tableName == 'c1_calc_rule_l'){
+                configObj.push('CLFW');
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ZHS');
+                var descTmplt = sjObj['DESC']+' %Q '+sjObj['UNIT']+'X '+'%R 元';
+                configObj.push(descTmplt);
+                configObj.push(sjObj['DESC']);
+                configObj.push(' ');
+                configObj.push('1');
+                ciSqiData.push(configObj);
+                configObj = [];
+                configObj.push('CLFW');
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ENG');
+                var descTmplt = sjObj['DESC']+' %Q '+sjObj['UNIT']+'X '+'%R 元';
+                configObj.push(descTmplt);
+                configObj.push(sjObj['DESC']);
+                configObj.push(' ');
+                configObj.push('1');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'ci_bf'){
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('CM_CLFWF');
+                configObj.push('U');
+                configObj.push('Y');
+                configObj.push('Y');
+                configObj.push('N');
+                configObj.push('N');
+                configObj.push('N');
+                configObj.push('RMB');
+                configObj.push('NA');
+                configObj.push('1');
+                configObj.push('N');
+                configObj.push('R');
+                configObj.push(' ');
+                configObj.push(' ');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'ci_bf_l'){
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ENG');
+                if(sjObj['ERP_CODE']!= undefined && sjObj['ERP_CODE']!= ''){
+                    configObj.push(sjObj['ERP_CODE']+'_'+sjObj['DESC']);
+                }else{
+                    configObj.push('00000000_'+sjObj['DESC']);
+                }
+                configObj.push('1');
+                ciSqiData.push(configObj);
+                configObj = [];
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('ZHS');
+                if(sjObj['ERP_CODE']!= undefined && sjObj['ERP_CODE']!= ''){
+                    configObj.push(sjObj['ERP_CODE']+'_'+sjObj['DESC']);
+                }else{
+                    configObj.push('00000000_'+sjObj['DESC']);
+                }
+                configObj.push('1');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'ci_bf_val'){
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('CM_CLFWF');
+                configObj.push('CLFWDJ');
+                configObj.push('1900/12/30');
+                configObj.push(sjObj['BF_VAL']);
+                configObj.push('1');
+                configObj.push(' ');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'ci_bf_char'){
+                configObj.push('CM_CLFWF');
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push('CLFWDJ');
+                configObj.push('1');
+                configObj.push(' ');
+                configObj.push('0');
+                configObj.push(' ');
+                ciSqiData.push(configObj);
+            }else if(tableName == 'cm_org_type'){
+                configObj.push(cmId);
+                cmId ++;
+                configObj.push('SQI_CD');
+                configObj.push(sqiCdArray[i-2]);
+                configObj.push(cisDiv);
+                configObj.push(' ');
+                configObj.push('CL');
+                configObj.push(' ');
+                configObj.push(sjObj['CM_ATTR3']);
+                configObj.push(sjObj['CM_ATTR4']);
+                if(sjObj['CM_ATTR5']!=undefined && sjObj['CM_ATTR5']!='') {
+                    configObj.push(sjObj['CM_ATTR5']);
+                }else{
+                    configObj.push(' ');
+                }
+                if(sjObj['CM_ATTR6']!=undefined && sjObj['CM_ATTR6']!='') {
+                    configObj.push(sjObj['CM_ATTR6']);
+                }else{
+                    configObj.push(' ');
+                }
+                if(sjObj['CM_ATTR7']!=undefined && sjObj['CM_ATTR7']!='') {
+                    configObj.push(sjObj['CM_ATTR7']);
+                }else{
+                    configObj.push(' ');
+                }
+                configObj.push(sjObj['CM_ATTR8']);
                 ciSqiData.push(configObj);
             }
         }

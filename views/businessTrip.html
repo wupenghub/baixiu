@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Posts &laquo; Admin</title>
+    <link rel="stylesheet" href="/public/vendors/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
+    <script src="../public/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+<script>NProgress.start()</script>
+<script type="text/javascript" id="template">{{dataJsonArr}}</script>
+<div class="posts main">
+    <nav class="navbar">
+        <button class="btn btn-default navbar-btn fa fa-bars"></button>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
+            <li><a href="login.html"><i class="fa fa-sign-out"></i>退出</a></li>
+        </ul>
+    </nav>
+    <div class="container-fluid">
+        <div class="page-title">
+            <h1>出差记录</h1>
+        </div>
+
+    </div>
+</div>
+
+<div class="aside">
+    <div class="profile">
+        <img class="avatar">
+        <h3 class="name"></h3>
+    </div>
+    <ul class="nav">
+    </ul>
+</div>
+<!-- Modal -->
+<div class="modal fade mnue-manger-tree" id="mnue_tree" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="mnue-manger-model">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../public/vendors/jquery/jquery.js"></script>
+<script src="../node_modules/art-template/lib/template-web.js"></script>
+<script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="../public/vendors/util/utils.js"></script>
+<script src="../public/js/cis/cisApproval.js"></script>
+<script src="../public/js/mnueManger/mnueManger.js"></script>
+<script>NProgress.done()</script>
+</body>
+</html>

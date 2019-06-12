@@ -6,6 +6,7 @@ var cisUtils = {
         for (var i = 0; i < userGroupPermissionsArray.length; i++) {
             var userGroupObj = userGroupPermissionsArray[i];
             var addName = userGroupObj['姓名'];
+            var userPhone = userGroupObj['电话'];
             var contains = false;
             var user = null;
             for (var j = 0; j < userArray.length; j++) {
@@ -25,6 +26,7 @@ var cisUtils = {
                 user = {};
                 user.userGroupPermissArr = [];
                 user.userName = cisUtils.removeBlank(addName);
+                user.userPhone = userPhone;
                 cisUtils.addPermiss(user, userGroupPermissionsArray[i], cisDivDesc);
                 userArray.push(user);
             }
@@ -117,7 +119,10 @@ var cisUtils = {
     },
     /**=================================调度组和待办事项角色结束=================================*/
     removeBlank(value) {
-        return value.replace(/\s/g, "");
+        if(value){
+            return value.replace(/\s/g, "");
+        }
+
     },
     test(userArray) {
         for (var i = 0; i < userArray.length; i++) {
@@ -129,7 +134,7 @@ var cisUtils = {
         }
     },
     generateCisId(userArray, cisDivCode) {
-        var firstIndex = 1000001;
+        var firstIndex = 801001;
         for (var i = 0; i < userArray.length; i++) {
             var user = userArray[i];
             user.userId = cisDivCode + (firstIndex++).toString();
@@ -138,34 +143,49 @@ var cisUtils = {
     },
     wordChangePinyin(userName) {
         var userCode = '';
-        for (var i = 0; i < userName.length; i++) {
-            if (userName.length > 2) {
-                if (i == 0) {
-                    userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
+        if(userName) {
+            for (var i = 0; i < userName.length; i++) {
+                if (userName.length > 2) {
+                    if (i == 0) {
+                        userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
+                    } else {
+                        userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL}).toString().substring(0, 1);
+                    }
                 } else {
-                    userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL}).toString().substring(0, 1);
+                    userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
                 }
-            }else{
-                userCode += pinyin(userName[i], {style: pinyin.STYLE_NORMAL});
             }
+            return userCode.toLocaleUpperCase();
         }
-        return userCode.toLocaleUpperCase();
     },
     exportCisConfig(userArray){
         var userGroupHead = ['USR_GRP_ID','USER_ID','VERSION','EXPIRATION_DT','OWNER_FLG'];
         var userDispHead = ['DISP_GRP_CD','USER_ID','VERSION'];
         var userRollHead = ['ROLE_ID','USER_ID','VERSION'];
+        var userHead = ['FIRST_NAME','LAST_NAME','USER_CODE','USER_ID','PHONE'];
         var userGroupData = [];
         var userDispData = [];
         var userRollData = [];
+        var userInfo = [];
         userGroupData.push(userGroupHead);
         userDispData.push(userDispHead);
         userRollData.push(userRollHead);
+        userInfo.push(userHead);
         for(var i = 0;i<userArray.length;i++){
             var user = userArray[i];
             var userGroup = user.userGroupCode;
             var userDisp = user.userDispCode;
             var userRoll = user.userRollCode;
+            var userObj = [];
+            var firstName = user.userName.substring(0,1);
+            var lastName = user.userName.substring(1,user.userName.length);
+            var userCode  = user.userCode;
+            userObj.push(firstName);
+            userObj.push(lastName);
+            userObj.push(userCode);
+            userObj.push(user.userId);
+            userObj.push(user.userPhone);
+            userInfo.push(userObj);
             if(userGroup){
                 for(var j = 0;j<userGroup.length;j++){
                     var obj = [];
@@ -204,6 +224,7 @@ var cisUtils = {
         cisObjData['sc_usr_grp_usr'] = userGroupData;
         cisObjData['ci_disp_grp_rep'] = userDispData;
         cisObjData['ci_role_user'] = userRollData;
+        cisObjData['sc_user'] = userInfo;
         return cisObjData;
     },
     matchCode(userArray,cisDivDesc,fun) {

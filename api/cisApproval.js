@@ -39,7 +39,8 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     cisUtils.generateCisId(userArray, cisDivCode);
     cisUtils.matchCode(userArray,cisDivDesc,function () {
         var data = cisUtils.exportCisConfig(userArray);
-        cisUtils.test(userArray);
+
+        // cisUtils.test(userArray);
         excelUtils.writeExcel(data, cisDivDesc + "人员配置.xlsx");
     });
     // cisUtils.test(userArray);
@@ -103,12 +104,15 @@ function sqlDataConfig(sqiCdArray,sqlDataArray,tableName,headArray,sjSqiData,sqi
         var sjObj = sjSqiData[i];
         if(i > 1){
             var configObj = [];
+            var startIndexStr = startIndex<10?(sqiTypeCode+'0'+startIndex):(sqiTypeCode + startIndex);
             if(tableName == 'ci_sqi') {
-                configObj.push(sqiTypeCode + startIndex);
+                // configObj.push(sqiTypeCode + startIndex);
+                configObj.push(startIndexStr);
                 configObj.push('1');
                 configObj.push(sjObj['PRECISION']);
                 ciSqiData.push(configObj);
-                sqiCdArray.push(sqiTypeCode + startIndex);
+                // sqiCdArray.push(sqiTypeCode + startIndex);
+                sqiCdArray.push(startIndexStr);
                 startIndex++;
             }else if(tableName == 'ci_sqi_l'){
                 configObj.push(sqiCdArray[i-2]);

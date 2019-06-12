@@ -460,5 +460,12 @@ router.get('/baixiu/cisSqlConfig',function (req,res) {
     }
     res.render('cisSql.html', {dataJsonArr: req.session.userInfo});
 });
-
+//出差记录
+router.get('/baixiu/businessTrip', function (req, res) {
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('businessTrip.html',{dataJsonArr: req.session.userInfo});
+});
 module.exports = router;

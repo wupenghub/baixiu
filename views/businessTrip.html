@@ -9,7 +9,23 @@
     <link rel="stylesheet" href="/public/css/admin.css">
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
+    <script>
+        window.onload = function () {
+            // var date= new Date(2019, 2, 0);
+            var date = new Date();
+            var maxDayInMonth = date.getDate();//获取某年某个月份最大的天数
+            var year=date.getFullYear();//获取当前时间的年份
+            var month=date.getMonth()+1;//获取当前时间的月份数
+            alert(year+"-"+month);
+        }
+    </script>
+    <style type="text/css">
+        td{
+            padding: 10px;
+        }
+    </style>
 </head>
+
 <body>
 <script>NProgress.start()</script>
 <script type="text/javascript" id="template">{{dataJsonArr}}</script>
@@ -25,7 +41,22 @@
         <div class="page-title">
             <h1>出差记录</h1>
         </div>
+        <table>
+            <thead>
 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>日</td>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                    <td>六</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

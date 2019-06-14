@@ -10,13 +10,39 @@
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
-        window.onload = function () {
-            dateUtils.renderCander($('tbody'))
-        }
     </script>
     <style type="text/css">
-        td{
+        thead{
+            border: 1px solid gray;
+            border-bottom: none;
+        }
+        thead tr td{
+            padding: 5px 10px 5px 10px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        thead tr td:hover{
+            background-color: gray;
+            color: white;
+        }
+        tbody{
+            border: 1px solid gray;
+            border-top: none;
+            padding: 5px;
+        }
+        tbody td{
             padding: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        tbody td.now{
+            background-color: blue;
+            color: white;
+        }
+        tbody td:hover{
+            background-color: gray;
+            color: white;
         }
     </style>
 </head>
@@ -36,22 +62,15 @@
         <div class="page-title">
             <h1>出差记录</h1>
         </div>
-        <table>
-            <thead>
-
-            </thead>
-            <tbody>
-                <tr>
-                    <td>日</td>
-                    <td>一</td>
-                    <td>二</td>
-                    <td>三</td>
-                    <td>四</td>
-                    <td>五</td>
-                    <td>六</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="calendar">
+            <table>
+                <thead>
+                    <tr><td class="back"><</td><td colspan="5" class="showTime"></td><td class="forword">></td></tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -86,6 +105,7 @@
 <script src="../public/js/cis/cisApproval.js"></script>
 <script src="../public/js/mnueManger/mnueManger.js"></script>
 <script src="../public/vendors/util/DateUtils.js"></script>
+<script src="../public/js/bussnessTrip/bussnessTrip.js"></script>
 
 <script>NProgress.done()</script>
 </body>

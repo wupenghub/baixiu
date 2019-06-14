@@ -11,8 +11,7 @@ $(function () {
         var month = parseInt(showTime.split('-')[1]);
         var currentDateMonth = new Date(year,month,0);
         currentDateMonth.setMonth(currentDateMonth.getMonth()-1);
-        console.log(month+'-'+currentDateMonth.getMonth());
-        // alert(currentDateMonth.getFullYear()+'-'+(currentDateMonth.getMonth()+1));
+        // console.log(month+'-'+currentDateMonth.getMonth());
         dateUtils.renderCander($('tbody'),currentDateMonth,['日','一','二','三','四','五','六'])
     })
 });

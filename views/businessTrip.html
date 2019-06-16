@@ -12,44 +12,58 @@
     <script>
     </script>
     <style type="text/css">
-        thead{
+        thead {
             border: 1px solid gray;
             border-bottom: none;
         }
-        thead tr td{
+
+        thead tr td:not(.empty){
             padding: 5px 10px 5px 10px;
             text-align: center;
             font-weight: bold;
             cursor: pointer;
         }
-        thead tr td:hover{
-            background-color: gray;
+
+        thead tr td:not(.empty):hover {
+            background-color: lightgray;
             color: white;
+            z-index: 999;
         }
-        tbody{
+
+        tbody {
             border: 1px solid gray;
             border-top: none;
-            padding: 5px;
         }
-        tbody td{
-            padding: 10px;
+
+        tbody td:not(.empty) {
+            padding: 15px;
             cursor: pointer;
             text-align: center;
         }
-        tbody td.now{
-            background-color: blue;
+
+        tbody td.now {
+            background-color: li;
             color: white;
         }
-        tbody td:hover{
-            background-color: gray;
+
+        tbody td:not(.empty):hover {
+            background-color: lightgray;
             color: white;
+        }
+        .calendar{
+            width: 35%;
+            float: left;
+        }
+        .list{
+            width: 65%;
+            float: left;
         }
     </style>
 </head>
 
 <body>
 <script>NProgress.start()</script>
-<script type="text/javascript" id="template">{{dataJsonArr}}</script>
+<script type="text/html" id="template">{{dataJsonArr}}</script>
 <div class="posts main">
     <nav class="navbar">
         <button class="btn btn-default navbar-btn fa fa-bars"></button>
@@ -65,11 +79,18 @@
         <div class="calendar">
             <table>
                 <thead>
-                    <tr><td class="back" onclick="changeMonth('-')"><</td><td colspan="5" class="showTime"></td><td class="forword" onclick="changeMonth('+')">></td></tr>
+                <tr>
+                    <td class="back" onclick="changeMonth('-')"><</td>
+                    <td colspan="5" class="showTime"></td>
+                    <td class="forword" onclick="changeMonth('+')">></td>
+                </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+        </div>
+        <div class="list">
+            没有记录
         </div>
     </div>
 </div>
@@ -87,7 +108,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
             </div>
             <div class="modal-body">

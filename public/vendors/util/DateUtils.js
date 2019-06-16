@@ -17,11 +17,17 @@ var dateUtils = {
         var dayAarray = [];
         var maxDayInMonth = new Date(year,month,0).getDate();//获取某年某个月份最大的天数
         var nowDateString = nowYear+'/'+nowMonth+'/'+nowDay;
-        for(var i = 0;i<maxDayInMonth+monthFirstDay;i++){
-            if(i < monthFirstDay){
+        for(var i = 0;i<maxDayInMonth+monthFirstDay;i++) {
+            if (i < monthFirstDay) {
                 dayAarray.push('');
-            }else{
-                dayAarray.push(i-monthFirstDay+1);
+            } else {
+                dayAarray.push(i - monthFirstDay + 1);
+            }
+        }
+        var fixLen = dayAarray.length % 7;
+        if (fixLen > 0) {
+            for(var i = 0; i < 7 - fixLen; i++) {
+                dayAarray.push('');
             }
         }
         var tr = null;
@@ -38,9 +44,11 @@ var dateUtils = {
             }
             var dateString = year+'/'+month+'/'+dayAarray[i];
             if(nowDateString==dateString){
-                tr.append('<td class="now">'+dayAarray[i]+'</td>');
+                tr.append('<td class="now" title="双击添加记录" ondblclick="addRecode(this)">'+dayAarray[i]+'</td>');
+            }else if (dayAarray[i]== ''){
+                tr.append('<td class="empty"></td>');
             }else{
-                tr.append('<td>'+dayAarray[i]+'</td>');
+                tr.append('<td title="双击添加记录" ondblclick="addRecode(this)">'+dayAarray[i]+'</td>');
             }
         }
     }

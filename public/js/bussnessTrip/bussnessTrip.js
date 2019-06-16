@@ -7,18 +7,21 @@ $(function () {
     $('.showTime').html(year+'-'+month);
 });
 function changeMonth(type) {
-    var showTime = $('.showTime').html();
+    var showTime = $('.calendar .showTime').html();
     var year = showTime.split('-')[0];
     var month = parseInt(showTime.split('-')[1]);
     var currentDateMonth = new Date(year,month,0);
-    var changMonth = '';
+    var changeMonth = '';
     if(type == '-') {
         // currentDateMonth.setMonth(currentDateMonth.getMonth() - 1);
-        changMonth = currentDateMonth.getMonth() - 1;
+        changeMonth = currentDateMonth.getMonth() - 1;
     }else{
         // currentDateMonth.setMonth(currentDateMonth.getMonth() + 1);
-        changMonth = currentDateMonth.getMonth() + 1;
+        changeMonth = currentDateMonth.getMonth() + 1;
     }
-    currentDateMonth.setMonth(changMonth);
+    currentDateMonth.setMonth(changeMonth,1);
     dateUtils.renderCander($('tbody'),currentDateMonth,['日','一','二','三','四','五','六'])
+}
+function addRecode(obj) {
+    alert($(obj).html())
 }

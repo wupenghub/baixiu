@@ -91,6 +91,7 @@
         </div>
         <div class="list">
             没有记录
+            <div class="order-list"></div>
         </div>
     </div>
 </div>
@@ -128,7 +129,11 @@
 <script src="../public/js/mnueManger/mnueManger.js"></script>
 <script src="../public/vendors/util/DateUtils.js"></script>
 <script src="../public/js/bussnessTrip/bussnessTrip.js"></script>
-
+<script type="text/art-template" id="tripList">
+    <% for(var i = 0;i<tripList.length ;i++){ %>
+        <div><%= tripList[i].start_company_desc %></div>
+    <% } %>
+</script>
 <script>NProgress.done()</script>
 </body>
 </html>

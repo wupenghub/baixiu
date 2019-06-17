@@ -502,14 +502,16 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "and o.email = '"+email+"'\n" +
                 "AND o.order_flag = 1\n";
             DbUtils.queryData(querySql,function (result) {
-                console.log(result)
+                res.json({
+                    status:0,
+                    tripList:result
+                })
             },function (err) {
-
+                res.json({
+                    status:1,
+                    desc:'当天没有出差记录'
+                })
             });
-            res.json({
-                status:0
-            });
-
         }else{
             res.json({
                 status:1,

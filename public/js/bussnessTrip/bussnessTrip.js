@@ -18,13 +18,9 @@ $(function () {
         data: {email,date:$('.showTime').html()+'-'+day},
         dataType: "json",
         success: function (data) {
-            if(data.register_status == 0){
-                alert('注册成功');
-                if(data.mailSend_status == 0){
-                    alert('激活邮件已发送到注册邮箱，请前去激活');
-                }
-
-            }
+            //渲染出差订单
+            var statusListtml = template('tripList',data);
+            console.log(statusListtml)
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert("请求失败！");

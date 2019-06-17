@@ -24,6 +24,10 @@ $(function () {
             success: function (data) {
                 if(data.login_state == 0) {
                     window.location.href = '/';
+                    var users = localStorage.getItem('email');
+                    localStorage.removeItem('email');//清除登陆缓存
+                    var userList = [$('#email').val()];
+                    localStorage.setItem('email',JSON.stringify(userList));
                 }else{
                     alert(data.login_desc);
                 }

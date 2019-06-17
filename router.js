@@ -501,7 +501,11 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "\to.start_date = str_to_date('"+date+"', '%Y-%m-%d')\n" +
                 "and o.email = '"+email+"'\n" +
                 "AND o.order_flag = 1\n";
+            DbUtils.queryData(querySql,function (result) {
+                console.log(result)
+            },function (err) {
 
+            });
             res.json({
                 status:0
             });

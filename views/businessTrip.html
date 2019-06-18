@@ -8,57 +8,11 @@
     <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
     <link rel="stylesheet" href="/public/css/admin.css">
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
+    <link rel="stylesheet" href="/public/css/tripRecord/tripRecord.css">
+
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
     </script>
-    <style type="text/css">
-        thead {
-            border: 1px solid gray;
-            border-bottom: none;
-        }
-
-        thead tr td:not(.empty){
-            padding: 5px 10px 5px 10px;
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        thead tr td:not(.empty):hover {
-            background-color: lightgray;
-            color: white;
-            z-index: 999;
-        }
-
-        tbody {
-            border: 1px solid gray;
-            border-top: none;
-        }
-
-        tbody td:not(.empty) {
-            padding: 15px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        tbody td.now {
-            background-color: blue;
-            color: white;
-        }
-
-        tbody td:not(.empty):hover {
-            background-color: lightgray;
-            color: white;
-        }
-        .calendar{
-            width: 35%;
-            float: left;
-        }
-        .list{
-            width: 65%;
-            float: left;
-        }
-    </style>
 </head>
 
 <body>
@@ -76,6 +30,7 @@
         <div class="page-title">
             <h1>出差记录</h1>
         </div>
+
         <div class="calendar">
             <table>
                 <thead>
@@ -90,8 +45,10 @@
             </table>
         </div>
         <div class="list">
-            没有记录
-            <div class="order-list"></div>
+            <div class="order_list_time"></div>
+            <div class="order-list">
+
+            </div>
         </div>
     </div>
 </div>
@@ -105,21 +62,65 @@
     </ul>
 </div>
 <!-- Modal -->
-<div class="modal fade mnue-manger-tree" id="mnue_tree" tabindex="-1">
+<div class="trip">
+<div class="modal fade mnue-manger-tree" id="trip_modal" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
+                <h4 class="modal-title" id="myModalLabel">添加记录</h4>
             </div>
             <div class="modal-body">
-                <ul class="mnue-manger-model">
-
+                <ul>
+                    <li>
+                        <div class="item clearfix" >
+                            <div class="left">
+                                <label>出差开始时间：</label>
+                            </div>
+                            <div class="right">
+                                <div class="content_input">
+                                    <input type="text" id="trip_start_time">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item clearfix">
+                            <div class="left">
+                                <label>出差结束时间：</label>
+                            </div>
+                            <div class="right">
+                                <div class="content_input">
+                                    <input type="text" id="trip_end_time">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item clearfix">
+                            <div class="left">
+                                <label>链接：</label>
+                            </div>
+                            <div class="right">
+                                <div class="content_input">
+                                    <input type="text">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
+                <div class="trip_addrecord_btn">
+                    <button type="button" class="btn btn-info addRecord">保存</button>
+                    <button type="button" class="btn btn-default back">返回</button>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 <script src="../public/vendors/jquery/jquery.js"></script>
 <script src="../node_modules/art-template/lib/template-web.js"></script>
@@ -129,10 +130,18 @@
 <script src="../public/js/mnueManger/mnueManger.js"></script>
 <script src="../public/vendors/util/DateUtils.js"></script>
 <script src="../public/js/bussnessTrip/bussnessTrip.js"></script>
-<script type="text/art-template" id="tripList">
-    <% for(var i = 0;i<tripList.length ;i++){ %>
-        <div><%= tripList[i].start_company_desc %></div>
-    <% } %>
+<script type="text/art-template" id="trip_list">
+    <ul class="list-group">
+        <% if(tripList){ %>
+            <% for(var i = 0;i<tripList.length ;i++){ %>
+                <li class="list-group-item"><%= tripList[i].start_company_desc%>到<%= tripList[i].end_company_desc%>，出差天数共：<%= tripList[i].CCTS %>天</li>
+            <% } %>
+        <% } %>
+    </ul>
+    <div type="button" class="add"  data-toggle="modal" data-target="#trip_modal">
+        <span class="add_font glyphicon glyphicon-plus"></span>
+        <span class="add_text">添加记录</span>
+    </div>
 </script>
 <script>NProgress.done()</script>
 </body>

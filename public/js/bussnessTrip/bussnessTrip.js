@@ -4,14 +4,20 @@ $(function () {
     var year = date.getFullYear();
     var month = date.getMonth()+1;
     var day = date.getDate();
+    day = day <10 ?'0'+day:day;
     month = month < 10 ?'0'+month:month;
     $('.showTime').html(year+'-'+month);
     //从缓存中获取登录账号
+    $('.order_list_time').html($('.showTime').html()+'-'+day+"出差记录");
+    requestOrder(day);
+});
+function requestOrder(day) {
     var userStr = localStorage.getItem('email');
     var email = '';
     if(userStr){
         email = JSON.parse(userStr)[0];
     }
+    $('.order_list_time').html($('.showTime').html()+'-'+day+"出差记录");
     $.ajax({
         type: 'get',
         url: '/baixiu/searchOrder',
@@ -19,15 +25,16 @@ $(function () {
         dataType: "json",
         success: function (data) {
             //渲染出差订单
-            var statusListtml = template('tripList',data);
-            console.log(statusListtml)
+            var statusListtml = template('trip_list',data);
+            console.log(statusListtml);
+            $('.order-list').html(statusListtml);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert("请求失败！");
         }
 
     });
-});
+}
 function changeMonth(type) {
     var showTime = $('.calendar .showTime').html();
     var year = showTime.split('-')[0];
@@ -43,4 +50,8 @@ function changeMonth(type) {
     dateUtils.renderCander($('tbody'),currentDateMonth,['日','一','二','三','四','五','六'])
 }
 function addRecode(obj) {
+    requestOrder($(obj).html());
+}
+function addTripRecord() {//添加出差记录
+
 }

@@ -473,12 +473,12 @@ router.get('/baixiu/searchOrder',function (req,res) {
     var email = req.query.email;
     var date = req.query.date;
     var querySql = "select count(1) as totalCount from trip_order o where o.start_date = str_to_date('"+date+"','%Y-%m-%d') and o.email='"+email+"'";
-    console.log(querySql);
     DbUtils.queryData(querySql,function (result) {
         if(result[0].totalCount>0){
             //查询到出差记录
             var querySql = "SELECT\n" +
                 "\to.order_no,\n" +
+                "(datediff(str_to_date(o.end_date, '%Y-%m-%d'),str_to_date(o.start_date, '%Y-%m-%d'))+1) as CCTS,\n" +
                 "\t(\n" +
                 "\t\tSELECT\n" +
                 "\t\t\torg.company_desc\n" +
@@ -499,8 +499,9 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "\ttrip_order o\n" +
                 "WHERE\n" +
                 "\to.start_date = str_to_date('"+date+"', '%Y-%m-%d')\n" +
-                "and o.email = '"+email+"'\n" +
-                "AND o.order_flag = 1\n";
+                "AND o.email = '"+email+"'\n" +
+                "AND o.order_flag = 1\n"
+            console.log(querySql);
             DbUtils.queryData(querySql,function (result) {
                 res.json({
                     status:0,

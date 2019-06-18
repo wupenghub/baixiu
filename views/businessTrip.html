@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/public/css/admin.css">
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
     <link rel="stylesheet" href="/public/css/tripRecord/tripRecord.css">
-
+    <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap-datetimepicker.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
     </script>
@@ -78,8 +78,8 @@
                             <div class="left">
                                 <label>出差开始时间：</label>
                             </div>
-                            <div class="right">
-                                <div class="content_input">
+                            <div class="right" >
+                                <div class="content_input" id='datetimepicker1'>
                                     <input type="text" id="trip_start_time">
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
@@ -130,6 +130,7 @@
 <script src="../public/js/mnueManger/mnueManger.js"></script>
 <script src="../public/vendors/util/DateUtils.js"></script>
 <script src="../public/js/bussnessTrip/bussnessTrip.js"></script>
+<script src="../public/vendors/bootstrap/js/bootstrap-datetimepicker.js"></script>
 <script type="text/art-template" id="trip_list">
     <ul class="list-group">
         <% if(tripList){ %>

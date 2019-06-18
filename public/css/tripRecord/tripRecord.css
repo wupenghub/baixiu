@@ -1,0 +1,141 @@
+body{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+thead {
+    border: 1px solid gray;
+    border-bottom: none;
+}
+
+thead tr td:not(.empty){
+    padding: 5px 10px 5px 10px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+thead tr td:not(.empty):hover {
+    background-color: lightgray;
+    color: white;
+    z-index: 999;
+}
+
+tbody {
+    border: 1px solid gray;
+    border-top: none;
+}
+
+tbody td:not(.empty) {
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+tbody td.now {
+    background-color: blue;
+    color: white;
+}
+
+tbody td:not(.empty):hover {
+    background-color: lightgray;
+    color: white;
+}
+.calendar{
+    width: 35%;
+    float: left;
+}
+.list{
+    width: 65%;
+    float: left;
+}
+.list-group-item{
+    font-weight: bold;
+}
+.list-group-item:hover{
+    background-color: lightgray;
+    color: white;
+    cursor: pointer;
+}
+.order_list_time{
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bolder;
+    font-family: "Microsoft Yahei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.add{
+    background: lightgray;
+    margin-top: 20px;
+    border-radius: 5px;
+    text-align: center;
+    position: relative;
+}
+.add .add_font{
+    position: absolute;
+    left: 10px;
+   font-size: x-large;
+   color: white;
+   top:5px;
+}
+.add:hover{
+    background: lightblue;
+    cursor: pointer;
+}
+.add .add_text{
+    height: 35px;
+    line-height: 35px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+}
+.modal-body{
+    padding: 0;
+}
+.modal-body ul{
+    padding: 0px;
+}
+.modal-body ul .item{
+    list-style: none;
+    padding: 20px 0;
+    border-bottom: 1px dashed gray;
+    text-align: center;
+}
+.modal-body .left{
+    float: left;
+    width: 40%;
+}
+.modal-body .left label{
+    float: right;
+}
+.modal-body .right{
+    width: 60%;
+    float: right;
+}
+.modal-body .right .content_input{
+    float: left;
+    margin-left: 20px;
+}
+.modal-body ul li .item .right input{
+    border: 1px solid silver;
+    border-radius: 4px;
+}
+.modal-body .trip_addrecord_btn{
+   text-align: center;
+    margin-bottom: 20px;
+}
+.modal-body .trip_addrecord_btn .addRecord{
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.modal-body .trip_addrecord_btn .back{
+    display: inline-block;
+}
+.clearfix:after{
+    content:"";
+    display:table;
+    height:0;
+    clear:both;
+}

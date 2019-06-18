@@ -44,11 +44,11 @@ tbody td:not(.empty):hover {
     color: white;
 }
 .calendar{
-    width: 35%;
+    width: 40%;
     float: left;
 }
 .list{
-    width: 65%;
+    width: 60%;
     float: left;
 }
 .list-group-item{

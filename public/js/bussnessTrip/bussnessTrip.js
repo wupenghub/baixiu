@@ -10,6 +10,10 @@ $(function () {
     //从缓存中获取登录账号
     $('.order_list_time').html($('.showTime').html()+'-'+day+"出差记录");
     requestOrder(day);
+    $('#datetimepicker1').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn')
+    });
 });
 function requestOrder(day) {
     var userStr = localStorage.getItem('email');
@@ -50,7 +54,8 @@ function changeMonth(type) {
     dateUtils.renderCander($('tbody'),currentDateMonth,['日','一','二','三','四','五','六'])
 }
 function addRecode(obj) {
-    requestOrder($(obj).html());
+    var day = parseInt($(obj).html())<10?'0'+$(obj).html():$(obj).html()
+    requestOrder(day);
 }
 function addTripRecord() {//添加出差记录
 

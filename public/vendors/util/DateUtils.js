@@ -44,11 +44,11 @@ var dateUtils = {
             }
             var dateString = year+'/'+month+'/'+dayAarray[i];
             if(nowDateString==dateString){
-                tr.append('<td class="now" title="双击添加记录" ondblclick="addRecode(this)">'+dayAarray[i]+'</td>');
+                tr.append('<td class="date_td now" title="点击添加记录" onclick="addRecode(this)">'+dayAarray[i]+'</td>');
             }else if (dayAarray[i]== ''){
                 tr.append('<td class="empty"></td>');
             }else{
-                tr.append('<td title="双击添加记录" ondblclick="addRecode(this)">'+dayAarray[i]+'</td>');
+                tr.append('<td class="date_td" title="点击添加记录" onclick="addRecode(this)">'+dayAarray[i]+'</td>');
             }
         }
     }

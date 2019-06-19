@@ -32,6 +32,7 @@ tbody td:not(.empty) {
     padding: 15px;
     cursor: pointer;
     text-align: center;
+    position: relative;
 }
 
 tbody td.now {
@@ -99,7 +100,7 @@ tbody td:not(.empty):hover {
 .modal-body ul .item{
     list-style: none;
     padding: 20px 0;
-    border-bottom: 1px dashed gray;
+    border-bottom: 1px solid silver;
     text-align: center;
 }
 .modal-body .left{
@@ -120,6 +121,7 @@ tbody td:not(.empty):hover {
 .modal-body ul li .item .right input{
     border: 1px solid silver;
     border-radius: 4px;
+    padding: 5px;
 }
 .modal-body .trip_addrecord_btn{
    text-align: center;
@@ -138,4 +140,26 @@ tbody td:not(.empty):hover {
     display:table;
     height:0;
     clear:both;
+}
+.chooseDate{
+    background: pink;
+    color: white;
+}
+.triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: 30px solid yellowgreen;
+    border-left: 30px solid transparent;
+    right: 0;
+    top: 0px;
+    position: absolute;
+    line-height: 15px;
+}
+.recode_count{
+    position: absolute;
+    right: 4px;
+    top:-28px;
+}
+.has_count{
+    background: lightgreen;
 }

@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/public/css/admin.css">
     <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
     <link rel="stylesheet" href="/public/css/tripRecord/tripRecord.css">
-    <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap-datetimepicker.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
     </script>
@@ -30,7 +29,6 @@
         <div class="page-title">
             <h1>出差记录</h1>
         </div>
-
         <div class="calendar">
             <table>
                 <thead>
@@ -63,7 +61,7 @@
 </div>
 <!-- Modal -->
 <div class="trip">
-<div class="modal fade mnue-manger-tree" id="trip_modal" tabindex="-1">
+    <div class="modal fade mnue-manger-tree" id="trip_modal" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -76,10 +74,10 @@
                     <li>
                         <div class="item clearfix" >
                             <div class="left">
-                                <label>出差开始时间：</label>
+                                <label>出差起始时间：</label>
                             </div>
                             <div class="right" >
-                                <div class="content_input" id='datetimepicker1'>
+                                <div class="content_input">
                                     <input type="text" id="trip_start_time">
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
@@ -102,11 +100,24 @@
                     <li>
                         <div class="item clearfix">
                             <div class="left">
-                                <label>链接：</label>
+                                <label>出差起始地：</label>
                             </div>
                             <div class="right">
                                 <div class="content_input">
-                                    <input type="text">
+                                    <input type="text" id="start_company">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item clearfix">
+                            <div class="left">
+                                <label>出差目的地：</label>
+                            </div>
+                            <div class="right">
+                                <div class="content_input">
+                                    <input type="text" id="end_company">
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -114,8 +125,8 @@
                     </li>
                 </ul>
                 <div class="trip_addrecord_btn">
-                    <button type="button" class="btn btn-info addRecord">保存</button>
-                    <button type="button" class="btn btn-default back">返回</button>
+                    <button type="button" class="btn btn-info addRecord" onclick="addTripRecord()">保存</button>
+                    <button type="button" class="btn btn-default back" data-dismiss="modal">返回</button>
                 </div>
             </div>
         </div>
@@ -139,7 +150,7 @@
             <% } %>
         <% } %>
     </ul>
-    <div type="button" class="add"  data-toggle="modal" data-target="#trip_modal">
+    <div type="button" class="add"  data-toggle="modal" data-target="#trip_modal"  onclick="showAddInfo()">
         <span class="add_font glyphicon glyphicon-plus"></span>
         <span class="add_text">添加记录</span>
     </div>

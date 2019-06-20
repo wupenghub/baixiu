@@ -33,13 +33,14 @@ function requestMonthTripCount() {
         //渲染出差订单
         $(".calendar table td.date_td").each(function () {
             var day = $(this).html();
+            // $(this).remove('.triangle-topright');
             day = parseInt(day) < 10 ? '0' + parseInt(day) : parseInt(day);
             if (data.resultDate && data.resultDate.length > 0) {
                 for (var i = 0; i < data.resultDate.length; i++) {
                     var tdDate = $('.showTime').html() + '-' + day;
                     var returnDate = data.resultDate[i].year + '-' + data.resultDate[i].month + '-' + data.resultDate[i].day;
                     if (tdDate == returnDate) {
-                        $(this).remove('.triangle-topright');
+                        // $(this).remove('.triangle-topright');
                         $(this).append('<div class="triangle-topright"><span class="recode_count">' + data.resultDate[i].totalCount + '</span></div>');
                         $(this).addClass('has_count');
                     }
@@ -81,8 +82,10 @@ function changeMonth(type) {
     var changeMonth = '';
     if (type == '-') {
         changeMonth = currentDateMonth.getMonth() - 1;
-    } else {
+    } else if(type == '+'){
         changeMonth = currentDateMonth.getMonth() + 1;
+    }else {
+        changeMonth = currentDateMonth.getMonth();
     }
     currentDateMonth.setMonth(changeMonth, 1);
     dateUtils.renderCander($('tbody'), currentDateMonth, ['日', '一', '二', '三', '四', '五', '六']);
@@ -99,8 +102,38 @@ function addRecode(obj) {
     requestOrder(day);
 }
 
-function showAddInfo() {
-    $('#trip_start_time').val($('.showTime').html() + '-' + window.chooseDate);
+function showAddInfo(isAdd,orderNo) {
+    window.isAdd = isAdd;
+    window.orderNo = orderNo;
+    if(isAdd == 'Y') {//如果是添加只需要显示开始时间
+        $('#trip_start_time').val($('.showTime').html() + '-' + window.chooseDate);
+    }else{//如果是修改需要请求服务器回显所有数据
+        var userStr = localStorage.getItem('email');
+        var email = '';
+        if (userStr) {
+            email = JSON.parse(userStr)[0];
+        }
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/searchOrderByNo',
+            data: {email, orderNo},
+            dataType: "json"
+        },function (result) {
+            var info = result.result[0];
+            var startDate = new Date(info.start_date);
+            var startStr = concatTime(startDate);
+            var endDate = new Date(info.end_date);
+            var endStr = concatTime(endDate);
+            var startCompany = info.start_company;
+            var endCompany = info.end_company;
+            $('#trip_start_time').val(startStr);
+            $('#trip_end_time').val(endStr);
+            $('#start_company').val(startCompany);
+            $('#end_company').val(endCompany);
+        },function (err) {
+            
+        })
+    }
 }
 
 function addTripRecord() {//添加出差记录
@@ -135,10 +168,12 @@ function addTripRecord() {//添加出差记录
         url: '/baixiu/addRecord',
         data: {
             email,
-            startDate: $('.showTime').html() + '-' + window.chooseDate,
+            startDate,
             endDate,
             startCompany,
-            endCompany
+            endCompany,
+            isAdd:window.isAdd,
+            orderNo:window.orderNo
         },
         dataType: "json"
     }, function (data) {
@@ -146,7 +181,8 @@ function addTripRecord() {//添加出差记录
         if (data.status == 0) {
             $('#trip_modal').modal('toggle');
             //添加成功后重新获取出差数
-            requestMonthTripCount();
+            // requestMonthTripCount();
+            changeMonth();
             //添加成功重新刷新列表
             requestOrder(window.chooseDate);
         } else {
@@ -162,4 +198,13 @@ function initInfo() {//初始化弹框内容
     $('#trip_end_time').val('');
     $('#start_company').val('');
     $('#end_company').val('');
+}
+
+function concatTime(date) {
+    var startYear = date.getFullYear();
+    var startMonth = date.getMonth()+1;
+    startMonth = startMonth < 10 ? '0'+startMonth:startMonth;
+    var startDay = date.getDate();
+    startDay = startDay < 10 ? '0'+startDay:startDay;
+    return startYear+'-'+startMonth+'-'+startDay;
 }

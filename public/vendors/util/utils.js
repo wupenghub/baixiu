@@ -239,5 +239,23 @@ var utils = {
                 alert('请求失败！');
             }
         });
+    },
+    ajaxSend(obj,success,err){
+        // 显示请求动画
+        $.ajax({
+            type: obj.type,
+            url: obj.url,
+            data: obj.data,
+            dataType: obj.dataType,
+            success: function (data) {
+                //关闭动画
+                success(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //关闭动画
+                err(errorThrown);
+            }
+
+        });
     }
 };

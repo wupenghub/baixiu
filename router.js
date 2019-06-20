@@ -4,6 +4,7 @@ var DbUtils = require('./DbUtils');
 var utils = require('./util/utils');
 var mail = require('./util/mail');
 var md5 = require('md5-node');
+var uuid = require('node-uuid')
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -473,6 +474,7 @@ router.get('/baixiu/searchOrder',function (req,res) {
     var email = req.query.email;
     var date = req.query.date;
     var querySql = "select count(1) as totalCount from trip_order o where o.start_date = str_to_date('"+date+"','%Y-%m-%d') and o.email='"+email+"'";
+    console.log(querySql);
     DbUtils.queryData(querySql,function (result) {
         if(result[0].totalCount>0){
             //查询到出差记录
@@ -500,12 +502,13 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "WHERE\n" +
                 "\to.start_date = str_to_date('"+date+"', '%Y-%m-%d')\n" +
                 "AND o.email = '"+email+"'\n" +
-                "AND o.order_flag = 1\n"
+                "AND o.order_flag = 1\n";
             console.log(querySql);
             DbUtils.queryData(querySql,function (result) {
                 res.json({
                     status:0,
-                    tripList:result
+                    tripList:result,
+                    totalCount:result[0].totalCount
                 })
             },function (err) {
                 res.json({
@@ -522,5 +525,120 @@ router.get('/baixiu/searchOrder',function (req,res) {
     },function (err) {
 
     });
+});
+//查询每个月中所有日期的订单数
+router.get('/baixiu/searchMonthTripCount',function (req,res) {
+    var email = req.query.email;
+    var date = req.query.date;
+    var startYear = date.split('-')[0];
+    var month = parseInt(date.split('-')[1]);
+    var date = new Date(startYear,month);
+    var startMonth = date.getMonth() < 10?'0'+date.getMonth():date.getMonth();
+    date.setMonth(date.getMonth()+1,1);
+    var nextYear = date.getFullYear();
+    var nextMonth = date.getMonth() <10 ? '0'+date.getMonth():date.getMonth();
+    var startDate = startYear+'-'+startMonth+'-01';
+    var nextDate = nextYear+'-'+nextMonth+'-01';
+    var querySql = "SELECT\n" +
+        "\t\t\tSUBSTR(o.start_date, 1, 4) AS year,\n" +
+        "\t\t\tSUBSTR(o.start_date, 6, 2) AS month,\n" +
+        "\t\t\tSUBSTR(o.start_date, 9, 10) AS day,\n" +
+        "\t\t\tcount(1) AS totalCount\n" +
+        "\t\tFROM\n" +
+        "\t\t\ttrip_order o\n" +
+        "\t\tWHERE\n" +
+        "\t\t\to.start_date >= str_to_date('"+startDate+"', '%Y-%m-%d')\n" +
+        "\t\tAND o.start_date < str_to_date('"+nextDate+"', '%Y-%m-%d')\n" +
+        "group by year,month,day";
+    console.log('searchMonthTripCount:'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        res.json({
+            status:0,
+            resultDate:result
+        });
+    },function (err) {
+        res.json({
+            status:-1,
+            resultDate:err
+        });
+    });
+});
+//新增出差订单
+router.post('/baixiu/addRecord',function (req,res) {
+    var email = req.body.email;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var startCompany = req.body.startCompany;
+    var endCompany = req.body.endCompany;
+    var isAdd = req.body.isAdd;
+    var querySql = '';
+    if(isAdd == 'Y') {
+        var orderNo = uuid.v1();
+        querySql = "INSERT INTO trip_order\n" +
+            "VALUES\n" +
+            "\t(\n" +
+            "\t\t'" + orderNo + "',\n" +
+            "\t\t'" + email + "',\n" +
+            "\t\t'" + startDate + "',\n" +
+            "\t\t'" + endDate + "',\n" +
+            "\t\t1,\n" +
+            "\t\t'" + startCompany + "',\n" +
+            "\t\t'" + endCompany + "'\n" +
+            "\t)";
+    }else{
+            querySql = "UPDATE trip_order o\n" +
+            "SET o.email = '"+email+"',\n" +
+            " o.start_date = str_to_date('"+startDate+"', '%Y-%m-%d'),\n" +
+            " o.end_date = str_to_date('"+endDate+"', '%Y-%m-%d'),\n" +
+            " o.start_company = '"+startCompany+"',\n" +
+            " o.end_company = '"+endCompany+"'\n" +
+            "WHERE\n" +
+            "\to.order_no = '"+req.body.orderNo+"'\n" +
+            "AND o.email = '565784355@qq.com'";
+    }
+    console.log("addRecord:"+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        console.log(result);
+        if(result.affectedRows>0){
+            res.json({
+                status:0,
+                desc:'记录添加成功'
+            })
+        }else{
+            res.json({
+                status:1,
+                desc:'记录没有添加'
+            })
+        }
+    },function (err) {
+        res.json({
+            status:-1,
+            desc:err
+        })
+    });
+
+});
+//根据订单号查询订单
+router.get('/baixiu/searchOrderByNo',function (req,res) {
+    var email = req.query.email;
+    var orderNo = req.query.orderNo;
+    var querySql = "SELECT\n" +
+        "\t*\n" +
+        "FROM\n" +
+        "\ttrip_order o\n" +
+        "WHERE\n" +
+        "\to.order_no = '"+orderNo+"'\n" +
+        "AND o.email = '"+email+"'";
+    console.log('searchOrderByNo:'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        console.log(result);
+        res.json({
+            status:0,
+            result
+        });
+    },function (error) {
+
+    });
+
 });
 module.exports = router;

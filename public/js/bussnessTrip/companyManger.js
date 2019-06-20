@@ -90,18 +90,20 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
-    window.obj = obj;
+    // window.obj = obj;
+    window.sonObj = obj;
     $('.company-manger .company-tabs li:first-child').removeClass('active');
     $('.company-manger .company-tabs li:last-child').addClass('active');
     $('.company-manger .company-content div:first-child').removeClass('active');
     $('.company-manger .company-content div:last-child').addClass('active');
     //将点击链接的节点信息描述设置到文本框中
     $('.company-manger .mnue_desc').val(obj.mnue_desc);
-    $('.company-manger .mnue_url').val(obj.url);
+    $('.company-manger .mnue_url').val(obj.id);
     // utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
     utils.findParentBySon(window.returnDate,obj);
     $('.company-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
-    mnueObj = utils.parentObj;
+    // mnueObj = utils.parentObj;
+    window.parentObj = utils.parentObj;
     $('.company-manger .save').unbind();
     $('.company-manger .save').on('click',function () {
         //判断必填信息是否已经填写
@@ -159,7 +161,8 @@ function addMnueList(array) {
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
-    window.obj = obj;
+    // window.obj = obj;
+    window.parentObj = obj;
     //跳转到添加子菜单的页面
     $('.company-manger .company-tabs li:first-child').removeClass('active');
     $('.company-manger .company-tabs li:last-child').addClass('active');
@@ -197,12 +200,14 @@ function addMnues(obj) {
         type:'post',
         dataType:'json',
         data:{
-            id:window.obj.id,
+            id:$('.company-manger .mnue_url').val(),
+            oldId:window.sonObj&&window.sonObj.id,
             mnueDesc:$('.company-manger .mnue_desc').val(),
-            parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
+            parentId:window.parentObj.id,
             isUpdate:isUpdate
         },
         success:function (data) {
+            alert('====');
             if(data.status == 0){
                 //添加成功
                 addMnueList(data.dataJsonArr);
@@ -247,12 +252,15 @@ function mnueTreeInModel() {
 
 };
 function chooseMnue(obj) {
-   if(isUpdate == 'Y'){
-       mnueObj = obj;
-       $('.company-manger .search_text').val(mnueObj.mnue_desc);
-   }else{
-       window.obj = obj;
-       $('.company-manger .search_text').val(window.obj.mnue_desc);
-   }
+    window.parentObj = obj;
+   // if(isUpdate == 'Y'){
+   //     mnueObj = obj;
+   //     $('.company-manger .search_text').val(mnueObj.mnue_desc);
+   // }else{
+   //     window.obj = obj;
+   //     $('.company-manger .search_text').val(window.obj.mnue_desc);
+   // }
+   //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
+    $('.company-manger .search_text').val(window.parentObj.mnue_desc);
     $('.company-manger-tree').modal('hide');
 }

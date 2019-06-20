@@ -693,18 +693,19 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
+    console.log(req.body.id+'==='+req.body.mnueDesc+'==='+req.body.parentId+'===='+req.body.isUpdate)
     //先判断此id在数据库中是否存在
     var querySql = 'select count(1) count from company_org m where m.company_code = "' + req.body.id+'"';
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
             //查询有此记录，执行添加目录sql
-            var inserSql = '';
-            if (req.body.isUpdate == 'N') {
-                inserSql = 'insert into company_org value("'+req.body.id+'","sz","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
-            } else {
-                inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
-            }
+            // var inserSql = '';
+            // if (req.body.isUpdate == 'N') {
+            //     inserSql = 'insert into company_org value("'+req.body.id+'","sz","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
+            // } else {
+            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
+            // }
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
@@ -721,19 +722,65 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                             array.push(queryResult[i]);
                         }
                     }
-                    var sessionJson = {};
-                    sessionJson.user = req.session.user[0];
-                    sessionJson.dataJsonArr = array;
-                    req.session.userInfo = JSON.stringify(sessionJson);
                     data.dataJsonArr = array;
                     res.json(data);
                 });
             });
         } else {
             //查询无记录
-            data.status = 1;
-            data.desc = '数据库中无此目录';
-            res.json(data);
+            console.log('=======')
+            if (req.body.isUpdate == 'N') {
+                data.status = 0;
+                data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                var inserSql = 'insert into company_org value("'+req.body.id+'","sz","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
+                DbUtils.queryData(inserSql, function (result) {
+                    data.status = 0;
+                    data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                    var sql = 'select m.company_code as companyCode,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as companyDesc from company_org m';
+                    DbUtils.queryData(sql, function (queryResult) {
+                        for (var i = 0; i < queryResult.length; i++) {
+                            utils.addList(queryResult, queryResult[i]);
+                        }
+                        // 将result中所有节点parent_id值不为空的给踢出掉
+                        var array = [];
+                        for (var i = 0; i < queryResult.length; i++) {
+                            if (!queryResult[i]['parent_id']) {
+                                array.push(queryResult[i]);
+                            }
+                        }
+                        data.dataJsonArr = array;
+                        res.json(data);
+                    });
+                });
+            } else {
+                // data.status = 1;
+                // data.desc = '数据库中无此目录';
+                // res.json(data);
+                data.status = 0;
+                data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.oldId+'"';
+                DbUtils.queryData(inserSql, function (result) {
+                    data.status = 0;
+                    data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                    var sql = 'select m.company_code as companyCode,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as companyDesc from company_org m';
+                    DbUtils.queryData(sql, function (queryResult) {
+                        for (var i = 0; i < queryResult.length; i++) {
+                            utils.addList(queryResult, queryResult[i]);
+                        }
+                        // 将result中所有节点parent_id值不为空的给踢出掉
+                        var array = [];
+                        for (var i = 0; i < queryResult.length; i++) {
+                            if (!queryResult[i]['parent_id']) {
+                                array.push(queryResult[i]);
+                            }
+                        }
+                        data.dataJsonArr = array;
+                        res.json(data);
+                    });
+                });
+
+            }
+
         }
 });
 

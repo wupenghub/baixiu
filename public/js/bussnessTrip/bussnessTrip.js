@@ -85,7 +85,7 @@ function changeMonth(type) {
         changeMonth = currentDateMonth.getMonth() + 1;
     }
     currentDateMonth.setMonth(changeMonth, 1);
-    dateUtils.renderCander($('tbody'), currentDateMonth, ['日', '一', '二', '三', '四', '五', '六'])
+    dateUtils.renderCander($('tbody'), currentDateMonth, ['日', '一', '二', '三', '四', '五', '六']);
     requestMonthTripCount();
 }
 

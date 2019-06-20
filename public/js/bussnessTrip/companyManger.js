@@ -11,7 +11,6 @@ $(function () {
     for(var i = 0;i<dataJson.dataJsonArr.length;i++){
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
-        // utils.addTableMnues(tbody,dataJson.dataJsonArr[i],null,0);
     }
     $('.company-manger .save').on('click',function () {
         //判断必填信息是否已经填写
@@ -105,11 +104,15 @@ function mnueModify(obj) {
     $('.company-manger .save').on('click',function () {
         //判断必填信息是否已经填写
         if(!$('.company-manger .search_text').val()){
-            alert('请选择上级菜单');
+            alert('请选择上级公司');
             return;
         }
         if(!$('.company-manger .mnue_desc').val()){
-            alert('请填写菜单名称');
+            alert('请填写公司名称');
+            return;
+        }
+        if(!$('.company-manger .mnue_url').val()){
+            alert('请填写公司代码');
             return;
         }
         //所有验证通过，发送请求进行
@@ -223,13 +226,24 @@ function addMnues(obj) {
     })
 }
 function mnueTreeInModel() {
-    var data = $("#template").html().replace(/&#34;/g,'"');
-    var dataJson = JSON.parse(data);
     $('.company-manger-tree .company-manger-model').html('');
-    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+    utils.ajaxSend({type: 'get',
+        url: '/baixiu/queryCompanyList',
+        data: {},
+        dataType: "json"
+    },function (result) {
+        for(var i = 0;i<result.returnDate.length;i++){
+            //循环遍历集合元素,添加公司目录。
+            // utils.addTableMnues(tbody,result.returnDate[i],null,0);
+            utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),result.returnDate[i],null,0);
+        }
+    },function (error) {
+
+    });
+   /* for(var i = 0;i<dataJson.dataJsonArr.length;i++){
         //循环遍历集合元素,添加菜单目录。
         utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),dataJson.dataJsonArr[i],null,0);
-    }
+    }*/
 
 };
 function chooseMnue(obj) {

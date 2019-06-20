@@ -146,11 +146,11 @@
     <ul class="list-group">
         <% if(tripList){ %>
             <% for(var i = 0;i<tripList.length ;i++){ %>
-                <li class="list-group-item"><%= tripList[i].start_company_desc%>到<%= tripList[i].end_company_desc%>，出差天数共：<%= tripList[i].CCTS %>天</li>
+                <li class="list-group-item" data-toggle="modal" data-target="#trip_modal" onclick="showAddInfo('N','<%= tripList[i].order_no%>')"><%= tripList[i].start_company_desc%>到<%= tripList[i].end_company_desc%>，出差天数共：<%= tripList[i].CCTS %>天</li>
             <% } %>
         <% } %>
     </ul>
-    <div type="button" class="add"  data-toggle="modal" data-target="#trip_modal"  onclick="showAddInfo()">
+    <div type="button" class="add"  data-toggle="modal" data-target="#trip_modal"  onclick="showAddInfo('Y')">
         <span class="add_font glyphicon glyphicon-plus"></span>
         <span class="add_text">添加记录</span>
     </div>

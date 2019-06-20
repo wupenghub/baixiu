@@ -98,14 +98,12 @@ function addRecode(obj) {
     $('table tr .date_td').removeClass("chooseDate");
     $(obj).addClass('chooseDate');
     //发送请求获取订单列表
-    var day = parseInt($(obj).html())<10?'0'+$(obj).html():$(obj).html();
-    console.log($(obj).html())
+    var day = parseInt($(obj).html())<10?'0'+parseInt($(obj).html()):parseInt($(obj).html());
     window.chooseDate = day;
     requestOrder(day);
 }
 function showAddInfo() {
     $('#trip_start_time').val($('.showTime').html()+'-'+window.chooseDate);
-    // console.log($('.showTime').html()+'-'+window.chooseDate);
 }
 function addTripRecord() {//添加出差记录
     //校验必填字段是否已经填写完整

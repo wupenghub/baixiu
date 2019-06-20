@@ -45,6 +45,7 @@ $(function () {
         dataType: "json"
     },function (result) {
         console.log(result);
+        window.returnDate = result.returnDate;
         for(var i = 0;i<result.returnDate.length;i++){
             //循环遍历集合元素,添加公司目录。
             utils.addTableMnues(tbody,result.returnDate[i],null,0);
@@ -97,7 +98,8 @@ function mnueModify(obj) {
     //将点击链接的节点信息描述设置到文本框中
     $('.company-manger .mnue_desc').val(obj.mnue_desc);
     $('.company-manger .mnue_url').val(obj.url);
-    utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
+    // utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
+    utils.findParentBySon(window.returnDate,obj);
     $('.company-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
     mnueObj = utils.parentObj;
     $('.company-manger .save').unbind();

@@ -191,14 +191,12 @@ function addMnues(obj) {
         obj = mnueObj;
     }*/
     $.ajax({
-        url:'/baixiu/sonMnueAdd',
+        url:'/baixiu/sonCompanyAdd',
         type:'post',
         dataType:'json',
         data:{
             id:window.obj.id,
             mnueDesc:$('.company-manger .mnue_desc').val(),
-            url:$('.company-manger .mnue_url').val(),
-            // parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
             parentId:mnueObj?mnueObj.id:(utils.parentObj?utils.parentObj.id:null),
             isUpdate:isUpdate
         },
@@ -212,7 +210,7 @@ function addMnues(obj) {
                 $('.company-manger .company-content div:first-child').addClass('active');
                 $('.company-manger .company-content div:last-child').removeClass('active');
                 //将返回的集合数据重新渲染到标签中，供后面使用
-                $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
+                // $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
             }else{
                 //添加失败
                 alert('添加失败！');

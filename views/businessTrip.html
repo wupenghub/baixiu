@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
     <link rel="stylesheet" href="/public/css/admin.css">
-    <link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">
+    <!--<link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">-->
     <link rel="stylesheet" href="/public/css/tripRecord/tripRecord.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
@@ -104,7 +104,8 @@
                             </div>
                             <div class="right">
                                 <div class="content_input">
-                                    <input type="text" id="start_company">
+                                    <input type="text" id="start_company" readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="searchCompany()"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -117,7 +118,8 @@
                             </div>
                             <div class="right">
                                 <div class="content_input">
-                                    <input type="text" id="end_company">
+                                    <input type="text" id="end_company" readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="searchCompany()"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -132,6 +134,22 @@
         </div>
     </div>
 </div>
+</div>
+<!-- Modal2 -->
+<div class="modal fade company-manger-tree" id="company_tree" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >公司列表</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="company-manger-model">
+
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="../public/vendors/jquery/jquery.js"></script>
 <script src="../node_modules/art-template/lib/template-web.js"></script>

@@ -208,3 +208,25 @@ function concatTime(date) {
     startDay = startDay < 10 ? '0'+startDay:startDay;
     return startYear+'-'+startMonth+'-'+startDay;
 }
+//查询公司列表
+function searchCompany() {
+    utils.ajaxSend({type: 'get',
+        url: '/baixiu/queryCompanyList',
+        data: {},
+        dataType: "json"
+    }
+    ,function (result) {
+            for(var i = 0;i<result.returnDate.length;i++){
+                //循环遍历集合元素,添加公司目录。
+                utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),result.returnDate[i],null,0);
+            }
+    },function (error) {
+
+    });
+   /* var dataJson = JSON.parse(data);
+    $('.mnue-manger-tree .mnue-manger-model').html('');
+    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+        //循环遍历集合元素,添加菜单目录。
+        utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),dataJson.dataJsonArr[i],null,0);
+    }*/
+}

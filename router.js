@@ -654,8 +654,8 @@ router.get('/baixiu/companyManger',function (req,res) {
 router.get('/baixiu/queryCompanyList',function (req,res) {
     var querySql = "SELECT\n" +
         "\torg.company_code AS id,\n" +
+        "\torg.company_code AS url,\n" +
         "\torg.parent_code AS parent_id,\n" +
-        "\torg.parent_code AS url,\n" +
         "\torg.address_code AS addressCode,\n" +
         "\torg.is_tz AS isTz,\n" +
         "\torg.company_desc AS mnue_desc\n" +
@@ -824,5 +824,15 @@ DbUtils.queryData(sql, function (result) {
         res.json(errResult);
     }
 });
+});
+//地址管理
+router.get('/baixiu/addressManger',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    res.render('addressManger.html', {dataJsonArr: req.session.userInfo});
 });
 module.exports = router;

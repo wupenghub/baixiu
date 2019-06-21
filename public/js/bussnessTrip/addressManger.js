@@ -4,37 +4,37 @@ $(function () {
     var data = $("#template").html().replace(/&#34;/g,'"');
     var dataJson = JSON.parse(data);
     var rootNode = $('.aside .nav');
-    var tbody = $('.company-manger table tbody');
+    var tbody = $('.address-manger table tbody');
     $('.avatar').prop('src',dataJson.user.avatar);
     $('.name').html(dataJson.user.nickname);
     for(var i = 0;i<dataJson.dataJsonArr.length;i++){
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
     }
-    $('.company-manger .save').on('click',function () {
+    $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
-        if(!$('.company-manger .search_text').val()){
+        if(!$('.address-manger .search_text').val()){
             alert('请选择上级菜单');
             return;
         }
-        if(!$('.company-manger .mnue_desc').val()){
+        if(!$('.address-manger .mnue_desc').val()){
             alert('请填写菜单名称');
             return;
         }
         //所有验证通过，发送请求进行
         addMnues(window.obj);
     });
-    $('.company-manger .back').on('click',function () {
-        $('.company-manger .company-tabs li:first-child').addClass('active');
-        $('.company-manger .company-tabs li:last-child').removeClass('active');
-        $('.company-manger .company-content div:first-child').addClass('active');
-        $('.company-manger .company-content div:last-child').removeClass('active');
+    $('.address-manger .back').on('click',function () {
+        $('.address-manger .address-tabs li:first-child').addClass('active');
+        $('.address-manger .address-tabs li:last-child').removeClass('active');
+        $('.address-manger .address-content div:first-child').addClass('active');
+        $('.address-manger .address-content div:last-child').removeClass('active');
         init();
     });
-    $('#company-add').off('click').on('click',function () {
+    $('#address-add').off('click').on('click',function () {
         isUpdate = 'N';
     });
-    $('#company-list').off('click').on('click',function () {
+    $('#address-list').off('click').on('click',function () {
         init();
     });
     //通过发送请求获取公司列表
@@ -54,9 +54,9 @@ $(function () {
     });
 });
 function init() {
-    $('.company-manger .mnue_desc').val('');
-    $('.company-manger .mnue_url').val('');
-    $('.company-manger .search_text').val('');
+    $('.address-manger .mnue_desc').val('');
+    $('.address-manger .mnue_url').val('');
+    $('.address-manger .search_text').val('');
 }
 function toggle(flag,obj,jsonObj) {
     findAllID(obj,jsonObj);
@@ -91,30 +91,30 @@ function mnueModify(obj) {
     isUpdate = 'Y';
     // window.obj = obj;
     window.sonObj = obj;
-    $('.company-manger .company-tabs li:first-child').removeClass('active');
-    $('.company-manger .company-tabs li:last-child').addClass('active');
-    $('.company-manger .company-content div:first-child').removeClass('active');
-    $('.company-manger .company-content div:last-child').addClass('active');
+    $('.address-manger .address-tabs li:first-child').removeClass('active');
+    $('.address-manger .address-tabs li:last-child').addClass('active');
+    $('.address-manger .address-content div:first-child').removeClass('active');
+    $('.address-manger .address-content div:last-child').addClass('active');
     //将点击链接的节点信息描述设置到文本框中
-    $('.company-manger .mnue_desc').val(obj.mnue_desc);
-    $('.company-manger .mnue_url').val(obj.id);
+    $('.address-manger .mnue_desc').val(obj.mnue_desc);
+    $('.address-manger .mnue_url').val(obj.id);
     // utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g,'"')).dataJsonArr,obj);
     utils.findParentBySon(window.returnDate,obj);
-    $('.company-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
+    $('.address-manger .search_text').val(utils.parentObj?utils.parentObj.mnue_desc:'');
     // mnueObj = utils.parentObj;
     window.parentObj = utils.parentObj;
-    $('.company-manger .save').unbind();
-    $('.company-manger .save').on('click',function () {
+    $('.address-manger .save').unbind();
+    $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
-        if(!$('.company-manger .search_text').val()){
+        if(!$('.address-manger .search_text').val()){
             alert('请选择上级公司');
             return;
         }
-        if(!$('.company-manger .mnue_desc').val()){
+        if(!$('.address-manger .mnue_desc').val()){
             alert('请填写公司名称');
             return;
         }
-        if(!$('.company-manger .mnue_url').val()){
+        if(!$('.address-manger .mnue_url').val()){
             alert('请填写公司代码');
             return;
         }
@@ -136,10 +136,10 @@ function mnueDelete(obj) {
             if(result.status == 1){
                 alert(result.desc);
             }else {
-                $('.company-manger table tbody').empty();
+                $('.address-manger table tbody').empty();
                 for(var i = 0;i<result.returnData.length;i++){
                     //循环遍历集合元素,添加公司目录。
-                    utils.addTableMnues($('.company-manger table tbody'),result.returnData[i],null,0);
+                    utils.addTableMnues($('.address-manger table tbody'),result.returnData[i],null,0);
                 }
             }
         },function (error) {
@@ -149,14 +149,14 @@ function mnueDelete(obj) {
 //添加菜单节点事件，在增删改之后调用
 function addMnueList(array) {
     var rootNode = $('.aside .nav');
-    var tbody = $('.company-manger table tbody');
+    var tbody = $('.address-manger table tbody');
     rootNode.html('');
     tbody.html('');
     for (var i = 0; i < array.length; i++) {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode,array[i]);
         utils.addTableMnues(tbody, array[i], null, 0);
-        utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'), array[i], null, 0);
+        utils.mnueTreeInModel($('.address-manger-tree .address-manger-model'), array[i], null, 0);
     }
 }
 //添加子菜单点击事件
@@ -165,21 +165,21 @@ function sonMnueAdd(obj) {
     // window.obj = obj;
     window.parentObj = obj;
     //跳转到添加子菜单的页面
-    $('.company-manger .company-tabs li:first-child').removeClass('active');
-    $('.company-manger .company-tabs li:last-child').addClass('active');
-    $('.company-manger .company-content div:first-child').removeClass('active');
-    $('.company-manger .company-content div:last-child').addClass('active');
+    $('.address-manger .address-tabs li:first-child').removeClass('active');
+    $('.address-manger .address-tabs li:last-child').addClass('active');
+    $('.address-manger .address-content div:first-child').removeClass('active');
+    $('.address-manger .address-content div:last-child').addClass('active');
     //将点击链接的节点信息描述设置到文本框中
-    $('.company-manger .search_text').val(obj.mnue_desc);
+    $('.address-manger .search_text').val(obj.mnue_desc);
     //先解除原先点击事件
-    $('.company-manger .save').unbind();
-    $('.company-manger .save').on('click',function () {
+    $('.address-manger .save').unbind();
+    $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
-        if(!$('.company-manger .search_text').val()){
+        if(!$('.address-manger .search_text').val()){
             alert('请选择上级菜单');
             return;
         }
-        if(!$('.company-manger .mnue_desc').val()){
+        if(!$('.address-manger .mnue_desc').val()){
             alert('请填写菜单名称');
             return;
         }
@@ -201,9 +201,9 @@ function addMnues(obj) {
         type:'post',
         dataType:'json',
         data:{
-            id:$('.company-manger .mnue_url').val(),
+            id:$('.address-manger .mnue_url').val(),
             oldId:window.sonObj&&window.sonObj.id,
-            mnueDesc:$('.company-manger .mnue_desc').val(),
+            mnueDesc:$('.address-manger .mnue_desc').val(),
             parentId:window.parentObj.id,
             isUpdate:isUpdate
         },
@@ -211,18 +211,18 @@ function addMnues(obj) {
             console.log(data);
             if(data.status == 0){
                 //添加成功
-                $('.company-manger table tbody').empty();
+                $('.address-manger table tbody').empty();
                 console.log(JSON.stringify(data.returnDate));
                 for(var i = 0;i<data.returnDate.length;i++){
                     //循环遍历集合元素,添加公司目录。
-                    utils.addTableMnues($('.company-manger table tbody'),data.returnDate[i],null,0);
+                    utils.addTableMnues($('.address-manger table tbody'),data.returnDate[i],null,0);
                 }
                 // addMnueList(data.returnDate);
                 //跳转到添加子菜单的页面
-                $('.company-manger .company-tabs li:first-child').addClass('active');
-                $('.company-manger .company-tabs li:last-child').removeClass('active');
-                $('.company-manger .company-content div:first-child').addClass('active');
-                $('.company-manger .company-content div:last-child').removeClass('active');
+                $('.address-manger .address-tabs li:first-child').addClass('active');
+                $('.address-manger .address-tabs li:last-child').removeClass('active');
+                $('.address-manger .address-content div:first-child').addClass('active');
+                $('.address-manger .address-content div:last-child').removeClass('active');
                 //将返回的集合数据重新渲染到标签中，供后面使用
                 // $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
             }else{
@@ -238,7 +238,7 @@ function addMnues(obj) {
     })
 }
 function mnueTreeInModel() {
-    $('.company-manger-tree .company-manger-model').html('');
+    $('.address-manger-tree .address-manger-model').html('');
     utils.ajaxSend({type: 'get',
         url: '/baixiu/queryCompanyList',
         data: {},
@@ -247,14 +247,14 @@ function mnueTreeInModel() {
         for(var i = 0;i<result.returnDate.length;i++){
             //循环遍历集合元素,添加公司目录。
             // utils.addTableMnues(tbody,result.returnDate[i],null,0);
-            utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),result.returnDate[i],null,0);
+            utils.mnueTreeInModel($('.address-manger-tree .address-manger-model'),result.returnDate[i],null,0);
         }
     },function (error) {
 
     });
    /* for(var i = 0;i<dataJson.dataJsonArr.length;i++){
         //循环遍历集合元素,添加菜单目录。
-        utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),dataJson.dataJsonArr[i],null,0);
+        utils.mnueTreeInModel($('.address-manger-tree .address-manger-model'),dataJson.dataJsonArr[i],null,0);
     }*/
 
 };
@@ -262,12 +262,12 @@ function chooseMnue(obj) {
     window.parentObj = obj;
    // if(isUpdate == 'Y'){
    //     mnueObj = obj;
-   //     $('.company-manger .search_text').val(mnueObj.mnue_desc);
+   //     $('.address-manger .search_text').val(mnueObj.mnue_desc);
    // }else{
    //     window.obj = obj;
-   //     $('.company-manger .search_text').val(window.obj.mnue_desc);
+   //     $('.address-manger .search_text').val(window.obj.mnue_desc);
    // }
-   //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
-    $('.company-manger .search_text').val(window.parentObj.mnue_desc);
-    $('.company-manger-tree').modal('hide');
+   //  $('.address-manger .search_text').val(mnueObj.mnue_desc);
+    $('.address-manger .search_text').val(window.parentObj.mnue_desc);
+    $('.address-manger-tree').modal('hide');
 }

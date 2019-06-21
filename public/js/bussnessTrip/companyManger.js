@@ -1,5 +1,4 @@
 var hiddenList = [];
-var mnueObj = null;
 var isUpdate = 'N';
 $(function () {
     var data = $("#template").html().replace(/&#34;/g,'"');
@@ -125,25 +124,27 @@ function mnueModify(obj) {
 
 }
 //删除菜单点击事件
-function mnueDelete(id) {
-    $.ajax({
-        type:'get',
-        url:'/baixiu/menuDelete',
+function mnueDelete(obj) {
+    var id = obj.id;
+    utils.ajaxSend({type:'get',
+        url:'/baixiu/companyDelete',
         data:{id},
-        dataType:'json',
-        success:function (data) {
+        dataType:'json'},
+        function (result) {
             // 删除成功，重新绚烂菜单节点
-            if(data.status == 1){
-                alert(data.desc);
+            console.log(result)
+            if(result.status == 1){
+                alert(result.desc);
             }else {
-                addMnueList(data.dataJsonArr);
+                $('.company-manger table tbody').empty();
+                for(var i = 0;i<result.returnData.length;i++){
+                    //循环遍历集合元素,添加公司目录。
+                    utils.addTableMnues($('.company-manger table tbody'),result.returnData[i],null,0);
+                }
             }
-            $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
-        },
-        error:function (XMLHttpRequest, textStatus, errorThrown) {
-            // alert("请求失败！");
-        }
-    });
+        },function (error) {
+
+        });
 }
 //添加菜单节点事件，在增删改之后调用
 function addMnueList(array) {
@@ -207,10 +208,16 @@ function addMnues(obj) {
             isUpdate:isUpdate
         },
         success:function (data) {
-            alert('====');
+            console.log(data);
             if(data.status == 0){
                 //添加成功
-                addMnueList(data.dataJsonArr);
+                $('.company-manger table tbody').empty();
+                console.log(JSON.stringify(data.returnDate));
+                for(var i = 0;i<data.returnDate.length;i++){
+                    //循环遍历集合元素,添加公司目录。
+                    utils.addTableMnues($('.company-manger table tbody'),data.returnDate[i],null,0);
+                }
+                // addMnueList(data.returnDate);
                 //跳转到添加子菜单的页面
                 $('.company-manger .company-tabs li:first-child').addClass('active');
                 $('.company-manger .company-tabs li:last-child').removeClass('active');

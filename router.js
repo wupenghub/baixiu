@@ -693,24 +693,17 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
-    console.log(req.body.id+'==='+req.body.mnueDesc+'==='+req.body.parentId+'===='+req.body.isUpdate)
     //先判断此id在数据库中是否存在
     var querySql = 'select count(1) count from company_org m where m.company_code = "' + req.body.id+'"';
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
-            //查询有此记录，执行添加目录sql
-            // var inserSql = '';
-            // if (req.body.isUpdate == 'N') {
-            //     inserSql = 'insert into company_org value("'+req.body.id+'","sz","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
-            // } else {
             var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
-            // }
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var sql = 'select m.company_code as companyCode,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as companyDesc from company_org m';
+                var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
                 DbUtils.queryData(sql, function (queryResult) {
                     for (var i = 0; i < queryResult.length; i++) {
                         utils.addList(queryResult, queryResult[i]);
@@ -722,13 +715,12 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                             array.push(queryResult[i]);
                         }
                     }
-                    data.dataJsonArr = array;
+                    data.returnDate = array;
                     res.json(data);
                 });
             });
         } else {
             //查询无记录
-            console.log('=======')
             if (req.body.isUpdate == 'N') {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
@@ -736,7 +728,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                    var sql = 'select m.company_code as companyCode,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as companyDesc from company_org m';
+                    var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);
@@ -748,7 +740,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                                 array.push(queryResult[i]);
                             }
                         }
-                        data.dataJsonArr = array;
+                        data.returnDate = array;
                         res.json(data);
                     });
                 });
@@ -759,10 +751,11 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
                 var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.oldId+'"';
+                console.log('code不一致sonCompanyAdd:'+inserSql);
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                    var sql = 'select m.company_code as companyCode,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as companyDesc from company_org m';
+                    var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);
@@ -774,7 +767,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                                 array.push(queryResult[i]);
                             }
                         }
-                        data.dataJsonArr = array;
+                        data.returnDate = array;
                         res.json(data);
                     });
                 });
@@ -788,5 +781,48 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
 
 
 
+});
+//删除子公司
+router.get('/baixiu/companyDelete',function (req,res) {
+//1、判断此用户是否已经登录过
+var user = utils.isLogin(req, res);
+if (!user) {
+    //session不存在，则需要直接返回登录界面
+    return;
+}
+var sql = 'select * from company_org m where m.parent_code = "' + req.query.id + '"';
+DbUtils.queryData(sql, function (result) {
+    if (result.length == 0) {
+        //查不出结果说明满足删除条件，执行修改数据库的sql
+        var updateSql = 'delete from company_org where company_code = "'+req.query.id+'"';
+        console.log('删除companyDelete：'+updateSql);
+        DbUtils.queryData(updateSql, function (updateResult) {
+            var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
+            DbUtils.queryData(sql, function (queryResult) {
+                for (var i = 0; i < queryResult.length; i++) {
+                    utils.addList(queryResult, queryResult[i]);
+                }
+                // 将result中所有节点parent_id值不为空的给踢出掉
+                var array = [];
+                for (var i = 0; i < queryResult.length; i++) {
+                    if (!queryResult[i]['parent_id']) {
+                        array.push(queryResult[i]);
+                    }
+                }
+                var dataJson = {};
+                dataJson.returnData = array;
+                dataJson.status = 0;
+                dataJson.desc = '成功';
+                res.json(dataJson);
+            });
+        });
+    } else {
+        //可以查出结果集，说明改节点为父节点，并且对应的部分子节点没有删除完
+        var errResult = {};
+        errResult.status = 1;
+        errResult.desc = '该目录下的部分子目录未被删除，请先删除对应的子目录';
+        res.json(errResult);
+    }
+});
 });
 module.exports = router;

@@ -105,7 +105,8 @@ function mnueModify(obj) {
 
 }
 //删除菜单点击事件
-function mnueDelete(id) {
+function mnueDelete(obj) {
+    var id = obj.id;
     $.ajax({
         type:'get',
         url:'/baixiu/menuDelete',

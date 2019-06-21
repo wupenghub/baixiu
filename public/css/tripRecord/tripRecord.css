@@ -163,3 +163,29 @@ tbody td:not(.empty):hover {
 .has_count{
     background: lightgreen;
 }
+.trip input{
+    height: 30px;
+    padding: 10px;
+}
+.trip input#start_company{
+   border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    float: left;
+    display: inline-block;
+    border-right: 0 solid silver;
+    background-color: #f3f3f3;
+}
+.trip input#end_company{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    float: left;
+    display: inline-block;
+    border-right: 0 solid silver;
+    background-color: #f3f3f3;
+}
+.trip .search_btn{
+    height: 30px;
+    float: left;
+    display: inline-block;
+    top: 0;
+}

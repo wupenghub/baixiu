@@ -14,11 +14,15 @@ $(function () {
     $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
         if(!$('.address-manger .search_text').val()){
-            alert('请选择上级菜单');
+            alert('请选择上级地址');
             return;
         }
         if(!$('.address-manger .mnue_desc').val()){
-            alert('请填写菜单名称');
+            alert('请填写地址名称');
+            return;
+        }
+        if(!$('.address-manger .mnue_url').val()){
+            alert('请填写地址代码');
             return;
         }
         //所有验证通过，发送请求进行
@@ -37,9 +41,9 @@ $(function () {
     $('#address-list').off('click').on('click',function () {
         init();
     });
-    //通过发送请求获取公司列表
+    //通过发送请求获取地址列表
     utils.ajaxSend({type: 'get',
-        url: '/baixiu/queryCompanyList',
+        url: '/baixiu/queryAddressList',
         data: {},
         dataType: "json"
     },function (result) {
@@ -89,7 +93,6 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
-    // window.obj = obj;
     window.sonObj = obj;
     $('.address-manger .address-tabs li:first-child').removeClass('active');
     $('.address-manger .address-tabs li:last-child').addClass('active');
@@ -107,15 +110,15 @@ function mnueModify(obj) {
     $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
         if(!$('.address-manger .search_text').val()){
-            alert('请选择上级公司');
+            alert('请选择上级地址');
             return;
         }
         if(!$('.address-manger .mnue_desc').val()){
-            alert('请填写公司名称');
+            alert('请填写地址名称');
             return;
         }
         if(!$('.address-manger .mnue_url').val()){
-            alert('请填写公司代码');
+            alert('请填写地址代码');
             return;
         }
         //所有验证通过，发送请求进行
@@ -189,15 +192,8 @@ function sonMnueAdd(obj) {
 }
 //添加子菜单ajax请求
 function addMnues(obj) {
-    /*if(!obj){
-        alert('无法获取到父节点！');
-        return;
-    }
-    if(mnueObj && isUpdate == 'N'){
-        obj = mnueObj;
-    }*/
-    $.ajax({
-        url:'/baixiu/sonCompanyAdd',
+    utils.ajaxSend({
+        url:'/baixiu/sonAddressAdd',
         type:'post',
         dataType:'json',
         data:{
@@ -206,47 +202,43 @@ function addMnues(obj) {
             mnueDesc:$('.address-manger .mnue_desc').val(),
             parentId:window.parentObj.id,
             isUpdate:isUpdate
-        },
-        success:function (data) {
-            console.log(data);
-            if(data.status == 0){
-                //添加成功
-                $('.address-manger table tbody').empty();
-                console.log(JSON.stringify(data.returnDate));
-                for(var i = 0;i<data.returnDate.length;i++){
-                    //循环遍历集合元素,添加公司目录。
-                    utils.addTableMnues($('.address-manger table tbody'),data.returnDate[i],null,0);
-                }
-                // addMnueList(data.returnDate);
-                //跳转到添加子菜单的页面
-                $('.address-manger .address-tabs li:first-child').addClass('active');
-                $('.address-manger .address-tabs li:last-child').removeClass('active');
-                $('.address-manger .address-content div:first-child').addClass('active');
-                $('.address-manger .address-content div:last-child').removeClass('active');
-                //将返回的集合数据重新渲染到标签中，供后面使用
-                // $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
-            }else{
-                //添加失败
-                alert('添加失败！');
+        }},function (data) {
+        console.log(data);
+        if(data.status == 0){
+            //添加成功
+            $('.address-manger table tbody').empty();
+            console.log(JSON.stringify(data.returnDate));
+            for(var i = 0;i<data.returnDate.length;i++){
+                //循环遍历集合元素,添加公司目录。
+                utils.addTableMnues($('.address-manger table tbody'),data.returnDate[i],null,0);
             }
-            init();
-        },
-        error:function () {
-            alert('出现异常！');
-            init();
+            // addMnueList(data.returnDate);
+            //跳转到添加子菜单的页面
+            $('.address-manger .address-tabs li:first-child').addClass('active');
+            $('.address-manger .address-tabs li:last-child').removeClass('active');
+            $('.address-manger .address-content div:first-child').addClass('active');
+            $('.address-manger .address-content div:last-child').removeClass('active');
+            //将返回的集合数据重新渲染到标签中，供后面使用
+            // $("#template").html(JSON.stringify(data).replace(/"/g,'&#34;'));
+        }else{
+            //添加失败
+            alert('添加失败！');
         }
-    })
+        init();
+    },function (error) {
+        alert('添加失败！');
+        init();
+    });
 }
 function mnueTreeInModel() {
     $('.address-manger-tree .address-manger-model').html('');
     utils.ajaxSend({type: 'get',
-        url: '/baixiu/queryCompanyList',
+        url: '/baixiu/queryAddressList',
         data: {},
         dataType: "json"
     },function (result) {
         for(var i = 0;i<result.returnDate.length;i++){
             //循环遍历集合元素,添加公司目录。
-            // utils.addTableMnues(tbody,result.returnDate[i],null,0);
             utils.mnueTreeInModel($('.address-manger-tree .address-manger-model'),result.returnDate[i],null,0);
         }
     },function (error) {

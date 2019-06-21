@@ -776,11 +776,6 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
 
         }
 });
-
-
-
-
-
 });
 //删除子公司
 router.get('/baixiu/companyDelete',function (req,res) {
@@ -834,5 +829,131 @@ router.get('/baixiu/addressManger',function (req,res) {
         return;
     }
     res.render('addressManger.html', {dataJsonArr: req.session.userInfo});
+});
+//查询地址列表
+router.get('/baixiu/queryAddressList',function (req,res) {
+    var querySql = "SELECT\n" +
+        "\ta.address_code AS id,\n" +
+        "\ta.address_code AS url,\n" +
+        "\ta.parent_address AS parent_id,\n" +
+        "\ta.address_desc AS mnue_desc\n" +
+        "FROM\n" +
+        "\taddress a";
+    console.log('queryAddressList:'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        for (var i = 0; i < result.length; i++) {
+            utils.addList(result, result[i]);
+        }
+        // 将result中所有节点parent_id值不为空的给踢出掉
+        var array = [];
+        for (var i = 0; i < result.length; i++) {
+            if (!result[i]['parent_id']) {
+                array.push(result[i]);
+            }
+        }
+        res.json({
+            status:0,
+            returnDate:array
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            returnDate:error
+        });
+    });
+
+});
+
+//添加子地址
+router.post('/baixiu/sonAddressAdd',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    //先判断此id在数据库中是否存在
+    var querySql = 'select count(1) count from address m where m.address_code = "' + req.body.id+'"';
+    DbUtils.queryData(querySql, function (result) {
+        var data = {};
+        if (result && result[0].count > 0) {
+            var inserSql = 'UPDATE address m set m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.id+'"';
+            console.log(inserSql);
+            DbUtils.queryData(inserSql, function (result) {
+                data.status = 0;
+                data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                var sql = 'select m.address_code as id,m.address_code as url,m.parent_address as parent_id,m.address_desc as mnue_desc from address m';
+                DbUtils.queryData(sql, function (queryResult) {
+                    for (var i = 0; i < queryResult.length; i++) {
+                        utils.addList(queryResult, queryResult[i]);
+                    }
+                    // 将result中所有节点parent_id值不为空的给踢出掉
+                    var array = [];
+                    for (var i = 0; i < queryResult.length; i++) {
+                        if (!queryResult[i]['parent_id']) {
+                            array.push(queryResult[i]);
+                        }
+                    }
+                    data.returnDate = array;
+                    res.json(data);
+                });
+            });
+        } else {
+            //查询无记录
+            if (req.body.isUpdate == 'N') {
+                data.status = 0;
+                data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                var inserSql = 'insert into address value("'+req.body.id+'","'+ req.body.mnueDesc+'","' + req.body.parentId + '")';
+                DbUtils.queryData(inserSql, function (result) {
+                    data.status = 0;
+                    data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                    var sql = 'select m.address_code as id,m.address_code as url,m.parent_address as parent_id,m.address_desc as mnue_desc from address m';
+                    DbUtils.queryData(sql, function (queryResult) {
+                        for (var i = 0; i < queryResult.length; i++) {
+                            utils.addList(queryResult, queryResult[i]);
+                        }
+                        // 将result中所有节点parent_id值不为空的给踢出掉
+                        var array = [];
+                        for (var i = 0; i < queryResult.length; i++) {
+                            if (!queryResult[i]['parent_id']) {
+                                array.push(queryResult[i]);
+                            }
+                        }
+                        data.returnDate = array;
+                        res.json(data);
+                    });
+                });
+            } else {
+                // data.status = 1;
+                // data.desc = '数据库中无此目录';
+                // res.json(data);
+                data.status = 0;
+                data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                var inserSql = 'UPDATE address m set m.address_code="'+req.body.id+'",m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.oldId+'"';
+                console.log('code不一致sonCompanyAdd:'+inserSql);
+                DbUtils.queryData(inserSql, function (result) {
+                    data.status = 0;
+                    data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
+                    var sql = 'select m.address_code as id,m.address_code as url,m.parent_address as parent_id,m.address_desc as mnue_desc from address m';
+                    DbUtils.queryData(sql, function (queryResult) {
+                        for (var i = 0; i < queryResult.length; i++) {
+                            utils.addList(queryResult, queryResult[i]);
+                        }
+                        // 将result中所有节点parent_id值不为空的给踢出掉
+                        var array = [];
+                        for (var i = 0; i < queryResult.length; i++) {
+                            if (!queryResult[i]['parent_id']) {
+                                array.push(queryResult[i]);
+                            }
+                        }
+                        data.returnDate = array;
+                        res.json(data);
+                    });
+                });
+
+            }
+
+        }
+    });
 });
 module.exports = router;

@@ -248,4 +248,5 @@ function searchCompany(obj) {
 function chooseMnue(obj) {
     console.log(obj);
     window.inputText.val(obj.id);
+    $('.company-manger-tree').modal('hide');
 }

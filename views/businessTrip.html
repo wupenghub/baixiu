@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
     <link rel="stylesheet" href="/public/css/admin.css">
-    <!--<link rel="stylesheet" href="/public/css/mnueManger/mnueManger.css">-->
     <link rel="stylesheet" href="/public/css/tripRecord/tripRecord.css">
     <script src="../public/vendors/nprogress/nprogress.js"></script>
     <script>
@@ -105,7 +104,7 @@
                             <div class="right">
                                 <div class="content_input">
                                     <input type="text" id="start_company" readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="searchCompany()"></button>
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#company_tree" onclick="searchCompany(this)"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -119,7 +118,7 @@
                             <div class="right">
                                 <div class="content_input">
                                     <input type="text" id="end_company" readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="searchCompany()"></button>
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="searchCompany(this)"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -156,7 +155,6 @@
 <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
 <script src="../public/vendors/util/utils.js"></script>
 <script src="../public/js/cis/cisApproval.js"></script>
-<script src="../public/js/mnueManger/mnueManger.js"></script>
 <script src="../public/vendors/util/DateUtils.js"></script>
 <script src="../public/js/bussnessTrip/bussnessTrip.js"></script>
 <script src="../public/vendors/bootstrap/js/bootstrap-datetimepicker.js"></script>

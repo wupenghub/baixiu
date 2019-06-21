@@ -189,3 +189,19 @@ tbody td:not(.empty):hover {
     display: inline-block;
     top: 0;
 }
+span.no-content {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 10px;
+}
+.company-manger-tree .modal-body ul {
+    list-style: none;
+    padding: 20px;
+}
+.company-manger-tree .modal-body ul li {
+    padding: 5px 0;
+}
+.company-manger-model{
+    padding: 10px;
+}

@@ -1,4 +1,14 @@
 $(function () {
+    var data = $("#template").html().replace(/&#34;/g,'"');
+    var dataJson = JSON.parse(data);
+    var rootNode = $('.aside .nav');
+    // var tbody = $('.company-manger table tbody');
+    $('.avatar').prop('src',dataJson.user.avatar);
+    $('.name').html(dataJson.user.nickname);
+    for(var i = 0;i<dataJson.dataJsonArr.length;i++) {
+        //循环遍历集合元素,添加菜单目录。
+        utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
+    }
     dateUtils.renderCander($('tbody'), new Date(), ['日', '一', '二', '三', '四', '五', '六']);
     var date = new Date();
     var year = date.getFullYear();
@@ -82,9 +92,9 @@ function changeMonth(type) {
     var changeMonth = '';
     if (type == '-') {
         changeMonth = currentDateMonth.getMonth() - 1;
-    } else if(type == '+'){
+    } else if (type == '+') {
         changeMonth = currentDateMonth.getMonth() + 1;
-    }else {
+    } else {
         changeMonth = currentDateMonth.getMonth();
     }
     currentDateMonth.setMonth(changeMonth, 1);
@@ -102,12 +112,12 @@ function addRecode(obj) {
     requestOrder(day);
 }
 
-function showAddInfo(isAdd,orderNo) {
+function showAddInfo(isAdd, orderNo) {
     window.isAdd = isAdd;
     window.orderNo = orderNo;
-    if(isAdd == 'Y') {//如果是添加只需要显示开始时间
+    if (isAdd == 'Y') {//如果是添加只需要显示开始时间
         $('#trip_start_time').val($('.showTime').html() + '-' + window.chooseDate);
-    }else{//如果是修改需要请求服务器回显所有数据
+    } else {//如果是修改需要请求服务器回显所有数据
         var userStr = localStorage.getItem('email');
         var email = '';
         if (userStr) {
@@ -118,7 +128,7 @@ function showAddInfo(isAdd,orderNo) {
             url: '/baixiu/searchOrderByNo',
             data: {email, orderNo},
             dataType: "json"
-        },function (result) {
+        }, function (result) {
             var info = result.result[0];
             var startDate = new Date(info.start_date);
             var startStr = concatTime(startDate);
@@ -130,8 +140,8 @@ function showAddInfo(isAdd,orderNo) {
             $('#trip_end_time').val(endStr);
             $('#start_company').val(startCompany);
             $('#end_company').val(endCompany);
-        },function (err) {
-            
+        }, function (err) {
+
         })
     }
 }
@@ -172,8 +182,8 @@ function addTripRecord() {//添加出差记录
             endDate,
             startCompany,
             endCompany,
-            isAdd:window.isAdd,
-            orderNo:window.orderNo
+            isAdd: window.isAdd,
+            orderNo: window.orderNo
         },
         dataType: "json"
     }, function (data) {
@@ -202,31 +212,40 @@ function initInfo() {//初始化弹框内容
 
 function concatTime(date) {
     var startYear = date.getFullYear();
-    var startMonth = date.getMonth()+1;
-    startMonth = startMonth < 10 ? '0'+startMonth:startMonth;
+    var startMonth = date.getMonth() + 1;
+    startMonth = startMonth < 10 ? '0' + startMonth : startMonth;
     var startDay = date.getDate();
-    startDay = startDay < 10 ? '0'+startDay:startDay;
-    return startYear+'-'+startMonth+'-'+startDay;
+    startDay = startDay < 10 ? '0' + startDay : startDay;
+    return startYear + '-' + startMonth + '-' + startDay;
 }
-//查询公司列表
-function searchCompany() {
-    utils.ajaxSend({type: 'get',
-        url: '/baixiu/queryCompanyList',
-        data: {},
-        dataType: "json"
-    }
-    ,function (result) {
-            for(var i = 0;i<result.returnDate.length;i++){
-                //循环遍历集合元素,添加公司目录。
-                utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),result.returnDate[i],null,0);
-            }
-    },function (error) {
 
-    });
-   /* var dataJson = JSON.parse(data);
-    $('.mnue-manger-tree .mnue-manger-model').html('');
-    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
-        //循环遍历集合元素,添加菜单目录。
-        utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),dataJson.dataJsonArr[i],null,0);
-    }*/
+//查询公司列表
+function searchCompany(obj) {
+    window.inputText = $(obj).prev();
+    utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/queryCompanyList',
+            data: {},
+            dataType: "json"
+        }
+        , function (result) {
+            $('.company-manger-tree .company-manger-model').html('');
+            for (var i = 0; i < result.returnDate.length; i++) {
+                //循环遍历集合元素,添加公司目录。company-manger-model
+                utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'), result.returnDate[i], null, 0);
+            }
+        }, function (error) {
+
+        });
+    /* var dataJson = JSON.parse(data);
+     $('.mnue-manger-tree .mnue-manger-model').html('');
+     for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+         //循环遍历集合元素,添加菜单目录。
+         utils.mnueTreeInModel($('.mnue-manger-tree .mnue-manger-model'),dataJson.dataJsonArr[i],null,0);
+     }*/
+}
+
+function chooseMnue(obj) {
+    console.log(obj);
+    window.inputText.val(obj.id);
 }

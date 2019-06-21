@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Dashboard &laquo; Admin</title>
+    <link rel="stylesheet" href="/public/vendors/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/tripRecord/companyManger.css">
+    <script src="/public/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+<script>NProgress.start()</script>
+<script type="text/javascript" id="template">{{dataJsonArr}}</script>
+<div class="company-manger main">
+    <nav class="navbar">
+        <button class="btn btn-default navbar-btn fa fa-bars"></button>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/admin/profile.html"><i class="fa fa-user"></i>个人中心</a></li>
+            <li><a href="/baixiu/loginout"><i class="fa fa-sign-out"></i>退出</a></li>
+        </ul>
+    </nav>
+    <div class="container-fluid">
+        <div>
+            <ul class="nav nav-tabs company-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#mnue_list" id="company-list"  data-toggle="tab">公司列表</a></li>
+                <li role="presentation" ><a href="#mnue_add" id="company-add" data-toggle="tab">公司添加</a></li>
+            </ul>
+            <div class="tab-content company-content">
+                <div class="tab-pane active" id="mnue_list">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>公司名称</th>
+                                <th>公司代码</th>
+                                <th>排序</th>
+                                <th>可见</th>
+                                <th>是否投资公司</th>
+                                <th>公司操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div  class="tab-pane" id="mnue_add">
+                    <ul>
+                        <li>
+                            <div class="line_content">
+                                <label>上级公司：</label>
+                                <div class="right">
+                                    <input type="text" class="search_text"  readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel()"></button>
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="line_content">
+                                <label>公司名称：</label>
+                                <div class="right">
+                                    <input type="text" class="mnue_desc">
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="line_content">
+                                <label>公司代码：</label>
+                                <div class="right">
+                                    <input type="text" class="mnue_url">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-info save">保存</button>
+                    <button type="button" class="btn btn-default back">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="aside">
+    <div class="profile">
+        <img class="avatar">
+        <h3 class="name"></h3>
+    </div>
+    <ul class="nav">
+    </ul>
+</div>
+<!-- Modal -->
+<div class="modal fade company-manger-tree" id="mnue_tree" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="company-manger-model">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/public/vendors/jquery/jquery.js"></script>
+<script src="/public/vendors/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<script src="/public/vendors/util/utils.js"></script>
+<script src="/public/js/bussnessTrip/companyManger.js"></script>
+<script>NProgress.done()</script>
+</body>
+</html>

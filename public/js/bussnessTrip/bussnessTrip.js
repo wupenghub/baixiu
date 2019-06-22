@@ -164,6 +164,10 @@ function addTripRecord() {//添加出差记录
         alert('请填写出差结束时间');
         return;
     }
+    if(startDate > endDate){
+        alert('起始时间不能大于结束时间');
+        return;
+    }
     var startCompany = $('#start_company_code').val();
     if (!startCompany) {
         alert('请填写出差起始地');
@@ -198,6 +202,7 @@ function addTripRecord() {//添加出差记录
             $('#trip_modal').modal('toggle');
             //添加成功后重新获取出差数
             // requestMonthTripCount();
+            initInfo();
             changeMonth();
             //添加成功重新刷新列表
             requestOrder(window.chooseDate);
@@ -214,6 +219,8 @@ function initInfo() {//初始化弹框内容
     $('#trip_end_time').val('');
     $('#start_company').val('');
     $('#end_company').val('');
+    $('#start_company_code').val('');
+    $('#end_company_code').val('');
 }
 
 function concatTime(date) {

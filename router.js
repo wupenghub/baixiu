@@ -549,6 +549,7 @@ router.get('/baixiu/searchMonthTripCount',function (req,res) {
         "\t\tWHERE\n" +
         "\t\t\to.start_date >= str_to_date('"+startDate+"', '%Y-%m-%d')\n" +
         "\t\tAND o.start_date < str_to_date('"+nextDate+"', '%Y-%m-%d')\n" +
+        "\t\tAND o.email = '"+email+"'\n" +
         "group by year,month,day";
     console.log('searchMonthTripCount:'+querySql);
     DbUtils.queryData(querySql,function (result) {

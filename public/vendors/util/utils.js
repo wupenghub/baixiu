@@ -85,7 +85,7 @@ var utils = {
                 '</td>' +
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
-                '<td></td>' +
+                '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
                 '<td></td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
@@ -109,7 +109,7 @@ var utils = {
                 '</td>' +
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
-                '<td></td>' +
+                '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
                 '<td></td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +

@@ -52,7 +52,7 @@
                                 <label>上级公司：</label>
                                 <div class="right">
                                     <input type="text" class="search_text"  readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel()"></button>
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -71,6 +71,17 @@
                                 <label>公司代码：</label>
                                 <div class="right">
                                     <input type="text" class="mnue_url">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="line_content">
+                                <label>公司地址：</label>
+                                <div class="right">
+                                    <input type="text" class="mnue_address" readonly="readonly">
+                                    <input type="text" class="mnue_address_code" style="display: none">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="seachAddress(this)"></button>
+                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
                         </li>

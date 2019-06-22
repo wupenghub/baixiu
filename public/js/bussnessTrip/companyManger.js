@@ -237,7 +237,8 @@ function addMnues(obj) {
         }
     })
 }
-function mnueTreeInModel() {
+function mnueTreeInModel(obj) {
+    window.inputText = $(obj).siblings('.search_text');
     $('.company-manger-tree .company-manger-model').html('');
     utils.ajaxSend({type: 'get',
         url: '/baixiu/queryCompanyList',
@@ -260,6 +261,8 @@ function mnueTreeInModel() {
 };
 function chooseMnue(obj) {
     window.parentObj = obj;
+    window.inputText.val(obj.mnue_desc);
+    window.inputTextCode.val(obj.id);
    // if(isUpdate == 'Y'){
    //     mnueObj = obj;
    //     $('.company-manger .search_text').val(mnueObj.mnue_desc);
@@ -270,4 +273,22 @@ function chooseMnue(obj) {
    //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
     $('.company-manger .search_text').val(window.parentObj.mnue_desc);
     $('.company-manger-tree').modal('hide');
+}
+
+function seachAddress(obj) {
+    window.inputText = $(obj).siblings('.mnue_address');
+    window.inputTextCode = $(obj).siblings('.mnue_address_code');
+    $('.company-manger-tree .company-manger-model').html('');
+    utils.ajaxSend({type: 'get',
+        url: '/baixiu/queryAddressList',
+        data: {},
+        dataType: "json"
+    },function (result) {
+        for(var i = 0;i<result.returnDate.length;i++){
+            //循环遍历集合元素,添加公司目录。
+            utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),result.returnDate[i],null,0);
+        }
+    },function (error) {
+
+    });
 }

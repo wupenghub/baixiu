@@ -622,8 +622,30 @@ router.post('/baixiu/addRecord',function (req,res) {
 router.get('/baixiu/searchOrderByNo',function (req,res) {
     var email = req.query.email;
     var orderNo = req.query.orderNo;
-    var querySql = "SELECT\n" +
+    /*var querySql = "SELECT\n" +
         "\t*\n" +
+        "FROM\n" +
+        "\ttrip_order o\n" +
+        "WHERE\n" +
+        "\to.order_no = '"+orderNo+"'\n" +
+        "AND o.email = '"+email+"'";*/
+    var querySql = "SELECT\n" +
+        "\t*, (\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tc.company_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org c\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tc.company_code = o.start_company\n" +
+        "\t) AS start_company_desc,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tc.company_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org c\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tc.company_code = o.end_company\n" +
+        "\t) AS end_company_desc\n" +
         "FROM\n" +
         "\ttrip_order o\n" +
         "WHERE\n" +

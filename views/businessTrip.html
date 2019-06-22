@@ -104,7 +104,8 @@
                             <div class="right">
                                 <div class="content_input">
                                     <input type="text" id="start_company" readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#company_tree" onclick="searchCompany(this)"></button>
+                                    <input type="text" style="display: none" id="start_company_code" readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#company_tree" onclick="searchCompany(this,'#start_company','#start_company_code')"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>
@@ -118,7 +119,8 @@
                             <div class="right">
                                 <div class="content_input">
                                     <input type="text" id="end_company" readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#company_tree" onclick="searchCompany(this)"></button>
+                                    <input type="text" style="display: none" id="end_company_code" readonly="readonly">
+                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#company_tree" onclick="searchCompany(this,'#end_company','#end_company_code')"></button>
                                     <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                                 </div>
                             </div>

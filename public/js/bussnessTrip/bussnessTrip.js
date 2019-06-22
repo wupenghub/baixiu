@@ -130,16 +130,22 @@ function showAddInfo(isAdd, orderNo) {
             dataType: "json"
         }, function (result) {
             var info = result.result[0];
+            console.log('info:'+JSON.stringify(info));
             var startDate = new Date(info.start_date);
             var startStr = concatTime(startDate);
             var endDate = new Date(info.end_date);
             var endStr = concatTime(endDate);
             var startCompany = info.start_company;
             var endCompany = info.end_company;
+            var startCompanyDesc = info.start_company_desc;
+            var endCompanyDesc = info.end_company_desc;
             $('#trip_start_time').val(startStr);
             $('#trip_end_time').val(endStr);
-            $('#start_company').val(startCompany);
-            $('#end_company').val(endCompany);
+            $('#start_company').val(startCompanyDesc);
+            $('#start_company_code').val(startCompany);
+            $('#end_company').val(endCompanyDesc);
+            $('#end_company_code').val(endCompany);
+
         }, function (err) {
 
         })
@@ -158,12 +164,12 @@ function addTripRecord() {//添加出差记录
         alert('请填写出差结束时间');
         return;
     }
-    var startCompany = $('#start_company').val();
+    var startCompany = $('#start_company_code').val();
     if (!startCompany) {
         alert('请填写出差起始地');
         return;
     }
-    var endCompany = $('#end_company').val();
+    var endCompany = $('#end_company_code').val();
     if (!endCompany) {
         alert('请填写出差目的地');
         return;
@@ -220,8 +226,9 @@ function concatTime(date) {
 }
 
 //查询公司列表
-function searchCompany(obj) {
-    window.inputText = $(obj).prev();
+function searchCompany(obj,descId,codeId) {
+    window.inputText = $(obj).siblings(descId);
+    window.inputTextCode = $(obj).siblings(codeId);
     utils.ajaxSend({
             type: 'get',
             url: '/baixiu/queryCompanyList',
@@ -247,6 +254,7 @@ function searchCompany(obj) {
 
 function chooseMnue(obj) {
     console.log(obj);
-    window.inputText.val(obj.id);
+    window.inputText.val(obj.mnue_desc);
+    window.inputTextCode.val(obj.id);
     $('.company-manger-tree').modal('hide');
 }

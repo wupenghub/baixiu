@@ -680,7 +680,8 @@ router.get('/baixiu/queryCompanyList',function (req,res) {
         "\torg.parent_code AS parent_id,\n" +
         "\torg.address_code AS addressCode,\n" +
         "\torg.is_tz AS isTz,\n" +
-        "\torg.company_desc AS mnue_desc\n" +
+        "\torg.company_desc AS mnue_desc,\n" +
+        "\t(SELECT a.address_desc from address a where a.address_code = org.address_code) as addressDesc\n" +
         "FROM\n" +
         "\tcompany_org org";
     console.log('queryCompanyList:'+querySql);
@@ -720,12 +721,21 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
-            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
+            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
+                var sql = "SELECT\n" +
+                    "\tm.company_code AS id,\n" +
+                    "\tm.company_code AS url,\n" +
+                    "\tm.address_code AS addressCode,\n" +
+                    "\tm.parent_code AS parent_id,\n" +
+                    "\tm.is_tz AS isTz,\n" +
+                    "\tm.company_desc AS mnue_desc,\n" +
+                    "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                    "FROM\n" +
+                    "\tcompany_org m";
                 DbUtils.queryData(sql, function (queryResult) {
                     for (var i = 0; i < queryResult.length; i++) {
                         utils.addList(queryResult, queryResult[i]);
@@ -746,11 +756,21 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
             if (req.body.isUpdate == 'N') {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'insert into company_org value("'+req.body.id+'","sz","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
+                var inserSql = 'insert into company_org value("'+req.body.id+'","'+req.body.companyAddress+'","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
+                console.log(inserSql)
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                    var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
+                    var sql = "SELECT\n" +
+                        "\tm.company_code AS id,\n" +
+                        "\tm.company_code AS url,\n" +
+                        "\tm.address_code AS addressCode,\n" +
+                        "\tm.parent_code AS parent_id,\n" +
+                        "\tm.is_tz AS isTz,\n" +
+                        "\tm.company_desc AS mnue_desc,\n" +
+                        "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                        "FROM\n" +
+                        "\tcompany_org m";
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);
@@ -772,12 +792,21 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 // res.json(data);
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="sz",m.is_tz=0 where m.company_code ="' + req.body.oldId+'"';
+                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz=0 where m.company_code ="' + req.body.oldId+'"';
                 console.log('code不一致sonCompanyAdd:'+inserSql);
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                    var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
+                    var sql = "SELECT\n" +
+                        "\tm.company_code AS id,\n" +
+                        "\tm.company_code AS url,\n" +
+                        "\tm.address_code AS addressCode,\n" +
+                        "\tm.parent_code AS parent_id,\n" +
+                        "\tm.is_tz AS isTz,\n" +
+                        "\tm.company_desc AS mnue_desc,\n" +
+                        "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                        "FROM\n" +
+                        "\tcompany_org m";
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);

@@ -4,9 +4,28 @@
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background-color: #8FB0D1;
+  background-color: lightblue;
   -moz-opacity: 0.8;
   opacity: 0.8;
   z-index: 1001;
   filter: alpha(opacity=40);
+  .loading {
+    display: none;
+    font-size: 50px;
+    width: 50px;
+    height: 50px;
+    color: #2f4050;
+    position: absolute;
+    /*动画效果*/
+    animation: load 1s linear infinite;
+  }
+}
+/*通过@keyframes规则,能够创建动画 , que 定义动画的名称 可自己定义*/
+@keyframes load { /*以百分比来规定改变发生的时间 也可以通过"from"和"to",等价于0% 和 100%*/
+  0% { /*rotate(2D旋转) scale(放大或者缩小) translate(移动) skew(翻转)*/
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

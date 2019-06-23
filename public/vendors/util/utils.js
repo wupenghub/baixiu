@@ -243,6 +243,17 @@ var utils = {
     },
     ajaxSend(obj,success,err){
         // 显示请求动画
+        if($('.mask')) {
+            var maskHeight = $('.mask').outerHeight();
+            var maskWidth = $('.mask').outerWidth();
+            var loadHeight = $('.mask .loading').outerHeight();
+            var loadWidth = $('.mask .loading').outerWidth();
+            $('.mask .loading').css('left',((maskWidth-loadWidth)/2)+'px');
+            $('.mask .loading').css('top',(((maskHeight-loadHeight)/2)+'px'));
+            $('.mask').show();
+            $('.mask .loading').show();
+        }
+        console.log($('.mask'))
         $.ajax({
             type: obj.type,
             url: obj.url,
@@ -250,10 +261,16 @@ var utils = {
             dataType: obj.dataType,
             success: function (data) {
                 //关闭动画
+                if($('.mask')) {
+                    $('.mask').hide();
+                }
                 success(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 //关闭动画
+                if($('.mask')) {
+                    $('.mask').hide();
+                }
                 err(errorThrown);
             }
 

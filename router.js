@@ -1108,4 +1108,48 @@ router.post('/baixiu/sonAddressAdd',function (req,res) {
         }
     });
 });
+//删除地址
+router.post('/baixiu/deleteAddress',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    var sql = 'select * from address m where m.parent_address = "' + req.body.id + '"';
+    DbUtils.queryData(sql, function (result) {
+        if (result.length == 0) {
+            //查不出结果说明满足删除条件，执行修改数据库的sql
+            var updateSql = 'delete from address where address_code = "'+req.body.id+'"';
+            console.log('deleteAddress：'+updateSql);
+            DbUtils.queryData(updateSql, function (updateResult) {
+                var sql = "select a.address_desc as mnue_desc,a.address_code as url,a.parent_address as parent_id,a.address_code as id from address a";
+                console.log('deleteAddress查询:'+sql)
+                DbUtils.queryData(sql, function (queryResult) {
+                    for (var i = 0; i < queryResult.length; i++) {
+                        utils.addList(queryResult, queryResult[i]);
+                    }
+                    // 将result中所有节点parent_id值不为空的给踢出掉
+                    var array = [];
+                    for (var i = 0; i < queryResult.length; i++) {
+                        if (!queryResult[i]['parent_id']) {
+                            array.push(queryResult[i]);
+                        }
+                    }
+                    var dataJson = {};
+                    dataJson.returnData = array;
+                    dataJson.status = 0;
+                    dataJson.desc = '成功';
+                    res.json(dataJson);
+                });
+            });
+        } else {
+            //可以查出结果集，说明改节点为父节点，并且对应的部分子节点没有删除完
+            var errResult = {};
+            errResult.status = 1;
+            errResult.desc = '该目录下的部分子目录未被删除，请先删除对应的子目录';
+            res.json(errResult);
+        }
+    });
+});
 module.exports = router;

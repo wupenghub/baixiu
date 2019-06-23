@@ -129,8 +129,8 @@ function mnueModify(obj) {
 //删除菜单点击事件
 function mnueDelete(obj) {
     var id = obj.id;
-    utils.ajaxSend({type:'get',
-        url:'/baixiu/companyDelete',
+    utils.ajaxSend({type:'post',
+        url:'/baixiu/deleteAddress',
         data:{id},
         dataType:'json'},
         function (result) {

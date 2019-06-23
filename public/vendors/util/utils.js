@@ -86,7 +86,7 @@ var utils = {
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
                 '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
-                '<td></td>' +
+                '<td>'+(dataObj.company_type_desc?dataObj.company_type_desc:'')+'</td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +
@@ -110,7 +110,7 @@ var utils = {
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
                 '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
-                '<td></td>' +
+                '<td>'+(dataObj.company_type_desc?dataObj.company_type_desc:'')+'</td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +

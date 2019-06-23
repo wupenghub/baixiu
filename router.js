@@ -681,8 +681,23 @@ router.get('/baixiu/queryCompanyList',function (req,res) {
         "\torg.parent_code AS parent_id,\n" +
         "\torg.address_code AS addressCode,\n" +
         "\torg.is_tz AS isTz,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tt.company_type_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_type t\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tt.is_tz = org.is_tz\n" +
+        "\t) AS company_type_desc,\n" +
         "\torg.company_desc AS mnue_desc,\n" +
-        "\t(SELECT a.address_desc from address a where a.address_code = org.address_code) as addressDesc\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\ta.address_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\taddress a\n" +
+        "\t\tWHERE\n" +
+        "\t\t\ta.address_code = org.address_code\n" +
+        "\t) AS addressDesc\n" +
         "FROM\n" +
         "\tcompany_org org";
     console.log('queryCompanyList:'+querySql);
@@ -744,15 +759,30 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
                 var sql = "SELECT\n" +
-                    "\tm.company_code AS id,\n" +
-                    "\tm.company_code AS url,\n" +
-                    "\tm.address_code AS addressCode,\n" +
-                    "\tm.parent_code AS parent_id,\n" +
-                    "\tm.is_tz AS isTz,\n" +
-                    "\tm.company_desc AS mnue_desc,\n" +
-                    "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                    "\torg.company_code AS id,\n" +
+                    "\torg.company_code AS url,\n" +
+                    "\torg.parent_code AS parent_id,\n" +
+                    "\torg.address_code AS addressCode,\n" +
+                    "\torg.is_tz AS isTz,\n" +
+                    "\t(\n" +
+                    "\t\tSELECT\n" +
+                    "\t\t\tt.company_type_desc\n" +
+                    "\t\tFROM\n" +
+                    "\t\t\tcompany_type t\n" +
+                    "\t\tWHERE\n" +
+                    "\t\t\tt.is_tz = org.is_tz\n" +
+                    "\t) AS company_type_desc,\n" +
+                    "\torg.company_desc AS mnue_desc,\n" +
+                    "\t(\n" +
+                    "\t\tSELECT\n" +
+                    "\t\t\ta.address_desc\n" +
+                    "\t\tFROM\n" +
+                    "\t\t\taddress a\n" +
+                    "\t\tWHERE\n" +
+                    "\t\t\ta.address_code = org.address_code\n" +
+                    "\t) AS addressDesc\n" +
                     "FROM\n" +
-                    "\tcompany_org m";
+                    "\tcompany_org org";
                 DbUtils.queryData(sql, function (queryResult) {
                     for (var i = 0; i < queryResult.length; i++) {
                         utils.addList(queryResult, queryResult[i]);
@@ -779,15 +809,30 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
                     var sql = "SELECT\n" +
-                        "\tm.company_code AS id,\n" +
-                        "\tm.company_code AS url,\n" +
-                        "\tm.address_code AS addressCode,\n" +
-                        "\tm.parent_code AS parent_id,\n" +
-                        "\tm.is_tz AS isTz,\n" +
-                        "\tm.company_desc AS mnue_desc,\n" +
-                        "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                        "\torg.company_code AS id,\n" +
+                        "\torg.company_code AS url,\n" +
+                        "\torg.parent_code AS parent_id,\n" +
+                        "\torg.address_code AS addressCode,\n" +
+                        "\torg.is_tz AS isTz,\n" +
+                        "\t(\n" +
+                        "\t\tSELECT\n" +
+                        "\t\t\tt.company_type_desc\n" +
+                        "\t\tFROM\n" +
+                        "\t\t\tcompany_type t\n" +
+                        "\t\tWHERE\n" +
+                        "\t\t\tt.is_tz = org.is_tz\n" +
+                        "\t) AS company_type_desc,\n" +
+                        "\torg.company_desc AS mnue_desc,\n" +
+                        "\t(\n" +
+                        "\t\tSELECT\n" +
+                        "\t\t\ta.address_desc\n" +
+                        "\t\tFROM\n" +
+                        "\t\t\taddress a\n" +
+                        "\t\tWHERE\n" +
+                        "\t\t\ta.address_code = org.address_code\n" +
+                        "\t) AS addressDesc\n" +
                         "FROM\n" +
-                        "\tcompany_org m";
+                        "\tcompany_org org";
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);
@@ -815,15 +860,30 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
                     var sql = "SELECT\n" +
-                        "\tm.company_code AS id,\n" +
-                        "\tm.company_code AS url,\n" +
-                        "\tm.address_code AS addressCode,\n" +
-                        "\tm.parent_code AS parent_id,\n" +
-                        "\tm.is_tz AS isTz,\n" +
-                        "\tm.company_desc AS mnue_desc,\n" +
-                        "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                        "\torg.company_code AS id,\n" +
+                        "\torg.company_code AS url,\n" +
+                        "\torg.parent_code AS parent_id,\n" +
+                        "\torg.address_code AS addressCode,\n" +
+                        "\torg.is_tz AS isTz,\n" +
+                        "\t(\n" +
+                        "\t\tSELECT\n" +
+                        "\t\t\tt.company_type_desc\n" +
+                        "\t\tFROM\n" +
+                        "\t\t\tcompany_type t\n" +
+                        "\t\tWHERE\n" +
+                        "\t\t\tt.is_tz = org.is_tz\n" +
+                        "\t) AS company_type_desc,\n" +
+                        "\torg.company_desc AS mnue_desc,\n" +
+                        "\t(\n" +
+                        "\t\tSELECT\n" +
+                        "\t\t\ta.address_desc\n" +
+                        "\t\tFROM\n" +
+                        "\t\t\taddress a\n" +
+                        "\t\tWHERE\n" +
+                        "\t\t\ta.address_code = org.address_code\n" +
+                        "\t) AS addressDesc\n" +
                         "FROM\n" +
-                        "\tcompany_org m";
+                        "\tcompany_org org";
                     DbUtils.queryData(sql, function (queryResult) {
                         for (var i = 0; i < queryResult.length; i++) {
                             utils.addList(queryResult, queryResult[i]);
@@ -861,15 +921,31 @@ DbUtils.queryData(sql, function (result) {
         console.log('删除companyDelete：'+updateSql);
         DbUtils.queryData(updateSql, function (updateResult) {
             var sql = "SELECT\n" +
-                "\tm.company_code AS id,\n" +
-                "\tm.company_code AS url,\n" +
-                "\tm.address_code AS addressCode,\n" +
-                "\tm.parent_code AS parent_id,\n" +
-                "\tm.is_tz AS isTz,\n" +
-                "\tm.company_desc AS mnue_desc,\n" +
-                "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                "\torg.company_code AS id,\n" +
+                "\torg.company_code AS url,\n" +
+                "\torg.parent_code AS parent_id,\n" +
+                "\torg.address_code AS addressCode,\n" +
+                "\torg.is_tz AS isTz,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\tt.company_type_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\tcompany_type t\n" +
+                "\t\tWHERE\n" +
+                "\t\t\tt.is_tz = org.is_tz\n" +
+                "\t) AS company_type_desc,\n" +
+                "\torg.company_desc AS mnue_desc,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\ta.address_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\taddress a\n" +
+                "\t\tWHERE\n" +
+                "\t\t\ta.address_code = org.address_code\n" +
+                "\t) AS addressDesc\n" +
                 "FROM\n" +
-                "\tcompany_org m";            DbUtils.queryData(sql, function (queryResult) {
+                "\tcompany_org org";
+            DbUtils.queryData(sql, function (queryResult) {
                 for (var i = 0; i < queryResult.length; i++) {
                     utils.addList(queryResult, queryResult[i]);
                 }

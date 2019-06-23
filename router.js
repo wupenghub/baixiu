@@ -1152,4 +1152,14 @@ router.post('/baixiu/deleteAddress',function (req,res) {
         }
     });
 });
+
+//费用类型模块
+router.get('/baixiu/costType',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('costType.html', {dataJsonArr: req.session.userInfo});
+});
 module.exports = router;

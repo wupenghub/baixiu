@@ -253,7 +253,6 @@ var utils = {
             $('.mask').show();
             $('.mask .loading').show();
         }
-        console.log($('.mask'))
         $.ajax({
             type: obj.type,
             url: obj.url,

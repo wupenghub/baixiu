@@ -709,6 +709,22 @@ router.get('/baixiu/queryCompanyList',function (req,res) {
     });
 
 });
+//查询公司类型
+router.get('/baixiu/queryCompanyType',function (req,res) {
+    var querySql = "select * from company_type t";
+    console.log('queryCompanyType:'+querySql);
+    DbUtils.queryData(querySql,function (date) {
+        res.json({
+            status:0,
+            returnDate:date
+        })
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:error
+        })
+    });
+});
 //添加子公司
 router.post('/baixiu/sonCompanyAdd',function (req,res) {
     //1、判断此用户是否已经登录过
@@ -722,7 +738,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
-            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz=0 where m.company_code ="' + req.body.id+'"';
+            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz='+req.body.isTz+' where m.company_code ="' + req.body.id+'"';
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
@@ -757,7 +773,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
             if (req.body.isUpdate == 'N') {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'insert into company_org value("'+req.body.id+'","'+req.body.companyAddress+'","' + req.body.parentId + '",' + 0 + ',"' + req.body.mnueDesc + '")';
+                var inserSql = 'insert into company_org value("'+req.body.id+'","'+req.body.companyAddress+'","' + req.body.parentId + '",' + req.body.isTz + ',"' + req.body.mnueDesc + '")';
                 console.log(inserSql)
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
@@ -793,7 +809,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 // res.json(data);
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz=0 where m.company_code ="' + req.body.oldId+'"';
+                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz='+req.body.isTz+' where m.company_code ="' + req.body.oldId+'"';
                 console.log('code不一致sonCompanyAdd:'+inserSql);
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
@@ -844,8 +860,16 @@ DbUtils.queryData(sql, function (result) {
         var updateSql = 'delete from company_org where company_code = "'+req.query.id+'"';
         console.log('删除companyDelete：'+updateSql);
         DbUtils.queryData(updateSql, function (updateResult) {
-            var sql = 'select m.company_code as id,m.company_code as url,m.address_code as addressCode,m.parent_code as parent_id,m.is_tz as isTz,m.company_desc as mnue_desc from company_org m';
-            DbUtils.queryData(sql, function (queryResult) {
+            var sql = "SELECT\n" +
+                "\tm.company_code AS id,\n" +
+                "\tm.company_code AS url,\n" +
+                "\tm.address_code AS addressCode,\n" +
+                "\tm.parent_code AS parent_id,\n" +
+                "\tm.is_tz AS isTz,\n" +
+                "\tm.company_desc AS mnue_desc,\n" +
+                "\t(select a.address_desc from address a where a.address_code = m.address_code) as addressDesc\n" +
+                "FROM\n" +
+                "\tcompany_org m";            DbUtils.queryData(sql, function (queryResult) {
                 for (var i = 0; i < queryResult.length; i++) {
                     utils.addList(queryResult, queryResult[i]);
                 }

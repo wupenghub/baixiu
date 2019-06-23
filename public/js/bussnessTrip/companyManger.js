@@ -43,6 +43,7 @@ $(function () {
     });
     $('#company-add').off('click').on('click', function () {
         isUpdate = 'N';
+        searchCompanyType();
     });
     $('#company-list').off('click').on('click', function () {
         init();
@@ -54,7 +55,6 @@ $(function () {
         data: {},
         dataType: "json"
     }, function (result) {
-        console.log(result);
         window.returnDate = result.returnDate;
         for (var i = 0; i < result.returnDate.length; i++) {
             //循环遍历集合元素,添加公司目录。
@@ -64,7 +64,23 @@ $(function () {
 
     });
 });
+function searchCompanyType(obj) {
+//查询投资公司类型
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/queryCompanyType',
+        data: {},
+        dataType: "json"
 
+    }, function (result) {
+        var html = template('company_type',result);
+        $('.type_radio_group').html(html);
+        $("#radio"+obj.isTz).attr("checked","checked");
+
+    }, function (error) {
+
+    })
+}
 function init() {
     $('.company-manger .mnue_desc').val('');
     $('.company-manger .mnue_url').val('');
@@ -108,7 +124,8 @@ function mnueModify(obj) {
     isUpdate = 'Y';
     // window.obj = obj;
     window.sonObj = obj;
-    console.log(JSON.stringify(obj))
+    console.log(JSON.stringify(obj));
+    searchCompanyType(obj);
     $('.company-manger .company-tabs li:first-child').removeClass('active');
     $('.company-manger .company-tabs li:last-child').addClass('active');
     $('.company-manger .company-content div:first-child').removeClass('active');
@@ -178,25 +195,13 @@ function mnueDelete(obj) {
         });
 }
 
-//添加菜单节点事件，在增删改之后调用
-function addMnueList(array) {
-    var rootNode = $('.aside .nav');
-    var tbody = $('.company-manger table tbody');
-    rootNode.html('');
-    tbody.html('');
-    for (var i = 0; i < array.length; i++) {
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode, array[i]);
-        utils.addTableMnues(tbody, array[i], null, 0);
-        utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'), array[i], null, 0);
-    }
-}
 
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
     // window.obj = obj;
     window.parentObj = obj;
+    searchCompanyType();
     //跳转到添加子菜单的页面
     $('.company-manger .company-tabs li:first-child').removeClass('active');
     $('.company-manger .company-tabs li:last-child').addClass('active');
@@ -209,11 +214,23 @@ function sonMnueAdd(obj) {
     $('.company-manger .save').on('click', function () {
         //判断必填信息是否已经填写
         if (!$('.company-manger .search_text').val()) {
-            alert('请选择上级菜单');
+            alert('请选择上级公司');
             return;
         }
         if (!$('.company-manger .mnue_desc').val()) {
-            alert('请填写菜单名称');
+            alert('请填写公司名称');
+            return;
+        }
+        if (!$('.company-manger .mnue_url').val()) {
+            alert('请填写公司代码');
+            return;
+        }
+        if (!$('.company-manger .mnue_address').val()) {
+            alert('请填写公司地址');
+            return;
+        }
+        if (!$('.company-manger .mnue_address_code').val()) {
+            alert('请填写公司地址');
             return;
         }
         //所有验证通过，发送请求进行
@@ -241,7 +258,8 @@ function addMnues(obj) {
             mnueDesc: $('.company-manger .mnue_desc').val(),
             parentId: window.parentObj.id,
             companyAddress: $('.company-manger .mnue_address_code').val(),
-            isUpdate: isUpdate
+            isUpdate: isUpdate,
+            isTz:$("input[type='radio'].company_type_radios:checked").val()
         },
         success: function (data) {
             console.log(data);
@@ -300,9 +318,9 @@ function mnueTreeInModel(obj) {
 };
 
 function chooseMnue(obj) {
-    if(chooseCompany) {
+    if (chooseCompany) {
         window.parentObj = obj;
-    }else{
+    } else {
         // addressObj = obj;
         window.inputTextCode.val(obj.id);
     }

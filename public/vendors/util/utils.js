@@ -164,7 +164,7 @@ var utils = {
         }
     },
     //分页页码显示
-    pageList(pageObj,parentNode){
+    pageList(pageObj,parentNode,fun){
         var pageList = '<li id="per-page"><a href="#">上一页</a></li>';
         var totalPage = Math.ceil(pageObj.totalCount / pageObj.returnData.pageSize);
         var currentPage = parseInt(pageObj.returnData.offset);
@@ -211,17 +211,26 @@ var utils = {
         $('#per-page').on('click',function (e) {
             currentPage--;
             currentPage = currentPage < 1?1:currentPage;
-            getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
+            if(fun){
+                fun(currentPage,utils.pageSize);
+            }
+            // getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
         });
         $('#next-page').unbind();
         $('#next-page').on('click',function (e) {
             currentPage++;
             currentPage = currentPage > totalPage ? totalPage:currentPage;
-            getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
+            if(fun){
+                fun(currentPage,utils.pageSize);
+            }
+            // getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
         });
        parentNode.unbind();
        parentNode.on('click','.pageNums',function (event) {
-           getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
+           if(fun){
+               fun($(event.target).html(),utils.pageSize);
+           }
+           // getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
        });
     },
     // 验证用户名是否存在

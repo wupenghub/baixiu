@@ -1179,7 +1179,10 @@ router.get('/baixiu/getOrderList', function (req, res) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
             var querySql ="SELECT\n" +
-                "\to.*, (\n" +
+                "\to.*,\n" +
+                "\t\t(datediff(o.end_date, o.start_date) + 1) AS totalDay,\n" +
+                "\tDATE_FORMAT(o.start_date, \"%Y-%m-%d\") as start_date_str,\n" +
+                "\tDATE_FORMAT(o.end_date, \"%Y-%m-%d\") as end_date_str,(\n" +
                 "\t\tSELECT\n" +
                 "\t\t\torg.company_desc\n" +
                 "\t\tFROM\n" +

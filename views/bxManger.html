@@ -32,13 +32,12 @@
       <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
-            <th class="text-center">出差单号</th>
-            <th class="text-center">出差起始公司</th>
-            <th class="text-center">出差目的公司</th>
-            <th class="text-center">起始地址</th>
-            <th class="text-center">结束地址</th>
-            <th class="text-center" width="100">出差总天数</th>
-            <th class="text-center" width="100">订单状态</th>
+            <!--<th class="text-center">出差单号</th>-->
+            <th class="text-center">起始公司</th>
+            <th class="text-center">目的公司</th>
+            <th class="text-center">起始时间</th>
+            <th class="text-center">结束公司</th>
+            <th class="text-center">出差天数</th>
             <th class="text-center" width="100">订单修改</th>
           </tr>
         </thead>
@@ -67,13 +66,12 @@
   <script type="text/art-template" id="ordersList">
     <% for(var i = 0;i<ordersJsonArray.length ;i++){ %>
         <tr>
-          <td><%= ordersJsonArray[i].order_no %></td>
-          <td><%= ordersJsonArray[i].startCompanyDesc %></td>
-          <td><%= ordersJsonArray[i].endCompanyDesc %></td>
-          <td class="text-center"><%= ordersJsonArray[i].startAddressDesc %></td>
-          <td class="text-center"><%= ordersJsonArray[i].endAddressDesc %></td>
-          <td class="text-center"></td>
-          <td class="text-center"></td>
+          <!--<td><%= ordersJsonArray[i].order_no %></td>-->
+          <td class="text-center"><%= ordersJsonArray[i].startCompanyDesc %></td>
+          <td class="text-center"><%= ordersJsonArray[i].endCompanyDesc %></td>
+          <td class="text-center"><%= ordersJsonArray[i].start_date_str %></td>
+          <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
+          <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
           <td class="text-center">
             <a href="javascript:;" class="btn btn-default btn-xs post-edit">编辑</a>
             <a href="javascript:;" class="btn btn-danger btn-xs post-delete">删除</a>

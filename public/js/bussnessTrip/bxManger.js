@@ -9,6 +9,31 @@ $(function () {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
+    $('#order-list').on('click',function () {
+        $('#order-no').val('');
+    });
+
+    $('#order-search').on('click',function () {
+        if(!$('#order-no').val()){
+            alert('请输入订单编号');
+            return;
+        }
+        var userStr = localStorage.getItem('email');
+        var email = '';
+        if (userStr) {
+            email = JSON.parse(userStr)[0];
+        }
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/searchOrderCost',
+            data: {email,orderNo:$('#order-no').val()},
+            dataType: "json"
+        },function (data) {
+
+        },function (error) {
+
+        })
+    });
     //获取文章审阅数据
     getOrderListData(1, utils.pageSize);
 });
@@ -41,6 +66,7 @@ function getOrderListData(offset, pageSize) {
             $('.orders .order-tabs li:last-child').addClass('active');
             $('.orders .order-content div:first-child').removeClass('active');
             $('.orders .order-content div:last-child').addClass('active');
+            $('#order-no').val(orderNo);
         });
          //给文章信息绑定删除按钮
          // bindDelete(offset,pageSize);

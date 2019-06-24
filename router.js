@@ -1286,5 +1286,34 @@ router.get('/baixiu/getOrderList', function (req, res) {
         }
     })
 });
+//查询订单对应的费用
+router.get('/baixiu/searchOrderCost',function (req,res) {
+    var querySql = "SELECT\n" +
+        "\tos.cost_desc as costDesc,\n" +
+        "os.cost_type as costType,\n" +
+        "oc.cost_amount as amount,\n" +
+        "os.max_cost as ceilingAmount\n" +
+        "FROM\n" +
+        "\ttrip_order o,\n" +
+        "\torder_char oc,\n" +
+        "  cost_standard os\n" +
+        "WHERE\n" +
+        "\to.email = '"+req.query.email+"'\n" +
+        "AND o.order_no = '"+req.query.orderNo+"'\n" +
+        "AND o.order_no = oc.order_no\n" +
+        "and oc.cost_type = os.cost_type";
+    console.log('searchOrderCost查询:'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        console.log(result);
+        res.json({
+            status:0
+        });
+    },function (error) {
+        res.json({
+            status:-1
+        });
+    });
+
+});
 
 module.exports = router;

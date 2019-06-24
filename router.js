@@ -1152,14 +1152,136 @@ router.post('/baixiu/deleteAddress',function (req,res) {
         }
     });
 });
-
-//费用类型模块
-router.get('/baixiu/costType',function (req,res) {
+//报销管理模块
+router.get('/baixiu/bxManger',function (req,res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
         return;
     }
-    res.render('costType.html', {dataJsonArr: req.session.userInfo});
+    res.render('bxManger.html', {dataJsonArr: req.session.userInfo});
 });
+//获取订单信息
+router.get('/baixiu/getOrderList', function (req, res) {
+    var returnObj = {};
+    returnObj.returnData = {
+        offset: req.query.offset,
+        pageSize: req.query.pageSize,
+        email:req.query.email
+    };
+    var queryCountSql = "SELECT\n" +
+        "\tcount(1) AS count\n" +
+        "FROM\n" +
+        "\ttrip_order o\n" +
+        "WHERE\n" +
+        "\to.email = '"+req.query.email+"'";
+    DbUtils.queryData(queryCountSql, function (result) {
+        if (result && result[0].count != '0') {
+            returnObj.totalCount = result[0].count;
+            var querySql ="SELECT\n" +
+                "\to.*, (\n" +
+                "\t\tSELECT\n" +
+                "\t\t\torg.company_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\tcompany_org org\n" +
+                "\t\tWHERE\n" +
+                "\t\t\torg.company_code = o.start_company\n" +
+                "\t) AS startCompanyDesc,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\torg.company_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\tcompany_org org\n" +
+                "\t\tWHERE\n" +
+                "\t\t\torg.company_code = o.end_company\n" +
+                "\t) AS endCompanyDesc,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\ta.address_code\n" +
+                "\t\tFROM\n" +
+                "\t\t\taddress a\n" +
+                "\t\tWHERE\n" +
+                "\t\t\ta.address_code = (\n" +
+                "\t\t\t\tSELECT\n" +
+                "\t\t\t\t\torg.address_code\n" +
+                "\t\t\t\tFROM\n" +
+                "\t\t\t\t\tcompany_org org\n" +
+                "\t\t\t\tWHERE\n" +
+                "\t\t\t\t\torg.company_code = o.start_company\n" +
+                "\t\t\t)\n" +
+                "\t) AS startAddressCode,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\ta.address_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\taddress a\n" +
+                "\t\tWHERE\n" +
+                "\t\t\ta.address_code = (\n" +
+                "\t\t\t\tSELECT\n" +
+                "\t\t\t\t\torg.address_code\n" +
+                "\t\t\t\tFROM\n" +
+                "\t\t\t\t\tcompany_org org\n" +
+                "\t\t\t\tWHERE\n" +
+                "\t\t\t\t\torg.company_code = o.start_company\n" +
+                "\t\t\t)\n" +
+                "\t) AS startAddressDesc,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\ta.address_code\n" +
+                "\t\tFROM\n" +
+                "\t\t\taddress a\n" +
+                "\t\tWHERE\n" +
+                "\t\t\ta.address_code = (\n" +
+                "\t\t\t\tSELECT\n" +
+                "\t\t\t\t\torg.address_code\n" +
+                "\t\t\t\tFROM\n" +
+                "\t\t\t\t\tcompany_org org\n" +
+                "\t\t\t\tWHERE\n" +
+                "\t\t\t\t\torg.company_code = o.end_company\n" +
+                "\t\t\t)\n" +
+                "\t) AS endAddressCode,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\ta.address_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\taddress a\n" +
+                "\t\tWHERE\n" +
+                "\t\t\ta.address_code = (\n" +
+                "\t\t\t\tSELECT\n" +
+                "\t\t\t\t\torg.address_code\n" +
+                "\t\t\t\tFROM\n" +
+                "\t\t\t\t\tcompany_org org\n" +
+                "\t\t\t\tWHERE\n" +
+                "\t\t\t\t\torg.company_code = o.end_company\n" +
+                "\t\t\t)\n" +
+                "\t) AS endAddressDesc\n" +
+                "FROM\n" +
+                "\ttrip_order o\n" +
+                "WHERE\n" +
+                "\to.email = '"+req.query.email+"'\n" +
+                "ORDER BY\n" +
+                "\to.start_date DESC\n" +
+                "LIMIT "+((req.query.offset - 1) * req.query.pageSize)+","+req.query.pageSize;
+            console.log('getOrderList查询数据：'+querySql);
+            // querySql += ' LIMIT ' + ((req.query.offset - 1) * req.query.pageSize) + ',\n' + req.query.pageSize;
+            DbUtils.queryData(querySql, function (resultList) {
+                console.log('getOrderList查询数据：'+querySql);
+                if (resultList && resultList.length > 0) {
+                    returnObj.getlist_status = 0;
+                    returnObj.getlist_desc = '获取数据成功';
+                    returnObj.ordersJsonArray = resultList;
+                } else {
+                    returnObj.getlist_status = 1;
+                    returnObj.getlist_desc = '未获取到数据';
+                }
+                res.json(returnObj);
+            });
+        } else {
+            returnObj.getlist_status = 1;
+            returnObj.getlist_desc = '未获取到数据';
+            res.json(returnObj);
+        }
+    })
+});
+
 module.exports = router;

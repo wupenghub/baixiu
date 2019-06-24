@@ -25,11 +25,18 @@
       <div class="page-title">
         <h1>费用类型管理</h1>
       </div>
-      <div class="page-action">
-        <ul class="pagination pagination-sm pull-right pages-nav">
-        </ul>
-      </div>
-      <table class="table table-striped table-bordered table-hover">
+      <ul class="nav nav-tabs order-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#order_list" id="order-list" data-toggle="tab">订单列表</a>
+        </li>
+        <li role="presentation"><a href="#order_modify" id="order-modify" data-toggle="tab">订单修改</a></li>
+      </ul>
+      <div class="tab-content order-content">
+        <div class="tab-pane active" id="order_list">
+          <div class="page-action">
+            <ul class="pagination pagination-sm pull-right pages-nav">
+            </ul>
+          </div>
+          <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
             <th class="text-center">出差单号</th>
@@ -44,6 +51,19 @@
         <tbody>
         </tbody>
       </table>
+        </div>
+        <div class="tab-pane" id="order_modify">
+            <div class="search_text">
+                出差单号：<input type="text" placeholder="请输入订单编号"/>
+              <button type="button" class="btn btn-info" id="order-search">查询</button>
+            </div>
+            <div class="cost_type_list">
+              <div type="button" class="add">
+                <span class="add_font glyphicon glyphicon-plus"></span>
+                <span class="add_text">添加记录</span>
+              </div>
+            </div>
+       </div>
     </div>
   </div>
   <div class="aside">
@@ -73,8 +93,8 @@
           <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
           <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
           <td class="text-center">
-            <a href="javascript:;" class="btn btn-default btn-xs post-edit">编辑</a>
-            <a href="javascript:;" class="btn btn-danger btn-xs post-delete">删除</a>
+            <a href="javascript:;" class="btn btn-default btn-xs order_edit" data-no="<%= ordersJsonArray[i].order_no %>">编辑</a>
+            <a href="javascript:;" class="btn btn-danger btn-xs order_delete" data-no="<%= ordersJsonArray[i].order_no %>">删除</a>
           </td>
         </tr>
     <% } %>

@@ -14,7 +14,6 @@ $(function () {
 });
 
 function getOrderListData(offset, pageSize) {
-    // offset--;
     var userStr = localStorage.getItem('email');
     var email = '';
     if (userStr) {
@@ -33,10 +32,16 @@ function getOrderListData(offset, pageSize) {
           returnData = data.returnData;
          data.returnData.totalCount = data.totalCount;
          utils.pageList(data,$('.pages-nav'),function (currentPage,pageSize) {
-             // var currentPage = parseInt(pageObj.returnData.offset);
-             console.log(currentPage+'====='+pageSize)
              getOrderListData(currentPage, pageSize);
          });
+        //注册修改功能点击事件
+        $('.order_edit').on('click',function () {
+           var orderNo = this.dataset.no;
+            $('.orders .order-tabs li:first-child').removeClass('active');
+            $('.orders .order-tabs li:last-child').addClass('active');
+            $('.orders .order-content div:first-child').removeClass('active');
+            $('.orders .order-content div:last-child').addClass('active');
+        });
          //给文章信息绑定删除按钮
          // bindDelete(offset,pageSize);
     }, function (error) {

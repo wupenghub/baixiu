@@ -11,6 +11,7 @@ $(function () {
     }
     $('#order-list').on('click',function () {
         $('#order-no').val('');
+        $('.cost_type_list_items').html('');
     });
 
     $('#order-search').on('click',function () {
@@ -29,6 +30,9 @@ $(function () {
             data: {email,orderNo:$('#order-no').val()},
             dataType: "json"
         },function (data) {
+            console.log(data);
+            var html = template('ordersListItems',data);
+            $('.cost_type_list_items').html(html);
 
         },function (error) {
 

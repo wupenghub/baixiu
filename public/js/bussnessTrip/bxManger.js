@@ -30,8 +30,9 @@ $(function () {
             data: {email,orderNo:$('#order-no').val()},
             dataType: "json"
         },function (data) {
-            console.log(data);
+            console.log('====='+JSON.stringify(data));
             var html = template('ordersListItems',data);
+            console.log(html)
             $('.cost_type_list_items').html(html);
 
         },function (error) {
@@ -54,7 +55,6 @@ function getOrderListData(offset, pageSize) {
         dataType: 'json',
         data: {offset, pageSize,email}
     }, function (data) {
-        console.log(data);
         var ordersListHtml = template('ordersList',data);
         $('.orders table tbody').html(ordersListHtml);
        //渲染分页页签

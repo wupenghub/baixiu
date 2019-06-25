@@ -1168,7 +1168,6 @@ router.get('/baixiu/getOrderList', function (req, res) {
     returnObj.returnData = {
         offset: req.query.offset,
         pageSize: req.query.pageSize,
-        email:req.query.email
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +

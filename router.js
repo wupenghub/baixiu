@@ -502,7 +502,7 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "WHERE\n" +
                 "\to.start_date = str_to_date('"+date+"', '%Y-%m-%d')\n" +
                 "AND o.email = '"+email+"'\n" +
-                "AND o.order_flag = 1\n";
+                "AND o.order_status = 1\n";
             console.log(querySql);
             DbUtils.queryData(querySql,function (result) {
                 res.json({
@@ -578,14 +578,15 @@ router.post('/baixiu/addRecord',function (req,res) {
         querySql = "INSERT INTO trip_order\n" +
             "VALUES\n" +
             "\t(\n" +
+            "\t\tNULL,\n" +
             "\t\t'" + orderNo + "',\n" +
             "\t\t'" + email + "',\n" +
             "\t\t'" + startDate + "',\n" +
             "\t\t'" + endDate + "',\n" +
-            "\t\t1,\n" +
             "\t\t'" + startCompany + "',\n" +
-            "\t\t'" + endCompany + "'\n" +
-            "\t)";
+            "\t\t'" + endCompany + "',\n" +
+            "\t\t1\n" +
+            "\t)"
     }else{
             querySql = "UPDATE trip_order o\n" +
             "SET o.email = '"+email+"',\n" +
@@ -1306,7 +1307,8 @@ router.get('/baixiu/searchOrderCost',function (req,res) {
     DbUtils.queryData(querySql,function (result) {
         console.log(result);
         res.json({
-            status:0
+            status:0,
+            returnData:result
         });
     },function (error) {
         res.json({
@@ -1316,4 +1318,75 @@ router.get('/baixiu/searchOrderCost',function (req,res) {
 
 });
 
+
+
+//费用类型管理
+router.get('/baixiu/costType',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    res.render('costType.html', {dataJsonArr: req.session.userInfo});
+});
+//查询费用类型
+router.get('/baixiu/searchCostTypeList',function (req,res) {
+    var returnObj = {};
+    returnObj.returnData = {
+        offset: req.query.offset,
+        pageSize: req.query.pageSize,
+        email:req.query.email
+    };
+    var queryCountSql = "SELECT\n" +
+        "\tcount(1) AS count\n" +
+        "FROM\n" +
+        "\tcost_standard c\n" +
+        "WHERE\n" +
+        "\tc. STATUS = 0";
+    DbUtils.queryData(queryCountSql,function (result) {
+        if (result && result[0].count != '0') {
+            returnObj.totalCount = result[0].count;
+            var querySql = "SELECT\n" +
+                "\tcs.cost_type AS costTypeCode,\n" +
+                "\tCONCAT(\n" +
+                "\t\tct.company_type_desc,\n" +
+                "\t\tlt.level_desc,\n" +
+                "\t\tcs.cost_desc\n" +
+                "\t) AS costTypeDesc,\n" +
+                "\tcs.cost_type,\n" +
+                "\tcs.max_cost AS ceilCost\n" +
+                "FROM\n" +
+                "\tcost_standard cs,\n" +
+                "\tlevel_table lt,\n" +
+                "\tcompany_type ct\n" +
+                "WHERE\n" +
+                "\tcs.is_tz = ct.is_tz\n" +
+                "AND cs. LEVEL = lt. LEVEL\n" +
+                "AND cs. STATUS = 0\n"+
+                "LIMIT "+((req.query.offset - 1) * req.query.pageSize)+","+req.query.pageSize;
+            console.log('searchCostTypeList：'+querySql);
+            DbUtils.queryData(querySql, function (resultList) {
+                console.log('searchCostTypeList查询数据：'+querySql);
+                if (resultList && resultList.length > 0) {
+                    returnObj.getlist_status = 0;
+                    returnObj.getlist_desc = '获取数据成功';
+                    returnObj.costTypeJsonArray = resultList;
+                } else {
+                    returnObj.getlist_status = 1;
+                    returnObj.getlist_desc = '未获取到数据';
+                }
+                res.json(returnObj);
+            });
+        } else {
+            returnObj.getlist_status = 1;
+            returnObj.getlist_desc = '未获取到数据';
+            res.json(returnObj);
+        }
+    },function (error) {
+        returnObj.getlist_status = -1;
+        returnObj.getlist_desc = '未获取到数据';
+        res.json(returnObj);
+    });
+});
 module.exports = router;

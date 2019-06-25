@@ -72,3 +72,7 @@ function bindDelete(offset, pageSize) {
         })
     });
 }
+
+function editCostType(objStr) {
+
+}

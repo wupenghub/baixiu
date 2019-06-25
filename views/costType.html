@@ -81,16 +81,14 @@
     <script src="/public/js/bussnessTrip/CostType.js"></script>
     <script type="text/javascript" id="template">{{dataJsonArr}}</script>
     <script type="text/art-template" id="costsList">
-        <% for(var i = 0;i
-        <costTypeJsonArray.length ;i++){ %>
+        <% for(var i = 0;i<costTypeJsonArray.length ;i++){ %>
             <tr>
                 <td class="text-center"><%= costTypeJsonArray[i].costTypeCode %></td>
                 <td class="text-center"><%= costTypeJsonArray[i].costTypeDesc %></td>
                 <td class="text-center"><%= costTypeJsonArray[i].ceilCost %></td>
                 <td class="text-center">
-                    <a href="javascript:;" class="btn btn-default btn-xs order_edit"
-                       data-no="<%= costTypeJsonArray[i].costTypeCode %>">编辑</a>
-                    <a href="javascript:;" class="btn btn-danger btn-xs order_delete"
+                    <a href="javascript:;" class="btn btn-default btn-xs cost_type_edit">编辑</a>
+                    <a href="javascript:;" class="btn btn-danger btn-xs cost_type_delete"
                        data-no="<%= costTypeJsonArray[i].costTypeCode %>">删除</a>
                 </td>
             </tr>

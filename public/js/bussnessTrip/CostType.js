@@ -10,7 +10,12 @@ $(function () {
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
     $('#cost-list').on('click',function () {
-
+        $('#cost_type_desc').val('');
+        $('#cost_type_code').val('');
+        $('#company_type_desc').val('');
+        $('#company_type_code').val('');
+        $('#level_desc').val('');
+        $('#level_code').val('');
     });
 
     $('#cost-search').on('click',function () {
@@ -39,6 +44,20 @@ function getCostTypeListData(offset, pageSize) {
             $('.cost .cost-content div:first-child').removeClass('active');
             $('.cost .cost-content div:last-child').addClass('active');
             $('#cost-code').val(this.dataset.code);
+            var dataCode = this.dataset.code;
+            var dataDesc = this.dataset.desc;
+            var costTypeCode = dataCode.split('@')[0];//费用类型对应的code
+            var costTypeDesc = dataDesc.split('@')[0];//费用类型描述
+            var companyTypeCode = dataCode.split('@')[1];//公司类型对应的code
+            var companyTypeDesc = dataDesc.split('@')[1];//公司类型对应的描述
+            var levelTypeCode = dataCode.split('@')[2];//费用类型对应的code
+            var levelTypeDesc = dataDesc.split('@')[2];//费用类型对应的描述
+            $('#cost_type_desc').val(costTypeDesc);
+            $('#cost_type_code').val(costTypeCode);
+            $('#company_type_desc').val(companyTypeDesc);
+            $('#company_type_code').val(companyTypeCode);
+            $('#level_desc').val(levelTypeDesc);
+            $('#level_code').val(levelTypeCode);
         });
         //渲染分页页签
         returnData = data.returnData;

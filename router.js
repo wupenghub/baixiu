@@ -1289,7 +1289,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
 //查询订单对应的费用
 router.get('/baixiu/searchOrderCost', function (req, res) {
     var querySql = "SELECT\n" +
-        "\tos.cost_desc as costDesc,\n" +
+        "\t(select t.cost_desc from cost_type t where t.cost_type = oc.cost_type) AS costDesc,\n" +
         "os.cost_type as costType,\n" +
         "oc.cost_amount as amount,\n" +
         "os.max_cost as ceilingAmount\n" +
@@ -1505,7 +1505,9 @@ router.get('/baixiu/searchType',function (req,res) {
     DbUtils.queryData(querySql,function (result) {
         returnObj.status = 0;
         returnObj.returnData = result;
-        returnObj.queryType = queryType;
+        for(var i = 0;i<result.length;i++){
+            returnObj.returnData[i].queryType = queryType;
+        }
         returnObj.desc = '查询成功';
         res.json(returnObj);
     },function (error) {

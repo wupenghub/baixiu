@@ -75,9 +75,16 @@ $(function () {
         }, function (data) {
             console.log(data)
             if (data.status == 0) {
-                $('.cost_type_div').show();
-                $('#cost_type_desc_modify').val(data.returnData[0].costDesc);
-                $('#cost_type_max_count_modify').val(data.returnData[0].ceilCost);
+                if(data.returnData.length > 0){
+                    $('.cost_type_div').show();
+                    $('#cost_type_desc_modify').val(data.returnData[0].costDesc);
+                    $('#cost_type_max_count_modify').val(data.returnData[0].ceilCost);
+                }else {
+                    $('.cost_type_div').hide();
+                    $('#cost_type_desc_modify').val('');
+                    $('#cost_type_max_count_modify').val('');
+                }
+
             } else {
 
             }
@@ -184,12 +191,16 @@ function showModal(queryType) {
     });
 }
 
-function showInfo(type) {
+function showInfo(type,obj) {
     if (type == 'FY') {
-
+        $('#cost_type_desc').val(obj.innerHTML);
+        $('#cost_type_code').val(obj.dataset.costCode);
     } else if (type == 'GS') {
-
+        $('#company_type_desc').val(obj.innerHTML);
+        $('#company_type_code').val(obj.dataset.costCode);
     } else if (type == 'ZJ') {
-
+        $('#level_desc').val(obj.innerHTML);
+        $('#level_code').val(obj.dataset.costCode);
     }
+    $('.cost-manger-tree').modal('hide');
 }

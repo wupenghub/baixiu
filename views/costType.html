@@ -26,9 +26,10 @@
             <h1>费用类型管理</h1>
         </div>
         <ul class="nav nav-tabs cost-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#cost_list" id="cost-list" data-toggle="tab">费用类型列表</a>
+            <li role="presentation" class="active cost_list_li"><a href="#cost_list" id="cost-list" data-toggle="tab">费用类型列表</a>
             </li>
-            <li role="presentation"><a href="#cost_modify" id="cost-modify" data-toggle="tab">费用类型修改</a></li>
+            <li role="presentation" class="cost_modify_li"><a href="#cost_modify" id="cost-modify" data-toggle="tab">费用类型修改</a></li>
+            <li role="presentation" class="cost_add_li"><a href="#cost_add" id="cost-add" data-toggle="tab">费用类型添加</a></li>
         </ul>
         <div class="tab-content cost-content">
             <div class="tab-pane active" id="cost_list">
@@ -53,22 +54,22 @@
                 <div style="background:#ffffff;" class="clearfix">
                     <div class="search_text_div">
                         <sapn class="text-content">费用类型：</sapn>
-                        <input type="text" class="search_text" id="cost_type_desc" readonly="readonly">
-                        <input style="display: none" id="cost_type_code" readonly="readonly">
+                        <input type="text" class="search_text cost_type_desc_view"  readonly="readonly">
+                        <input style="display: none" class="cost_type_code_view" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
                                 data-target="#modal_tree" onclick="showModal('FY')"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">公司类型：</sapn>
-                        <input type="text" class="search_text" id="company_type_desc" readonly="readonly">
-                        <input style="display: none" type="text" id="company_type_code" readonly="readonly">
+                        <input type="text" class="search_text company_type_desc_view"  readonly="readonly">
+                        <input style="display: none" type="text" class="company_type_code_view" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
                                 data-target="#modal_tree" onclick="showModal('GS')"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">职级：</sapn>
-                        <input type="text" class="search_text" id="level_desc" readonly="readonly">
-                        <input style="display: none" type="text" id="level_code" readonly="readonly">
+                        <input type="text" class="search_text level_desc_view"  readonly="readonly">
+                        <input style="display: none" type="text" class="level_code_view" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
                                 data-target="#modal_tree" onclick="showModal('ZJ')"></button>
                     </div>
@@ -85,6 +86,9 @@
                         <span class="add_text">添加记录</span>
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane" id="cost_add">
+
             </div>
         </div>
     </div>

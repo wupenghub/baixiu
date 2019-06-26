@@ -10,7 +10,7 @@ $(function () {
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
     $('#cost-list').on('click',function () {
-        $('#cost-no').val('');
+
     });
 
     $('#cost-search').on('click',function () {
@@ -33,6 +33,13 @@ function getCostTypeListData(offset, pageSize) {
         console.log(data)
         var html = template('costsList',data);
         $('.cost table tbody').html(html);
+        $('.cost_type_edit').on('click',function () {
+            $('.cost .cost-tabs li:first-child').removeClass('active');
+            $('.cost .cost-tabs li:last-child').addClass('active');
+            $('.cost .cost-content div:first-child').removeClass('active');
+            $('.cost .cost-content div:last-child').addClass('active');
+            $('#cost-code').val(this.dataset.code);
+        });
         //渲染分页页签
         returnData = data.returnData;
         data.returnData.totalCount = data.totalCount;

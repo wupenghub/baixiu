@@ -1354,7 +1354,9 @@ router.get('/baixiu/searchCostTypeList',function (req,res) {
                 "\t\tcs.cost_desc\n" +
                 "\t) AS costTypeDesc,\n" +
                 "\tcs.cost_type,\n" +
-                "\tcs.max_cost AS ceilCost\n" +
+                "\tcs.max_cost AS ceilCost,\n" +
+                "\tct.is_tz as companyTypeCode,\n" +
+                "\tlt.level as level\n" +
                 "FROM\n" +
                 "\tcost_standard cs,\n" +
                 "\tlevel_table lt,\n" +

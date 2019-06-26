@@ -1461,13 +1461,6 @@ router.get('/baixiu/searchCostTypeInfo', function (req, res) {
     });
 });
 router.get('/baixiu/modifyCostTypeInfo',function (req,res) {
-    var updateSql = "UPDATE cost_standard cs\n" +
-        "SET cs.cost_desc = '"+req.query.costTypeDesc+"',\n" +
-        " cs.max_cost = '"+req.query.costMaxAmount+"'\n" +
-        "WHERE\n" +
-        "\tcs.cost_type = '"+req.query.costTypeCode+"'\n" +
-        "AND cs. LEVEL = "+req.query.levelCode+"\n" +
-        "AND cs.is_tz = "+req.query.companyType;
     var updateSql = "UPDATE cost_standard cs,\n" +
         " cost_type ct\n" +
         "SET cs.max_cost = '"+req.query.costMaxAmount+"',\n" +
@@ -1496,5 +1489,30 @@ router.get('/baixiu/modifyCostTypeInfo',function (req,res) {
             desc:'更新失败'
         });
     });
+});
+//查询公司、职位、费用类型接口
+router.get('/baixiu/searchType',function (req,res) {
+    var queryType = req.query.queryType;
+    var querySql = "";
+    if(queryType == 'FY'){//费用类型列表
+        querySql = "select c.cost_type as code,c.cost_desc as descr from cost_type c";
+    }else if(queryType == 'GS'){//公司类型列表
+        querySql = "select t.is_tz as code,t.company_type_desc as descr from company_type t";
+    }else if(queryType == 'ZJ'){//职级类型列表
+        querySql = "select l.level as code,l.level_desc as descr from level_table l";
+    }
+    var returnObj = {};
+    DbUtils.queryData(querySql,function (result) {
+        returnObj.status = 0;
+        returnObj.returnData = result;
+        returnObj.queryType = queryType;
+        returnObj.desc = '查询成功';
+        res.json(returnObj);
+    },function (error) {
+        returnObj.status = -1;
+        returnObj.error = error;
+        res.json(returnObj);
+    });
+
 });
 module.exports = router;

@@ -39,8 +39,8 @@ $(function () {
                 companyType: $('#company_type_code').val(),
                 costTypeCode: $('#cost_type_code').val(),
                 levelCode: $('#level_code').val(),
-                costTypeDesc:$('#cost_type_desc_modify').val(),
-                costMaxAmount:$('#cost_type_max_count_modify').val()
+                costTypeDesc: $('#cost_type_desc_modify').val(),
+                costMaxAmount: $('#cost_type_max_count_modify').val()
             },
             dataType: "json"
         }, function (data) {
@@ -89,6 +89,7 @@ $(function () {
     //获取费用类型数据
     getCostTypeListData(1, utils.pageSize);
 });
+
 function getCostTypeListData(offset, pageSize) {
     utils.ajaxSend({
         type: 'get',
@@ -160,14 +161,35 @@ function bindDelete(offset, pageSize) {
     });
 }
 
-function showModal(type) {
+function showModal(queryType) {
     $('.model-manger').html('');
-    if(type == 'FY'){
+    if (queryType == 'FY') {
         $('.modal-title').html('费用类型列表');
-    }else if(type == 'GS'){
+    } else if (queryType == 'GS') {
         $('.modal-title').html('公司类型列表');
-    }else if(type == 'ZJ'){
+    } else if (queryType == 'ZJ') {
         $('.modal-title').html('职级类型列表');
     }
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/searchType',
+        data: {queryType},
+        dataType: "json"
+    }, function (data) {
+        console.log(data)
+        var html = template('typeList',data);
+        $('.type-list').html(html);
+    }, function (error) {
 
+    });
+}
+
+function showInfo(type) {
+    if (type == 'FY') {
+
+    } else if (type == 'GS') {
+
+    } else if (type == 'ZJ') {
+
+    }
 }

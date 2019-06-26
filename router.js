@@ -1348,15 +1348,29 @@ router.get('/baixiu/searchCostTypeList', function (req, res) {
                 "\tCONCAT(\n" +
                 "\t\tct.company_type_desc,\n" +
                 "\t\tlt.level_desc,\n" +
-                "\t\tcs.cost_desc\n" +
+                "\t\t(\n" +
+                "\t\t\tSELECT\n" +
+                "\t\t\t\tt.cost_desc\n" +
+                "\t\t\tFROM\n" +
+                "\t\t\t\tcost_type t\n" +
+                "\t\t\tWHERE\n" +
+                "\t\t\t\tt.cost_type = cs.cost_type\n" +
+                "\t\t)\n" +
                 "\t) AS costTypeDesc,\n" +
                 "\tcs.cost_type,\n" +
                 "\tcs.max_cost AS ceilCost,\n" +
-                "\tct.is_tz as companyTypeCode,\n" +
-                "\tlt.level as level,\n" +
+                "\tct.is_tz AS companyTypeCode,\n" +
+                "\tlt. LEVEL AS LEVEL,\n" +
                 "\tct.company_type_desc AS companyTypeDesc,\n" +
                 "\tlt.level_desc AS levelDesc,\n" +
-                "\tcs.cost_desc AS costDesc\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\tt.cost_desc\n" +
+                "\t\tFROM\n" +
+                "\t\t\tcost_type t\n" +
+                "\t\tWHERE\n" +
+                "\t\t\tt.cost_type = cs.cost_type\n" +
+                "\t) AS costDesc\n" +
                 "FROM\n" +
                 "\tcost_standard cs,\n" +
                 "\tlevel_table lt,\n" +
@@ -1394,12 +1408,19 @@ router.get('/baixiu/searchCostTypeList', function (req, res) {
 });
 //查询费用类型信息
 router.get('/baixiu/searchCostTypeInfo', function (req, res) {
-    var querySql = "SELECT\n" +
+    var querySql ="SELECT\n" +
         "\tcs.cost_type AS costTypeCode,\n" +
         "\tCONCAT(\n" +
         "\t\tct.company_type_desc,\n" +
         "\t\tlt.level_desc,\n" +
-        "\t\tcs.cost_desc\n" +
+        "\t\t(\n" +
+        "\t\t\tSELECT\n" +
+        "\t\t\t\tt.cost_desc\n" +
+        "\t\t\tFROM\n" +
+        "\t\t\t\tcost_type t\n" +
+        "\t\t\tWHERE\n" +
+        "\t\t\t\tt.cost_type = cs.cost_type\n" +
+        "\t\t)\n" +
         "\t) AS costTypeDesc,\n" +
         "\tcs.cost_type,\n" +
         "\tcs.max_cost AS ceilCost,\n" +
@@ -1407,7 +1428,14 @@ router.get('/baixiu/searchCostTypeInfo', function (req, res) {
         "\tlt. LEVEL AS LEVEL,\n" +
         "\tct.company_type_desc AS companyTypeDesc,\n" +
         "\tlt.level_desc AS levelDesc,\n" +
-        "\tcs.cost_desc AS costDesc\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tt.cost_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcost_type t\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tt.cost_type = cs.cost_type\n" +
+        "\t) AS costDesc\n" +
         "FROM\n" +
         "\tcost_standard cs,\n" +
         "\tlevel_table lt,\n" +
@@ -1416,9 +1444,10 @@ router.get('/baixiu/searchCostTypeInfo', function (req, res) {
         "\tcs.is_tz = ct.is_tz\n" +
         "AND cs. LEVEL = lt. LEVEL\n" +
         "AND cs. STATUS = 0\n" +
-        "AND cs.is_tz = " + req.query.companyType + "\n" +
-        "AND cs.cost_type = '" + req.query.costTypeCode + "'\n" +
-        "AND cs. LEVEL = " + req.query.levelCode;
+        "AND cs.is_tz = "+req.query.companyType+"\n" +
+        "AND cs.cost_type = '"+req.query.costTypeCode+"'\n" +
+        "AND cs. LEVEL = "+req.query.levelCode;
+    console.log('查询searchCostTypeInfo：'+querySql);
     DbUtils.queryData(querySql, function (result) {
         res.json({
             status:0,
@@ -1439,6 +1468,15 @@ router.get('/baixiu/modifyCostTypeInfo',function (req,res) {
         "\tcs.cost_type = '"+req.query.costTypeCode+"'\n" +
         "AND cs. LEVEL = "+req.query.levelCode+"\n" +
         "AND cs.is_tz = "+req.query.companyType;
+    var updateSql = "UPDATE cost_standard cs,\n" +
+        " cost_type ct\n" +
+        "SET cs.max_cost = '"+req.query.costMaxAmount+"',\n" +
+        " ct.cost_desc = '"+req.query.costTypeDesc+"'\n" +
+        "WHERE\n" +
+        "\tcs. LEVEL = "+req.query.levelCode+"\n" +
+        "AND cs.is_tz = "+req.query.companyType+"\n" +
+        "AND cs.cost_type = '"+req.query.costTypeCode+"'\n" +
+        "AND ct.cost_type = cs.cost_type";
     console.log('更新modifyCostTypeInfo：'+updateSql);
     DbUtils.queryData(updateSql,function (result) {
         if(result.affectedRows > 0){

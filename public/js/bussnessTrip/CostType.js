@@ -160,6 +160,14 @@ function bindDelete(offset, pageSize) {
     });
 }
 
-function editCostType(objStr) {
+function showModal(type) {
+    $('.model-manger').html('');
+    if(type == 'FY'){
+        $('.modal-title').html('费用类型列表');
+    }else if(type == 'GS'){
+        $('.modal-title').html('公司类型列表');
+    }else if(type == 'ZJ'){
+        $('.modal-title').html('职级类型列表');
+    }
 
 }

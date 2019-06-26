@@ -56,21 +56,21 @@
                         <input type="text" class="search_text" id="cost_type_desc" readonly="readonly">
                         <input style="display: none" id="cost_type_code" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
-                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                                data-target="#modal_tree" onclick="showModal('FY')"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">公司类型：</sapn>
                         <input type="text" class="search_text" id="company_type_desc" readonly="readonly">
                         <input style="display: none" type="text" id="company_type_code" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
-                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                                data-target="#modal_tree" onclick="showModal('GS')"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">职级：</sapn>
                         <input type="text" class="search_text" id="level_desc" readonly="readonly">
                         <input style="display: none" type="text" id="level_code" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
-                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                                data-target="#modal_tree" onclick="showModal('ZJ')"></button>
                     </div>
                     <button type="button" class="btn btn-info" id="cost-search">查询</button>
                 </div>
@@ -99,6 +99,22 @@
     <div class="mask">
         <span class="glyphicon glyphicon-refresh loading"></span>
     </div>
+    <!-- Modal -->
+    <div class="modal fade company-manger-tree" id="modal_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >公司列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="model-manger">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="../public/vendors/jquery/jquery.js"></script>
     <script src="/node_modules/art-template/lib/template-web.js"></script>
     <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
@@ -115,7 +131,7 @@
                 <td class="text-center">
                     <a href="javascript:;" class="btn btn-default btn-xs cost_type_edit"
                        data-desc="<%= costTypeJsonArray[i].costDesc %>@<%= costTypeJsonArray[i].companyTypeDesc %>@<%= costTypeJsonArray[i].levelDesc %>"
-                       data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].level %>">编辑</a>
+                       data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].LEVEL %>">编辑</a>
                     <a href="javascript:;" class="btn btn-danger btn-xs cost_type_delete"
                        data-no="<%= costTypeJsonArray[i].costTypeCode %>">删除</a>
                 </td>

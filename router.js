@@ -1431,4 +1431,32 @@ router.get('/baixiu/searchCostTypeInfo', function (req, res) {
         });
     });
 });
+router.get('/baixiu/modifyCostTypeInfo',function (req,res) {
+    var updateSql = "UPDATE cost_standard cs\n" +
+        "SET cs.cost_desc = '"+req.query.costTypeDesc+"',\n" +
+        " cs.max_cost = '"+req.query.costMaxAmount+"'\n" +
+        "WHERE\n" +
+        "\tcs.cost_type = '"+req.query.costTypeCode+"'\n" +
+        "AND cs. LEVEL = "+req.query.levelCode+"\n" +
+        "AND cs.is_tz = "+req.query.companyType;
+    console.log('更新modifyCostTypeInfo：'+updateSql);
+    DbUtils.queryData(updateSql,function (result) {
+        if(result.affectedRows > 0){
+            res.json({
+                status:0,
+                desc:'修改成功'
+            });
+        }else{
+            res.json({
+                status:0,
+                desc:'没有修改项'
+            });
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'更新失败'
+        });
+    });
+});
 module.exports = router;

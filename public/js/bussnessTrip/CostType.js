@@ -19,6 +19,35 @@ $(function () {
         $('#cost_type_desc_modify').val('');
         $('#cost_type_max_count_modify').val('');
         $('.cost_type_div').hide();
+        //获取费用类型数据
+        getCostTypeListData(1, utils.pageSize);
+    });
+
+    $('#cost-type-modify').on('click', function () {
+        if (!$('#cost_type_desc_modify').val()) {
+            alert('请输入费用类型名称');
+            return;
+        }
+        if (!$('#cost_type_max_count_modify').val()) {
+            alert('请输入上限金额');
+            return;
+        }
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/modifyCostTypeInfo',
+            data: {
+                companyType: $('#company_type_code').val(),
+                costTypeCode: $('#cost_type_code').val(),
+                levelCode: $('#level_code').val(),
+                costTypeDesc:$('#cost_type_desc_modify').val(),
+                costMaxAmount:$('#cost_type_max_count_modify').val()
+            },
+            dataType: "json"
+        }, function (data) {
+            $('#cost_type_desc').val($('#cost_type_desc_modify').val());
+        }, function (error) {
+            alert(error);
+        });
     });
 
     $('#cost-search').on('click', function () {
@@ -45,21 +74,21 @@ $(function () {
             dataType: "json"
         }, function (data) {
             console.log(data)
-            if(data.status == 0){
+            if (data.status == 0) {
                 $('.cost_type_div').show();
                 $('#cost_type_desc_modify').val(data.returnData[0].costDesc);
                 $('#cost_type_max_count_modify').val(data.returnData[0].ceilCost);
-            }else{
+            } else {
 
             }
         }, function (error) {
 
         });
     });
+
     //获取费用类型数据
     getCostTypeListData(1, utils.pageSize);
 });
-
 function getCostTypeListData(offset, pageSize) {
     utils.ajaxSend({
         type: 'get',

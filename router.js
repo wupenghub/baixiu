@@ -115,7 +115,7 @@ router.get('/baixiu/activatedAccount', function (req, res) {
     });
 });
 //激活账户接口
-router.get('/baixiu/activated',function (req,res) {
+router.get('/baixiu/activated', function (req, res) {
     var userName = req.query.userName;
     var querySql = 'select * from users u where u.email ="' + userName + '"';
     var returnData = {};
@@ -123,12 +123,12 @@ router.get('/baixiu/activated',function (req,res) {
         if (result && result.length > 0) {
             returnData.query_status = 0;
             returnData.query_desc = '查询存有此用户，可以进行账号激活';
-            var updateSql = 'update users u set u.status = "activated" where u.email = "'+userName+'"';
-            DbUtils.queryData(updateSql,function (result) {
+            var updateSql = 'update users u set u.status = "activated" where u.email = "' + userName + '"';
+            DbUtils.queryData(updateSql, function (result) {
                 returnData.activation_status = 0;
                 returnData.activation_desc = '激活成功';
                 res.json(returnData);
-            },function (err) {
+            }, function (err) {
                 returnData.activation_status = 1;
                 returnData.activation_desc = '激活失败';
                 res.json(returnData);
@@ -443,7 +443,7 @@ router.get('/baixiu/articleDelete', function (req, res) {
     });
 });
 //CIS系统人员权限管理模块
-router.get('/baixiu/cisApproval',function (req,res) {
+router.get('/baixiu/cisApproval', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -453,7 +453,7 @@ router.get('/baixiu/cisApproval',function (req,res) {
     // res.render('cisApproval.html');
 });
 //CIS系统材料单配置
-router.get('/baixiu/cisSqlConfig',function (req,res) {
+router.get('/baixiu/cisSqlConfig', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -467,16 +467,16 @@ router.get('/baixiu/businessTrip', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('businessTrip.html',{dataJsonArr: req.session.userInfo});
+    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo});
 });
 //查询订单记录
-router.get('/baixiu/searchOrder',function (req,res) {
+router.get('/baixiu/searchOrder', function (req, res) {
     var email = req.query.email;
     var date = req.query.date;
-    var querySql = "select count(1) as totalCount from trip_order o where o.start_date = str_to_date('"+date+"','%Y-%m-%d') and o.email='"+email+"'";
+    var querySql = "select count(1) as totalCount from trip_order o where o.start_date = str_to_date('" + date + "','%Y-%m-%d') and o.email='" + email + "'";
     console.log(querySql);
-    DbUtils.queryData(querySql,function (result) {
-        if(result[0].totalCount>0){
+    DbUtils.queryData(querySql, function (result) {
+        if (result[0].totalCount > 0) {
             //查询到出差记录
             var querySql = "SELECT\n" +
                 "\to.order_no,\n" +
@@ -500,45 +500,45 @@ router.get('/baixiu/searchOrder',function (req,res) {
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
-                "\to.start_date = str_to_date('"+date+"', '%Y-%m-%d')\n" +
-                "AND o.email = '"+email+"'\n" +
+                "\to.start_date = str_to_date('" + date + "', '%Y-%m-%d')\n" +
+                "AND o.email = '" + email + "'\n" +
                 "AND o.order_status = 1\n";
             console.log(querySql);
-            DbUtils.queryData(querySql,function (result) {
+            DbUtils.queryData(querySql, function (result) {
                 res.json({
-                    status:0,
-                    tripList:result,
-                    totalCount:result[0].totalCount
+                    status: 0,
+                    tripList: result,
+                    totalCount: result[0].totalCount
                 })
-            },function (err) {
+            }, function (err) {
                 res.json({
-                    status:1,
-                    desc:'当天没有出差记录'
+                    status: 1,
+                    desc: '当天没有出差记录'
                 })
             });
-        }else{
+        } else {
             res.json({
-                status:1,
-                desc:'当天没有出差记录'
+                status: 1,
+                desc: '当天没有出差记录'
             });
         }
-    },function (err) {
+    }, function (err) {
 
     });
 });
 //查询每个月中所有日期的订单数
-router.get('/baixiu/searchMonthTripCount',function (req,res) {
+router.get('/baixiu/searchMonthTripCount', function (req, res) {
     var email = req.query.email;
     var date = req.query.date;
     var startYear = date.split('-')[0];
     var month = parseInt(date.split('-')[1]);
-    var date = new Date(startYear,month);
-    var startMonth = date.getMonth() < 10?'0'+date.getMonth():date.getMonth();
-    date.setMonth(date.getMonth()+1,1);
+    var date = new Date(startYear, month);
+    var startMonth = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
+    date.setMonth(date.getMonth() + 1, 1);
     var nextYear = date.getFullYear();
-    var nextMonth = date.getMonth() <10 ? '0'+date.getMonth():date.getMonth();
-    var startDate = startYear+'-'+startMonth+'-01';
-    var nextDate = nextYear+'-'+nextMonth+'-01';
+    var nextMonth = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
+    var startDate = startYear + '-' + startMonth + '-01';
+    var nextDate = nextYear + '-' + nextMonth + '-01';
     var querySql = "SELECT\n" +
         "\t\t\tSUBSTR(o.start_date, 1, 4) AS year,\n" +
         "\t\t\tSUBSTR(o.start_date, 6, 2) AS month,\n" +
@@ -547,25 +547,25 @@ router.get('/baixiu/searchMonthTripCount',function (req,res) {
         "\t\tFROM\n" +
         "\t\t\ttrip_order o\n" +
         "\t\tWHERE\n" +
-        "\t\t\to.start_date >= str_to_date('"+startDate+"', '%Y-%m-%d')\n" +
-        "\t\tAND o.start_date < str_to_date('"+nextDate+"', '%Y-%m-%d')\n" +
-        "\t\tAND o.email = '"+email+"'\n" +
+        "\t\t\to.start_date >= str_to_date('" + startDate + "', '%Y-%m-%d')\n" +
+        "\t\tAND o.start_date < str_to_date('" + nextDate + "', '%Y-%m-%d')\n" +
+        "\t\tAND o.email = '" + email + "'\n" +
         "group by year,month,day";
-    console.log('searchMonthTripCount:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('searchMonthTripCount:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            resultDate:result
+            status: 0,
+            resultDate: result
         });
-    },function (err) {
+    }, function (err) {
         res.json({
-            status:-1,
-            resultDate:err
+            status: -1,
+            resultDate: err
         });
     });
 });
 //新增出差订单
-router.post('/baixiu/addRecord',function (req,res) {
+router.post('/baixiu/addRecord', function (req, res) {
     var email = req.body.email;
     var startDate = req.body.startDate;
     var endDate = req.body.endDate;
@@ -573,7 +573,7 @@ router.post('/baixiu/addRecord',function (req,res) {
     var endCompany = req.body.endCompany;
     var isAdd = req.body.isAdd;
     var querySql = '';
-    if(isAdd == 'Y') {
+    if (isAdd == 'Y') {
         var orderNo = uuid.v1();
         querySql = "INSERT INTO trip_order\n" +
             "VALUES\n" +
@@ -587,41 +587,41 @@ router.post('/baixiu/addRecord',function (req,res) {
             "\t\t'" + endCompany + "',\n" +
             "\t\t1\n" +
             "\t)"
-    }else{
-            querySql = "UPDATE trip_order o\n" +
-            "SET o.email = '"+email+"',\n" +
-            " o.start_date = str_to_date('"+startDate+"', '%Y-%m-%d'),\n" +
-            " o.end_date = str_to_date('"+endDate+"', '%Y-%m-%d'),\n" +
-            " o.start_company = '"+startCompany+"',\n" +
-            " o.end_company = '"+endCompany+"'\n" +
+    } else {
+        querySql = "UPDATE trip_order o\n" +
+            "SET o.email = '" + email + "',\n" +
+            " o.start_date = str_to_date('" + startDate + "', '%Y-%m-%d'),\n" +
+            " o.end_date = str_to_date('" + endDate + "', '%Y-%m-%d'),\n" +
+            " o.start_company = '" + startCompany + "',\n" +
+            " o.end_company = '" + endCompany + "'\n" +
             "WHERE\n" +
-            "\to.order_no = '"+req.body.orderNo+"'\n" +
+            "\to.order_no = '" + req.body.orderNo + "'\n" +
             "AND o.email = '565784355@qq.com'";
     }
-    console.log("addRecord:"+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log("addRecord:" + querySql);
+    DbUtils.queryData(querySql, function (result) {
         console.log(result);
-        if(result.affectedRows>0){
+        if (result.affectedRows > 0) {
             res.json({
-                status:0,
-                desc:'记录添加成功'
+                status: 0,
+                desc: '记录添加成功'
             })
-        }else{
+        } else {
             res.json({
-                status:1,
-                desc:'记录没有添加'
+                status: 1,
+                desc: '记录没有添加'
             })
         }
-    },function (err) {
+    }, function (err) {
         res.json({
-            status:-1,
-            desc:err
+            status: -1,
+            desc: err
         })
     });
 
 });
 //根据订单号查询订单
-router.get('/baixiu/searchOrderByNo',function (req,res) {
+router.get('/baixiu/searchOrderByNo', function (req, res) {
     var email = req.query.email;
     var orderNo = req.query.orderNo;
     /*var querySql = "SELECT\n" +
@@ -651,22 +651,22 @@ router.get('/baixiu/searchOrderByNo',function (req,res) {
         "FROM\n" +
         "\ttrip_order o\n" +
         "WHERE\n" +
-        "\to.order_no = '"+orderNo+"'\n" +
-        "AND o.email = '"+email+"'";
-    console.log('searchOrderByNo:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+        "\to.order_no = '" + orderNo + "'\n" +
+        "AND o.email = '" + email + "'";
+    console.log('searchOrderByNo:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         console.log(result);
         res.json({
-            status:0,
+            status: 0,
             result
         });
-    },function (error) {
+    }, function (error) {
 
     });
 
 });
 // 出差公司管理
-router.get('/baixiu/companyManger',function (req,res) {
+router.get('/baixiu/companyManger', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -675,7 +675,7 @@ router.get('/baixiu/companyManger',function (req,res) {
     res.render('companyManger.html', {dataJsonArr: req.session.userInfo});
 });
 //查询公司列表
-router.get('/baixiu/queryCompanyList',function (req,res) {
+router.get('/baixiu/queryCompanyList', function (req, res) {
     var querySql = "SELECT\n" +
         "\torg.company_code AS id,\n" +
         "\torg.company_code AS url,\n" +
@@ -701,8 +701,8 @@ router.get('/baixiu/queryCompanyList',function (req,res) {
         "\t) AS addressDesc\n" +
         "FROM\n" +
         "\tcompany_org org";
-    console.log('queryCompanyList:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('queryCompanyList:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         for (var i = 0; i < result.length; i++) {
             utils.addList(result, result[i]);
         }
@@ -714,35 +714,35 @@ router.get('/baixiu/queryCompanyList',function (req,res) {
             }
         }
         res.json({
-            status:0,
-            returnDate:array
+            status: 0,
+            returnDate: array
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            returnDate:error
+            status: -1,
+            returnDate: error
         });
     });
 
 });
 //查询公司类型
-router.get('/baixiu/queryCompanyType',function (req,res) {
+router.get('/baixiu/queryCompanyType', function (req, res) {
     var querySql = "select * from company_type t";
-    console.log('queryCompanyType:'+querySql);
-    DbUtils.queryData(querySql,function (date) {
+    console.log('queryCompanyType:' + querySql);
+    DbUtils.queryData(querySql, function (date) {
         res.json({
-            status:0,
-            returnDate:date
+            status: 0,
+            returnDate: date
         })
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:error
+            status: -1,
+            desc: error
         })
     });
 });
 //添加子公司
-router.post('/baixiu/sonCompanyAdd',function (req,res) {
+router.post('/baixiu/sonCompanyAdd', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -750,11 +750,11 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
         return;
     }
     //先判断此id在数据库中是否存在
-    var querySql = 'select count(1) count from company_org m where m.company_code = "' + req.body.id+'"';
+    var querySql = 'select count(1) count from company_org m where m.company_code = "' + req.body.id + '"';
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
-            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz='+req.body.isTz+' where m.company_code ="' + req.body.id+'"';
+            var inserSql = 'UPDATE company_org m set m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="' + req.body.companyAddress + '",m.is_tz=' + req.body.isTz + ' where m.company_code ="' + req.body.id + '"';
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
@@ -804,7 +804,7 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
             if (req.body.isUpdate == 'N') {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'insert into company_org value("'+req.body.id+'","'+req.body.companyAddress+'","' + req.body.parentId + '",' + req.body.isTz + ',"' + req.body.mnueDesc + '")';
+                var inserSql = 'insert into company_org value("' + req.body.id + '","' + req.body.companyAddress + '","' + req.body.parentId + '",' + req.body.isTz + ',"' + req.body.mnueDesc + '")';
                 console.log(inserSql)
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
@@ -855,8 +855,8 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
                 // res.json(data);
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'UPDATE company_org m set m.company_code="'+req.body.id+'",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="'+req.body.companyAddress+'",m.is_tz='+req.body.isTz+' where m.company_code ="' + req.body.oldId+'"';
-                console.log('code不一致sonCompanyAdd:'+inserSql);
+                var inserSql = 'UPDATE company_org m set m.company_code="' + req.body.id + '",m.company_desc = "' + req.body.mnueDesc + '",m.parent_code = "' + req.body.parentId + '",m.address_code="' + req.body.companyAddress + '",m.is_tz=' + req.body.isTz + ' where m.company_code ="' + req.body.oldId + '"';
+                console.log('code不一致sonCompanyAdd:' + inserSql);
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
@@ -904,77 +904,77 @@ router.post('/baixiu/sonCompanyAdd',function (req,res) {
             }
 
         }
-});
+    });
 });
 //删除子公司
-router.get('/baixiu/companyDelete',function (req,res) {
+router.get('/baixiu/companyDelete', function (req, res) {
 //1、判断此用户是否已经登录过
-var user = utils.isLogin(req, res);
-if (!user) {
-    //session不存在，则需要直接返回登录界面
-    return;
-}
-var sql = 'select * from company_org m where m.parent_code = "' + req.query.id + '"';
-DbUtils.queryData(sql, function (result) {
-    if (result.length == 0) {
-        //查不出结果说明满足删除条件，执行修改数据库的sql
-        var updateSql = 'delete from company_org where company_code = "'+req.query.id+'"';
-        console.log('删除companyDelete：'+updateSql);
-        DbUtils.queryData(updateSql, function (updateResult) {
-            var sql = "SELECT\n" +
-                "\torg.company_code AS id,\n" +
-                "\torg.company_code AS url,\n" +
-                "\torg.parent_code AS parent_id,\n" +
-                "\torg.address_code AS addressCode,\n" +
-                "\torg.is_tz AS isTz,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\tt.company_type_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\tcompany_type t\n" +
-                "\t\tWHERE\n" +
-                "\t\t\tt.is_tz = org.is_tz\n" +
-                "\t) AS company_type_desc,\n" +
-                "\torg.company_desc AS mnue_desc,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\ta.address_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\taddress a\n" +
-                "\t\tWHERE\n" +
-                "\t\t\ta.address_code = org.address_code\n" +
-                "\t) AS addressDesc\n" +
-                "FROM\n" +
-                "\tcompany_org org";
-            DbUtils.queryData(sql, function (queryResult) {
-                for (var i = 0; i < queryResult.length; i++) {
-                    utils.addList(queryResult, queryResult[i]);
-                }
-                // 将result中所有节点parent_id值不为空的给踢出掉
-                var array = [];
-                for (var i = 0; i < queryResult.length; i++) {
-                    if (!queryResult[i]['parent_id']) {
-                        array.push(queryResult[i]);
-                    }
-                }
-                var dataJson = {};
-                dataJson.returnData = array;
-                dataJson.status = 0;
-                dataJson.desc = '成功';
-                res.json(dataJson);
-            });
-        });
-    } else {
-        //可以查出结果集，说明改节点为父节点，并且对应的部分子节点没有删除完
-        var errResult = {};
-        errResult.status = 1;
-        errResult.desc = '该目录下的部分子目录未被删除，请先删除对应的子目录';
-        res.json(errResult);
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
     }
-});
+    var sql = 'select * from company_org m where m.parent_code = "' + req.query.id + '"';
+    DbUtils.queryData(sql, function (result) {
+        if (result.length == 0) {
+            //查不出结果说明满足删除条件，执行修改数据库的sql
+            var updateSql = 'delete from company_org where company_code = "' + req.query.id + '"';
+            console.log('删除companyDelete：' + updateSql);
+            DbUtils.queryData(updateSql, function (updateResult) {
+                var sql = "SELECT\n" +
+                    "\torg.company_code AS id,\n" +
+                    "\torg.company_code AS url,\n" +
+                    "\torg.parent_code AS parent_id,\n" +
+                    "\torg.address_code AS addressCode,\n" +
+                    "\torg.is_tz AS isTz,\n" +
+                    "\t(\n" +
+                    "\t\tSELECT\n" +
+                    "\t\t\tt.company_type_desc\n" +
+                    "\t\tFROM\n" +
+                    "\t\t\tcompany_type t\n" +
+                    "\t\tWHERE\n" +
+                    "\t\t\tt.is_tz = org.is_tz\n" +
+                    "\t) AS company_type_desc,\n" +
+                    "\torg.company_desc AS mnue_desc,\n" +
+                    "\t(\n" +
+                    "\t\tSELECT\n" +
+                    "\t\t\ta.address_desc\n" +
+                    "\t\tFROM\n" +
+                    "\t\t\taddress a\n" +
+                    "\t\tWHERE\n" +
+                    "\t\t\ta.address_code = org.address_code\n" +
+                    "\t) AS addressDesc\n" +
+                    "FROM\n" +
+                    "\tcompany_org org";
+                DbUtils.queryData(sql, function (queryResult) {
+                    for (var i = 0; i < queryResult.length; i++) {
+                        utils.addList(queryResult, queryResult[i]);
+                    }
+                    // 将result中所有节点parent_id值不为空的给踢出掉
+                    var array = [];
+                    for (var i = 0; i < queryResult.length; i++) {
+                        if (!queryResult[i]['parent_id']) {
+                            array.push(queryResult[i]);
+                        }
+                    }
+                    var dataJson = {};
+                    dataJson.returnData = array;
+                    dataJson.status = 0;
+                    dataJson.desc = '成功';
+                    res.json(dataJson);
+                });
+            });
+        } else {
+            //可以查出结果集，说明改节点为父节点，并且对应的部分子节点没有删除完
+            var errResult = {};
+            errResult.status = 1;
+            errResult.desc = '该目录下的部分子目录未被删除，请先删除对应的子目录';
+            res.json(errResult);
+        }
+    });
 });
 //地址管理
-router.get('/baixiu/addressManger',function (req,res) {
+router.get('/baixiu/addressManger', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -984,7 +984,7 @@ router.get('/baixiu/addressManger',function (req,res) {
     res.render('addressManger.html', {dataJsonArr: req.session.userInfo});
 });
 //查询地址列表
-router.get('/baixiu/queryAddressList',function (req,res) {
+router.get('/baixiu/queryAddressList', function (req, res) {
     var querySql = "SELECT\n" +
         "\ta.address_code AS id,\n" +
         "\ta.address_code AS url,\n" +
@@ -992,8 +992,8 @@ router.get('/baixiu/queryAddressList',function (req,res) {
         "\ta.address_desc AS mnue_desc\n" +
         "FROM\n" +
         "\taddress a";
-    console.log('queryAddressList:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('queryAddressList:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         for (var i = 0; i < result.length; i++) {
             utils.addList(result, result[i]);
         }
@@ -1005,20 +1005,20 @@ router.get('/baixiu/queryAddressList',function (req,res) {
             }
         }
         res.json({
-            status:0,
-            returnDate:array
+            status: 0,
+            returnDate: array
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            returnDate:error
+            status: -1,
+            returnDate: error
         });
     });
 
 });
 
 //添加子地址
-router.post('/baixiu/sonAddressAdd',function (req,res) {
+router.post('/baixiu/sonAddressAdd', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1026,11 +1026,11 @@ router.post('/baixiu/sonAddressAdd',function (req,res) {
         return;
     }
     //先判断此id在数据库中是否存在
-    var querySql = 'select count(1) count from address m where m.address_code = "' + req.body.id+'"';
+    var querySql = 'select count(1) count from address m where m.address_code = "' + req.body.id + '"';
     DbUtils.queryData(querySql, function (result) {
         var data = {};
         if (result && result[0].count > 0) {
-            var inserSql = 'UPDATE address m set m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.id+'"';
+            var inserSql = 'UPDATE address m set m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.id + '"';
             console.log(inserSql);
             DbUtils.queryData(inserSql, function (result) {
                 data.status = 0;
@@ -1056,7 +1056,7 @@ router.post('/baixiu/sonAddressAdd',function (req,res) {
             if (req.body.isUpdate == 'N') {
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'insert into address value("'+req.body.id+'","'+ req.body.mnueDesc+'","' + req.body.parentId + '")';
+                var inserSql = 'insert into address value("' + req.body.id + '","' + req.body.mnueDesc + '","' + req.body.parentId + '")';
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
@@ -1082,8 +1082,8 @@ router.post('/baixiu/sonAddressAdd',function (req,res) {
                 // res.json(data);
                 data.status = 0;
                 data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
-                var inserSql = 'UPDATE address m set m.address_code="'+req.body.id+'",m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.oldId+'"';
-                console.log('code不一致sonCompanyAdd:'+inserSql);
+                var inserSql = 'UPDATE address m set m.address_code="' + req.body.id + '",m.address_desc = "' + req.body.mnueDesc + '",m.parent_address = "' + req.body.parentId + '" where m.address_code ="' + req.body.oldId + '"';
+                console.log('code不一致sonCompanyAdd:' + inserSql);
                 DbUtils.queryData(inserSql, function (result) {
                     data.status = 0;
                     data.desc = req.body.isUpdate == 'N' ? '添加成功' : '修改成功';
@@ -1110,7 +1110,7 @@ router.post('/baixiu/sonAddressAdd',function (req,res) {
     });
 });
 //删除地址
-router.post('/baixiu/deleteAddress',function (req,res) {
+router.post('/baixiu/deleteAddress', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1121,11 +1121,11 @@ router.post('/baixiu/deleteAddress',function (req,res) {
     DbUtils.queryData(sql, function (result) {
         if (result.length == 0) {
             //查不出结果说明满足删除条件，执行修改数据库的sql
-            var updateSql = 'delete from address where address_code = "'+req.body.id+'"';
-            console.log('deleteAddress：'+updateSql);
+            var updateSql = 'delete from address where address_code = "' + req.body.id + '"';
+            console.log('deleteAddress：' + updateSql);
             DbUtils.queryData(updateSql, function (updateResult) {
                 var sql = "select a.address_desc as mnue_desc,a.address_code as url,a.parent_address as parent_id,a.address_code as id from address a";
-                console.log('deleteAddress查询:'+sql)
+                console.log('deleteAddress查询:' + sql)
                 DbUtils.queryData(sql, function (queryResult) {
                     for (var i = 0; i < queryResult.length; i++) {
                         utils.addList(queryResult, queryResult[i]);
@@ -1154,7 +1154,7 @@ router.post('/baixiu/deleteAddress',function (req,res) {
     });
 });
 //报销管理模块
-router.get('/baixiu/bxManger',function (req,res) {
+router.get('/baixiu/bxManger', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1174,11 +1174,11 @@ router.get('/baixiu/getOrderList', function (req, res) {
         "FROM\n" +
         "\ttrip_order o\n" +
         "WHERE\n" +
-        "\to.email = '"+req.query.email+"'";
+        "\to.email = '" + req.query.email + "'";
     DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
-            var querySql ="SELECT\n" +
+            var querySql = "SELECT\n" +
                 "\to.*,\n" +
                 "\t\t(datediff(o.end_date, o.start_date) + 1) AS totalDay,\n" +
                 "\tDATE_FORMAT(o.start_date, \"%Y-%m-%d\") as start_date_str,\n" +
@@ -1261,14 +1261,14 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
-                "\to.email = '"+req.query.email+"'\n" +
+                "\to.email = '" + req.query.email + "'\n" +
                 "ORDER BY\n" +
                 "\to.start_date DESC\n" +
-                "LIMIT "+((req.query.offset - 1) * req.query.pageSize)+","+req.query.pageSize;
-            console.log('getOrderList查询数据：'+querySql);
+                "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+            console.log('getOrderList查询数据：' + querySql);
             // querySql += ' LIMIT ' + ((req.query.offset - 1) * req.query.pageSize) + ',\n' + req.query.pageSize;
             DbUtils.queryData(querySql, function (resultList) {
-                console.log('getOrderList查询数据：'+querySql);
+                console.log('getOrderList查询数据：' + querySql);
                 if (resultList && resultList.length > 0) {
                     returnObj.getlist_status = 0;
                     returnObj.getlist_desc = '获取数据成功';
@@ -1287,7 +1287,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
     })
 });
 //查询订单对应的费用
-router.get('/baixiu/searchOrderCost',function (req,res) {
+router.get('/baixiu/searchOrderCost', function (req, res) {
     var querySql = "SELECT\n" +
         "\tos.cost_desc as costDesc,\n" +
         "os.cost_type as costType,\n" +
@@ -1298,29 +1298,26 @@ router.get('/baixiu/searchOrderCost',function (req,res) {
         "\torder_char oc,\n" +
         "  cost_standard os\n" +
         "WHERE\n" +
-        "\to.email = '"+req.query.email+"'\n" +
-        "AND o.order_no = '"+req.query.orderNo+"'\n" +
+        "\to.email = '" + req.query.email + "'\n" +
+        "AND o.order_no = '" + req.query.orderNo + "'\n" +
         "AND o.order_no = oc.order_no\n" +
         "and oc.cost_type = os.cost_type";
-    console.log('searchOrderCost查询:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('searchOrderCost查询:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         console.log(result);
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1
+            status: -1
         });
     });
 
 });
-
-
-
 //费用类型管理
-router.get('/baixiu/costType',function (req,res) {
+router.get('/baixiu/costType', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1330,12 +1327,12 @@ router.get('/baixiu/costType',function (req,res) {
     res.render('costType.html', {dataJsonArr: req.session.userInfo});
 });
 //查询费用类型
-router.get('/baixiu/searchCostTypeList',function (req,res) {
+router.get('/baixiu/searchCostTypeList', function (req, res) {
     var returnObj = {};
     returnObj.returnData = {
         offset: req.query.offset,
         pageSize: req.query.pageSize,
-        email:req.query.email
+        email: req.query.email
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
@@ -1343,7 +1340,7 @@ router.get('/baixiu/searchCostTypeList',function (req,res) {
         "\tcost_standard c\n" +
         "WHERE\n" +
         "\tc. STATUS = 0";
-    DbUtils.queryData(queryCountSql,function (result) {
+    DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
             var querySql = "SELECT\n" +
@@ -1367,11 +1364,13 @@ router.get('/baixiu/searchCostTypeList',function (req,res) {
                 "WHERE\n" +
                 "\tcs.is_tz = ct.is_tz\n" +
                 "AND cs. LEVEL = lt. LEVEL\n" +
-                "AND cs. STATUS = 0\n"+
-                "LIMIT "+((req.query.offset - 1) * req.query.pageSize)+","+req.query.pageSize;
-            console.log('searchCostTypeList：'+querySql);
+                "AND cs. STATUS = 0\n";
+            if (req.query.offset && req.query.pageSize) {
+                querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+            }
+            console.log('searchCostTypeList：' + querySql);
             DbUtils.queryData(querySql, function (resultList) {
-                console.log('searchCostTypeList查询数据：'+querySql);
+                console.log('searchCostTypeList查询数据：' + querySql);
                 if (resultList && resultList.length > 0) {
                     returnObj.getlist_status = 0;
                     returnObj.getlist_desc = '获取数据成功';
@@ -1387,10 +1386,49 @@ router.get('/baixiu/searchCostTypeList',function (req,res) {
             returnObj.getlist_desc = '未获取到数据';
             res.json(returnObj);
         }
-    },function (error) {
+    }, function (error) {
         returnObj.getlist_status = -1;
         returnObj.getlist_desc = '未获取到数据';
         res.json(returnObj);
+    });
+});
+//查询费用类型信息
+router.get('/baixiu/searchCostTypeInfo', function (req, res) {
+    var querySql = "SELECT\n" +
+        "\tcs.cost_type AS costTypeCode,\n" +
+        "\tCONCAT(\n" +
+        "\t\tct.company_type_desc,\n" +
+        "\t\tlt.level_desc,\n" +
+        "\t\tcs.cost_desc\n" +
+        "\t) AS costTypeDesc,\n" +
+        "\tcs.cost_type,\n" +
+        "\tcs.max_cost AS ceilCost,\n" +
+        "\tct.is_tz AS companyTypeCode,\n" +
+        "\tlt. LEVEL AS LEVEL,\n" +
+        "\tct.company_type_desc AS companyTypeDesc,\n" +
+        "\tlt.level_desc AS levelDesc,\n" +
+        "\tcs.cost_desc AS costDesc\n" +
+        "FROM\n" +
+        "\tcost_standard cs,\n" +
+        "\tlevel_table lt,\n" +
+        "\tcompany_type ct\n" +
+        "WHERE\n" +
+        "\tcs.is_tz = ct.is_tz\n" +
+        "AND cs. LEVEL = lt. LEVEL\n" +
+        "AND cs. STATUS = 0\n" +
+        "AND cs.is_tz = " + req.query.companyType + "\n" +
+        "AND cs.cost_type = '" + req.query.costTypeCode + "'\n" +
+        "AND cs. LEVEL = " + req.query.levelCode;
+    DbUtils.queryData(querySql, function (result) {
+        res.json({
+            status:0,
+            returnData:result
+        });
+    }, function (error) {
+        res.json({
+            status:0,
+            returnData:error
+        });
     });
 });
 module.exports = router;

@@ -55,28 +55,36 @@
                         <sapn class="text-content">费用类型：</sapn>
                         <input type="text" class="search_text" id="cost_type_desc" readonly="readonly">
                         <input style="display: none" id="cost_type_code" readonly="readonly">
-                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
+                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">公司类型：</sapn>
                         <input type="text" class="search_text" id="company_type_desc" readonly="readonly">
                         <input style="display: none" type="text" id="company_type_code" readonly="readonly">
-                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
+                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
                     </div>
                     <div class="search_text_div">
                         <sapn class="text-content">职级：</sapn>
                         <input type="text" class="search_text" id="level_desc" readonly="readonly">
                         <input style="display: none" type="text" id="level_code" readonly="readonly">
-                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
+                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
+                                data-target="#mnue_tree" onclick="mnueTreeInModel(this)"></button>
                     </div>
                     <button type="button" class="btn btn-info" id="cost-search">查询</button>
                 </div>
                 <div class="cost_type_list">
-                <div type="button" class="add">
-                    <span class="add_font glyphicon glyphicon-plus"></span>
-                    <span class="add_text">添加记录</span>
+                    <div class="cost_type_div">
+                       <span> 费用类型名称：</span><input type="text" id="cost_type_desc_modify" placeholder="请输入要修改的名称">
+                        <span>上限金额：</span><input type="number" id="cost_type_max_count_modify" placeholder="请输入要修改的上限金额">
+                        <button type="button" class="btn btn-info" id="cost-type-modify">修改</button>
+                    </div>
+                    <div type="button" class="add">
+                        <span class="add_font glyphicon glyphicon-plus"></span>
+                        <span class="add_text">添加记录</span>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
@@ -98,13 +106,16 @@
     <script src="/public/js/bussnessTrip/CostType.js"></script>
     <script type="text/javascript" id="template">{{dataJsonArr}}</script>
     <script type="text/art-template" id="costsList">
-        <% for(var i = 0;i<costTypeJsonArray.length ;i++){ %>
+        <% for(var i = 0;i
+        <costTypeJsonArray.length ;i++){ %>
             <tr>
                 <td class="text-center"><%= costTypeJsonArray[i].costTypeCode %></td>
-                <td class="text-center"><%= costTypeJsonArray[i].costTypeDesc %></td>
+                <td class="text-center"><%= costTypeJsonArray[i].costDesc %>（<%= costTypeJsonArray[i].costTypeDesc %>）</td>
                 <td class="text-center"><%= costTypeJsonArray[i].ceilCost %></td>
                 <td class="text-center">
-                    <a href="javascript:;" class="btn btn-default btn-xs cost_type_edit" data-desc="<%= costTypeJsonArray[i].costDesc %>@<%= costTypeJsonArray[i].companyTypeDesc %>@<%= costTypeJsonArray[i].levelDesc %>" data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].level %>">编辑</a>
+                    <a href="javascript:;" class="btn btn-default btn-xs cost_type_edit"
+                       data-desc="<%= costTypeJsonArray[i].costDesc %>@<%= costTypeJsonArray[i].companyTypeDesc %>@<%= costTypeJsonArray[i].levelDesc %>"
+                       data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].level %>">编辑</a>
                     <a href="javascript:;" class="btn btn-danger btn-xs cost_type_delete"
                        data-no="<%= costTypeJsonArray[i].costTypeCode %>">删除</a>
                 </td>

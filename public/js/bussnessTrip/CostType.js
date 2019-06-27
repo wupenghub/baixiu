@@ -145,7 +145,6 @@ function getCostTypeListData(offset, pageSize) {
         data: {offset, pageSize},
         dataType: "json"
     }, function (data) {
-        console.log(data)
         var html = template('costsList', data);
         $('.cost table tbody').html(html);
         $('.cost_type_edit').on('click', function () {
@@ -171,6 +170,10 @@ function getCostTypeListData(offset, pageSize) {
             $('.level_desc_view').val(levelTypeDesc);
             $('.level_code_view').val(levelTypeCode);
         });
+        $('.cost_type_delete').on('click',function () {
+            var dataCode = this.dataset.code;
+            deleteCostStandard(dataCode);
+        });
         //渲染分页页签
         returnData = data.returnData;
         data.returnData.totalCount = data.totalCount;
@@ -181,33 +184,21 @@ function getCostTypeListData(offset, pageSize) {
 
     });
 }
+function deleteCostStandard(dataCode) {
+    var costTypeCode = dataCode.split('@')[0];//费用类型对应的code
+    var companyTypeCode = dataCode.split('@')[1];//公司类型对应的code
+    var levelTypeCode = dataCode.split('@')[2];//费用类型对应的code
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/costStandardDelete',
+        data: {costTypeCode,companyTypeCode,levelTypeCode},
+        dataType: "json"
+    },function (data) {
+        if(data.status == 0){
+            getCostTypeListData(1, utils.pageSize);
+        }
+    },function (error) {
 
-//注册删除事件
-function bindDelete(offset, pageSize) {
-    //注册事件时先接触点击事件防止事件多次绑定
-    $('.posts table tbody').unbind();
-    $('.posts table tbody').on('click', '.post-delete', function (event) {
-        var articleId = $(event.target).data('flag');
-        //编删除功能
-        var categoryId = $('#category-list').val();
-        var postId = $('#status-options').val();
-        $.ajax({
-            type: 'get',
-            url: '/baixiu/articleDelete',
-            dataType: 'json',
-            data: {offset, pageSize, categoryId, postId, articleId},
-            success: function (data) {
-                //删除成功，重新请求数据刷新界面
-                if (!returnData) {
-                    getPostsData(1, utils.pageSize, categoryId, postId);
-                } else {
-                    getPostsData(returnData.offset, returnData.pageSize, categoryId, postId);
-                }
-            },
-            error: function (e) {
-                alert('请求出错！');
-            }
-        })
     });
 }
 

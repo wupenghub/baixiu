@@ -168,7 +168,7 @@
                            data-desc="<%= costTypeJsonArray[i].costDesc %>@<%= costTypeJsonArray[i].companyTypeDesc %>@<%= costTypeJsonArray[i].levelDesc %>"
                            data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].LEVEL %>">编辑</a>
                         <a href="javascript:;" class="btn btn-danger btn-xs cost_type_delete"
-                           data-no="<%= costTypeJsonArray[i].costTypeCode %>">删除</a>
+                           data-code="<%= costTypeJsonArray[i].costTypeCode %>@<%= costTypeJsonArray[i].companyTypeCode %>@<%= costTypeJsonArray[i].LEVEL %>">删除</a>
                     </td>
                 </tr>
                 <% } %>

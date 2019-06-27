@@ -1551,4 +1551,29 @@ router.get('/baixiu/addCostStandardInfo',function (req,res) {
         })
     });
 });
+//删除费用标准数据
+router.get('/baixiu/costStandardDelete',function (req,res) {
+   var costTypeCode = req.query.costTypeCode;
+   var companyTypeCode = req.query.companyTypeCode;
+   var levelTypeCode = req.query.levelTypeCode;
+   var deleteSql = "DELETE\n" +
+       "FROM\n" +
+       "\tcost_standard\n" +
+       "WHERE\n" +
+       "\tcost_type = '"+costTypeCode+"'\n" +
+       "AND LEVEL = "+levelTypeCode+"\n" +
+       "AND is_tz = "+companyTypeCode;
+   console.log('costStandardDelete删除：'+deleteSql);
+   DbUtils.queryData(deleteSql,function (result) {
+       res.json({
+           status:0,
+           desc:'删除成功'
+       });
+   },function (error) {
+       res.json({
+           status:-1,
+           desc:'删除失败'
+       });
+   });
+});
 module.exports = router;

@@ -1016,7 +1016,6 @@ router.get('/baixiu/queryAddressList', function (req, res) {
     });
 
 });
-
 //添加子地址
 router.post('/baixiu/sonAddressAdd', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -1575,5 +1574,59 @@ router.get('/baixiu/costStandardDelete',function (req,res) {
            desc:'删除失败'
        });
    });
+});
+//费用类型维护模块
+router.get('/baixiu/costTypeMaintenance',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo});
+});
+//费用类型列表查询
+router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
+    var returnObj = {};
+    returnObj.returnData = {
+        offset: req.query.offset,
+        pageSize: req.query.pageSize,
+    };
+    var queryCountSql = "SELECT\n" +
+        "\tcount(1) AS count\n" +
+        "FROM\n" +
+        "\tcost_type c\n" ;
+    DbUtils.queryData(queryCountSql, function (result) {
+        if (result && result[0].count != '0') {
+            returnObj.totalCount = result[0].count;
+            var querySql = "SELECT\n" +
+                "\tct.cost_type AS costTypeCode,\n" +
+                "\tct.cost_desc AS costTypeDesc\n" +
+                "FROM\n" +
+                "\tcost_type ct\n";
+            if (req.query.offset && req.query.pageSize) {
+                querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+            }
+            console.log('searchCostTypeMaintenanceList查询数据：' + querySql);
+            DbUtils.queryData(querySql, function (resultList) {
+                if (resultList && resultList.length > 0) {
+                    returnObj.getlist_status = 0;
+                    returnObj.getlist_desc = '获取数据成功';
+                    returnObj.costTypeJsonArray = resultList;
+                } else {
+                    returnObj.getlist_status = 1;
+                    returnObj.getlist_desc = '未获取到数据';
+                }
+                res.json(returnObj);
+            });
+        } else {
+            returnObj.getlist_status = 1;
+            returnObj.getlist_desc = '未获取到数据';
+            res.json(returnObj);
+        }
+    }, function (error) {
+        returnObj.getlist_status = -1;
+        returnObj.getlist_desc = '未获取到数据';
+        res.json(returnObj);
+    });
 });
 module.exports = router;

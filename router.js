@@ -1703,4 +1703,25 @@ router.get('/baixiu/addCostTypeInfo',function (req,res) {
         })
     });
 });
+//删除费用类型数据
+router.get('/baixiu/costTypeDelete',function (req,res) {
+    var costTypeCode = req.query.costTypeCode;
+    var deleteSql = "DELETE\n" +
+        "FROM\n" +
+        "\tcost_type\n" +
+        "WHERE\n" +
+        "\tcost_type = '"+costTypeCode+"'"
+    console.log('costTypeDelete删除：'+deleteSql);
+    DbUtils.queryData(deleteSql,function (result) {
+        res.json({
+            status:0,
+            desc:'删除成功'
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'删除失败'
+        });
+    });
+});
 module.exports = router;

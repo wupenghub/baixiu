@@ -149,13 +149,10 @@ function getCostTypeListData(offset, pageSize) {
     });
 }
 function deleteCostStandard(dataCode) {
-    var costTypeCode = dataCode.split('@')[0];//费用类型对应的code
-    var companyTypeCode = dataCode.split('@')[1];//公司类型对应的code
-    var levelTypeCode = dataCode.split('@')[2];//费用类型对应的code
     utils.ajaxSend({
         type: 'get',
-        url: '/baixiu/costStandardDelete',
-        data: {costTypeCode,companyTypeCode,levelTypeCode},
+        url: '/baixiu/costTypeDelete',
+        data: {costTypeCode:dataCode},
         dataType: "json"
     },function (data) {
         if(data.status == 0){

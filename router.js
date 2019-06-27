@@ -1629,4 +1629,50 @@ router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
         res.json(returnObj);
     });
 });
+//费用类型信息查询
+router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
+    var querySql ="SELECT\n" +
+        "\tct.cost_type AS costTypeCode,\n" +
+        "\tct.cost_desc AS costTypeDesc\n" +
+        "FROM\n" +
+        "\tcost_type ct";
+    console.log('searchCostMaintenanceTypeInfo：'+querySql);
+    DbUtils.queryData(querySql, function (result) {
+        res.json({
+            status:0,
+            returnData:result
+        });
+    }, function (error) {
+        res.json({
+            status:0,
+            returnData:error
+        });
+    });
+});
+//费用类型修改
+router.get('/baixiu/modifyCostTypeMaintenanceInfo',function (req,res) {
+    var updateSql = "UPDATE cost_type cs\n" +
+        "SET cs.cost_desc = '"+req.query.costTypeDesc+"'\n" +
+        "WHERE\n" +
+        "\tcs.cost_type = '"+req.query.costTypeCode+"'";
+    console.log('modifyCostTypeMaintenanceInfo：'+updateSql);
+    DbUtils.queryData(updateSql,function (result) {
+        if(result.affectedRows > 0){
+            res.json({
+                status:0,
+                desc:'修改成功'
+            });
+        }else{
+            res.json({
+                status:0,
+                desc:'没有修改项'
+            });
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'更新失败'
+        });
+    });
+});
 module.exports = router;

@@ -25,23 +25,18 @@ $(function () {
             alert('请输入费用类型名称');
             return;
         }
-        if (!$('#cost_type_max_count_modify').val()) {
-            alert('请输入上限金额');
-            return;
-        }
         utils.ajaxSend({
             type: 'get',
-            url: '/baixiu/modifyCostTypeInfo',
+            url: '/baixiu/modifyCostTypeMaintenanceInfo',
             data: {
-                companyType: $('.company_type_code_view').val(),
                 costTypeCode: $('.cost_type_code_view').val(),
-                levelCode: $('.level_code_view').val(),
-                costTypeDesc: $('#cost_type_desc_modify').val(),
-                costMaxAmount: $('#cost_type_max_count_modify').val()
+                costTypeDesc:$('#cost_type_desc_modify').val()
             },
             dataType: "json"
         }, function (data) {
-            $('.cost_type_desc_view').val($('#cost_type_desc_modify').val());
+            if(data.status == 0){
+                $('.cost_type_desc_view').val($('#cost_type_desc_modify').val());
+            }
         }, function (error) {
             alert(error);
         });
@@ -52,21 +47,11 @@ $(function () {
             alert('请输入费用类型');
             return;
         }
-        if (!$('.company_type_desc_view').val() && !$('.company_type_code_view').val()) {
-            alert('请输入公司类型');
-            return;
-        }
-        if (!$('.level_desc_view').val() && !$('.level_code_view').val()) {
-            alert('请输入职级');
-            return;
-        }
         utils.ajaxSend({
             type: 'get',
-            url: '/baixiu/searchCostTypeInfo',
+            url: '/baixiu/searchCostMaintenanceTypeInfo',
             data: {
-                companyType: $('.company_type_code_view').val(),
                 costTypeCode: $('.cost_type_code_view').val(),
-                levelCode: $('.level_code_view').val()
             },
             dataType: "json"
         }, function (data) {
@@ -74,12 +59,10 @@ $(function () {
             if (data.status == 0) {
                 if(data.returnData.length > 0){
                     $('.cost_type_div').show();
-                    $('#cost_type_desc_modify').val(data.returnData[0].costDesc);
-                    $('#cost_type_max_count_modify').val(data.returnData[0].ceilCost);
+                    $('#cost_type_desc_modify').val(data.returnData[0].costTypeDesc);
                 }else {
                     $('.cost_type_div').hide();
                     $('#cost_type_desc_modify').val('');
-                    $('#cost_type_max_count_modify').val('');
                 }
 
             } else {
@@ -148,27 +131,18 @@ function getCostTypeListData(offset, pageSize) {
         var html = template('costsList', data);
         $('.costMaintenance table tbody').html(html);
         $('.cost_type_edit').on('click', function () {
-            $('.cost .cost-tabs li.cost_list_li').removeClass('active');
-            $('.cost .cost-tabs li.cost_add_li').removeClass('active');
-            $('.cost .cost-tabs li.cost_modify_li').addClass('active');
-            $('.cost .cost-content div#cost_list').removeClass('active');
-            $('.cost .cost-content div#cost_add').removeClass('active');
-            $('.cost .cost-content div#cost_modify').addClass('active');
+            $('.costMaintenance .cost-tabs li.cost_list_li').removeClass('active');
+            $('.costMaintenance .cost-tabs li.cost_add_li').removeClass('active');
+            $('.costMaintenance .cost-tabs li.cost_modify_li').addClass('active');
+            $('.costMaintenance .cost-content div#cost_list').removeClass('active');
+            $('.costMaintenance .cost-content div#cost_add').removeClass('active');
+            $('.costMaintenance .cost-content div#cost_modify').addClass('active');
             $('#cost-code').val(this.dataset.code);
             var dataCode = this.dataset.code;
-            var dataDesc = this.dataset.desc;
             var costTypeCode = dataCode.split('@')[0];//费用类型对应的code
-            var costTypeDesc = dataDesc.split('@')[0];//费用类型描述
-            var companyTypeCode = dataCode.split('@')[1];//公司类型对应的code
-            var companyTypeDesc = dataDesc.split('@')[1];//公司类型对应的描述
-            var levelTypeCode = dataCode.split('@')[2];//费用类型对应的code
-            var levelTypeDesc = dataDesc.split('@')[2];//费用类型对应的描述
+            var costTypeDesc = dataCode.split('@')[1];//费用类型描述
             $('.cost_type_desc_view').val(costTypeDesc);
             $('.cost_type_code_view').val(costTypeCode);
-            $('.company_type_desc_view').val(companyTypeDesc);
-            $('.company_type_code_view').val(companyTypeCode);
-            $('.level_desc_view').val(levelTypeDesc);
-            $('.level_code_view').val(levelTypeCode);
         });
         $('.cost_type_delete').on('click',function () {
             var dataCode = this.dataset.code;

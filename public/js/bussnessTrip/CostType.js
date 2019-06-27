@@ -10,19 +10,16 @@ $(function () {
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
     $('#cost-list').on('click', function () {
-        $('.cost_type_desc_view').val('');
-        $('.cost_type_code_view').val('');
-        $('.company_type_desc_view').val('');
-        $('.company_type_code_view').val('');
-        $('.level_desc_view').val('');
-        $('.level_code_view').val('');
-        $('#cost_type_desc_modify').val('');
-        $('#cost_type_max_count_modify').val('');
-        $('.cost_type_div').hide();
+       init();
         //获取费用类型数据
         getCostTypeListData(1, utils.pageSize);
     });
-
+    $('#cost-modify').on('click',function () {
+        init();
+    });
+    $('#cost-add').on('click',function () {
+        init();
+    });
     $('#cost-type-modify').on('click', function () {
         if (!$('#cost_type_desc_modify').val()) {
             alert('请输入费用类型名称');
@@ -50,7 +47,7 @@ $(function () {
         });
     });
 
-    $('#cost-search').on('click', function () {
+    $('.cost-search').on('click', function () {
         if (!$('.cost_type_code_view').val() && !$('.cost_type_desc_view').val()) {
             alert('请输入费用类型');
             return;
@@ -93,10 +90,54 @@ $(function () {
         });
     });
 
+    $('#cost-standard-add').on('click',function () {
+        var costType = $('.cost_type_code_view').val();//费用类型
+        var companyType = $('.company_type_code_view').val();//公司类型
+        var levelType = $('.level_code_view').val();//职级类型
+        var maxAmount = $('.max_amount_view').val();//金额上限
+        if(!costType){
+            alert('请填写费用类型');
+            return;
+        }
+        if(!companyType){
+            alert('请填写公司类型');
+            return;
+        }
+        if(!levelType){
+            alert('请填写职级类型');
+            return;
+        }
+        if(!maxAmount){
+            alert('请填写上限金额');
+            return;
+        }
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/addCostStandardInfo',
+            data: {costType,companyType,levelType,maxAmount},
+            dataType: "json"},function (data) {
+            if(data.status == 1){
+                alert(data.desc);
+            }
+        },function (error) {
+            alert(error);
+        });
+    });
     //获取费用类型数据
     getCostTypeListData(1, utils.pageSize);
 });
-
+function init() {
+    $('.cost_type_desc_view').val('');
+    $('.cost_type_code_view').val('');
+    $('.company_type_desc_view').val('');
+    $('.company_type_code_view').val('');
+    $('.level_desc_view').val('');
+    $('.level_code_view').val('');
+    $('#cost_type_desc_modify').val('');
+    $('#cost_type_max_count_modify').val('');
+    $('.max_amount_view').val('');
+    $('.cost_type_div').hide();
+}
 function getCostTypeListData(offset, pageSize) {
     utils.ajaxSend({
         type: 'get',
@@ -138,7 +179,7 @@ function getCostTypeListData(offset, pageSize) {
         });
     }, function (error) {
 
-    })
+    });
 }
 
 //注册删除事件

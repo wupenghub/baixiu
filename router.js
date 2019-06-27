@@ -1517,4 +1517,38 @@ router.get('/baixiu/searchType',function (req,res) {
     });
 
 });
+//新增费用标准表
+router.get('/baixiu/addCostStandardInfo',function (req,res) {
+    var querySql = "SELECT\n" +
+        "\tcount(1) AS count\n" +
+        "FROM\n" +
+        "\tcost_standard cs\n" +
+        "WHERE\n" +
+        "\tcs.cost_type = '"+req.query.costType+"'\n" +
+        "AND cs.is_tz = "+req.query.companyType+"\n" +
+        "AND cs. LEVEL = "+req.query.levelType;
+    console.log('addCostStandardInfo查询：'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        if(parseInt(result[0].count) > 0){
+            res.json({
+                status:1,
+                desc:'此费用标准已经存在，不能重复添加'
+            })
+        }else{
+            var querySql = "insert into cost_standard VALUES ('"+req.query.costType+"',"+req.query.maxAmount+","+req.query.levelType+","+req.query.companyType+",0)"
+            console.log('addCostStandardInfo新增:'+querySql);
+            DbUtils.queryData(querySql,function (result) {
+                res.json({
+                    status:0,
+                    desc:'新增成功'
+                })
+            })
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'服务器出错'
+        })
+    });
+});
 module.exports = router;

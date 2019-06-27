@@ -74,30 +74,20 @@ $(function () {
     });
 
     $('#cost-standard-add').on('click',function () {
-        var costType = $('.cost_type_code_view').val();//费用类型
-        var companyType = $('.company_type_code_view').val();//公司类型
-        var levelType = $('.level_code_view').val();//职级类型
-        var maxAmount = $('.max_amount_view').val();//金额上限
+        var costType = $('#cost_add .cost_type_code_view').val();//费用类型
+        var costTypeDesc = $('#cost_add .company_type_desc_view').val();//费用类型描述
         if(!costType){
             alert('请填写费用类型');
             return;
         }
-        if(!companyType){
-            alert('请填写公司类型');
-            return;
-        }
-        if(!levelType){
-            alert('请填写职级类型');
-            return;
-        }
-        if(!maxAmount){
-            alert('请填写上限金额');
+        if(!costTypeDesc){
+            alert('请填写费用描述');
             return;
         }
         utils.ajaxSend({
             type: 'get',
-            url: '/baixiu/addCostStandardInfo',
-            data: {costType,companyType,levelType,maxAmount},
+            url: '/baixiu/addCostTypeInfo',
+            data: {costType,costTypeDesc},
             dataType: "json"},function (data) {
             if(data.status == 1){
                 alert(data.desc);

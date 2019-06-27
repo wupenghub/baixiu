@@ -1675,4 +1675,32 @@ router.get('/baixiu/modifyCostTypeMaintenanceInfo',function (req,res) {
         });
     });
 });
+//新增费用类型表
+//新增费用标准表
+router.get('/baixiu/addCostTypeInfo',function (req,res) {
+    var querySql = "select count(1) as count from cost_type ct where ct.cost_type = '"+req.query.costType+"'";
+    console.log('addCostTypeInfo查询：'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        if(parseInt(result[0].count) > 0){
+            res.json({
+                status:1,
+                desc:'此费用类型已经存在，不能重复添加'
+            })
+        }else{
+            var querySql = "insert into cost_type VALUES('"+req.query.costType+"','"+req.query.costTypeDesc+"')";
+            console.log('addCostStandardInfo新增:'+querySql);
+            DbUtils.queryData(querySql,function (result) {
+                res.json({
+                    status:0,
+                    desc:'新增成功'
+                })
+            })
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'服务器出错'
+        })
+    });
+});
 module.exports = router;

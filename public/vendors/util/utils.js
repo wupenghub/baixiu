@@ -1,7 +1,7 @@
 var utils = {
     parentObj:{},
     showNum:5,
-    pageSize:20,
+    pageSize:1,
     addList(result, obj) {
         //判断当前节点是否有父节点
         if (obj['parent_id']) {

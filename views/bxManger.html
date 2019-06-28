@@ -45,6 +45,7 @@
                         <th class="text-center">起始时间</th>
                         <th class="text-center">结束公司</th>
                         <th class="text-center">出差天数</th>
+                        <th class="text-center">报销金额</th>
                         <th class="text-center" width="100">订单修改</th>
                     </tr>
                     </thead>
@@ -109,6 +110,7 @@
                 <td class="text-center"><%= ordersJsonArray[i].start_date_str %></td>
                 <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
                 <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
+                <td class="text-center"></td>
                 <td class="text-center">
                     <a href="javascript:;" class="btn btn-default btn-xs order_edit"
                        data-no="<%= ordersJsonArray[i].order_no %>">编辑</a>

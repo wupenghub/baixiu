@@ -1288,19 +1288,40 @@ router.get('/baixiu/getOrderList', function (req, res) {
 //查询订单对应的费用
 router.get('/baixiu/searchOrderCost', function (req, res) {
     var querySql = "SELECT\n" +
-        "\t(select t.cost_desc from cost_type t where t.cost_type = oc.cost_type) AS costDesc,\n" +
-        "os.cost_type as costType,\n" +
-        "oc.cost_amount as amount,\n" +
-        "os.max_cost as ceilingAmount\n" +
+        "\toc.id AS id,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tt.cost_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcost_type t\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tt.cost_type = oc.cost_type\n" +
+        "\t) AS costDesc,\n" +
+        "\tcs.cost_type AS costType,\n" +
+        "\toc.cost_amount AS amount,\n" +
+        "\tcs.max_cost AS ceilingAmount\n" +
         "FROM\n" +
         "\ttrip_order o,\n" +
         "\torder_char oc,\n" +
-        "  cost_standard os\n" +
+        "\tcost_standard cs,\n" +
+        "\tusers u,\n" +
+        "\tcompany_type ct,\n" +
+        "\tcompany_org org\n" +
         "WHERE\n" +
-        "\to.email = '" + req.query.email + "'\n" +
-        "AND o.order_no = '" + req.query.orderNo + "'\n" +
+        "\to.email = u.email\n" +
+        "AND u. LEVEL = cs. LEVEL\n" +
+        "AND o.end_company = org.company_code\n" +
+        "AND org.is_tz = cs.is_tz\n" +
+        "AND oc.cost_type = cs.cost_type\n" +
         "AND o.order_no = oc.order_no\n" +
-        "and oc.cost_type = os.cost_type";
+        "AND o.email = '"+ req.query.email +"'\n" +
+        "AND o.order_no = '"+req.query.orderNo+"'\n" +
+        "GROUP BY\n" +
+        "\toc.id,\n" +
+        "\tcostDesc,\n" +
+        "\tcostType,\n" +
+        "\tamount,\n" +
+        "\tceilingAmount";
     console.log('searchOrderCost查询:' + querySql);
     DbUtils.queryData(querySql, function (result) {
         console.log(result);

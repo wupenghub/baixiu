@@ -2042,4 +2042,21 @@ router.get('/baixiu/levelTypeDelete',function (req,res) {
         });
     });
 });
+//更新金额
+router.post('/baixiu/modifyAmount',function (req,res) {
+    var id = req.body.id;
+    var amount = req.body.amount;
+    var updateSql = "UPDATE order_char oc set oc.cost_amount = "+amount+" where oc.id = "+id;
+    console.log('modifyAmount修改金额：'+updateSql);
+    DbUtils.queryData(updateSql,function (result) {
+        res.json({
+            status:0
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            error
+        })
+    });
+});
 module.exports = router;

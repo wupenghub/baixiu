@@ -87,10 +87,16 @@
                     <h4 class="modal-title" >订单费用修改</h4>
                 </div>
                 <div class="modal-body">
-                    <ul class="company-manger-model">
-
-                    </ul>
+                    <div class="order-manger-model">
+                        <span>请输入要修改的金额：</span>
+                        <input type="number" id="order-amount">
+                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        <button type="button" style="margin-left: 15px" class="btn btn-info" id="order-amount-modify">修改</button>
+                        <input type="hidden" id="order-char-id">
+                    </div>
+                    <hr/>
                 </div>
+
             </div>
         </div>
     </div>
@@ -124,7 +130,7 @@
         <ul class="list-group">
             <% if(returnData){ %>
             <% for(var i = 0;i<returnData.length ;i++){ %>
-                <li class="list-group-item" data-toggle="modal" data-target="#order_tree"><%= returnData[i].costDesc%>：<%=
+                <li class="list-group-item" data-toggle="modal" data-target="#order_tree" data-id="<%= returnData[i].id %>" data-amount="<%= returnData[i].amount %>" onclick="showCostInfo(this)"><%= returnData[i].costDesc%>：<%=
                     returnData[i].amount%>元
                 </li>
                 <% } %>

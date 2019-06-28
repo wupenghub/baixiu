@@ -1873,4 +1873,152 @@ router.get('/baixiu/companyTypeDelete',function (req,res) {
         });
     });
 });
+//职位类型维护模块
+router.get('/baixiu/levelMaintenance',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        return;
+    }
+    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo});
+});
+//查看职位类型列表
+router.get('/baixiu/searchLevelTypeMaintenanceList',function (req,res) {
+    var returnObj = {};
+    returnObj.returnData = {
+        offset: req.query.offset,
+        pageSize: req.query.pageSize,
+    };
+    var queryCountSql = "SELECT\n" +
+        "\tcount(1) AS count\n" +
+        "FROM\n" +
+        "\tlevel_table c\n" ;
+    DbUtils.queryData(queryCountSql, function (result) {
+        if (result && result[0].count != '0') {
+            returnObj.totalCount = result[0].count;
+            var querySql = "SELECT\n" +
+                "\tl. LEVEL AS costTypeCode,\n" +
+                "\tl.level_desc AS costTypeDesc\n" +
+                "FROM\n" +
+                "\tlevel_table l\n";
+            if (req.query.offset && req.query.pageSize) {
+                querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+            }
+            console.log('searchLevelTypeMaintenanceList查询数据：' + querySql);
+            DbUtils.queryData(querySql, function (resultList) {
+                if (resultList && resultList.length > 0) {
+                    returnObj.getlist_status = 0;
+                    returnObj.getlist_desc = '获取数据成功';
+                    returnObj.costTypeJsonArray = resultList;
+                } else {
+                    returnObj.getlist_status = 1;
+                    returnObj.getlist_desc = '未获取到数据';
+                }
+                res.json(returnObj);
+            });
+        } else {
+            returnObj.getlist_status = 1;
+            returnObj.getlist_desc = '未获取到数据';
+            res.json(returnObj);
+        }
+    }, function (error) {
+        returnObj.getlist_status = -1;
+        returnObj.getlist_desc = '未获取到数据';
+        res.json(returnObj);
+    });
+});
+//获取职位列别信息
+router.get('/baixiu/searchLevelMaintenanceTypeInfo',function (req,res) {
+    var querySql ="SELECT\n" +
+        "\tct.level AS costTypeCode,\n" +
+        "\tct.level_desc AS costTypeDesc\n" +
+        "FROM\n" +
+        "\tlevel_table ct where ct.level ="+req.query.costTypeCode;
+    console.log('searchLevelMaintenanceTypeInfo：'+querySql);
+    DbUtils.queryData(querySql, function (result) {
+        res.json({
+            status:0,
+            returnData:result
+        });
+    }, function (error) {
+        res.json({
+            status:0,
+            returnData:error
+        });
+    });
+});
+//新增职位类别信息
+router.get('/baixiu/addLevelTypeInfo',function (req,res) {
+    var querySql = "select count(1) as count from level_table ct where ct.LEVEL = "+req.query.costType;
+    console.log('addLevelTypeInfo查询：'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        if(parseInt(result[0].count) > 0){
+            res.json({
+                status:1,
+                desc:'此公司类型已经存在，不能重复添加'
+            })
+        }else{
+            var querySql = "insert into level_table VALUES("+req.query.costType+",'"+req.query.costTypeDesc+"')";
+            console.log('addLevelTypeInfo新增:'+querySql);
+            DbUtils.queryData(querySql,function (result) {
+                res.json({
+                    status:0,
+                    desc:'新增成功'
+                })
+            })
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'服务器出错'
+        })
+    });
+});
+//修改职位类别信息
+router.get('/baixiu/modifyLevelTypeMaintenanceInfo',function (req,res) {
+    var updateSql = "UPDATE level_table cs\n" +
+        "SET cs.level_desc = '"+req.query.costTypeDesc+"'\n" +
+        "WHERE\n" +
+        "\tcs.level = '"+req.query.costTypeCode+"'";
+    console.log('modifyLevelTypeMaintenanceInfo：'+updateSql);
+    DbUtils.queryData(updateSql,function (result) {
+        if(result.affectedRows > 0){
+            res.json({
+                status:0,
+                desc:'修改成功'
+            });
+        }else{
+            res.json({
+                status:0,
+                desc:'没有修改项'
+            });
+        }
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'更新失败'
+        });
+    });
+});
+//删除职位类别信息
+router.get('/baixiu/levelTypeDelete',function (req,res) {
+    var costTypeCode = req.query.costTypeCode;
+    var deleteSql = "DELETE\n" +
+        "FROM\n" +
+        "\tlevel_table\n" +
+        "WHERE\n" +
+        "\tlevel = "+costTypeCode;
+    console.log('costTypeDelete删除：'+deleteSql);
+    DbUtils.queryData(deleteSql,function (result) {
+        res.json({
+            status:0,
+            desc:'删除成功'
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'删除失败'
+        });
+    });
+});
 module.exports = router;

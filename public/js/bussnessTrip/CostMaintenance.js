@@ -164,7 +164,7 @@ function deleteCostStandard(dataCode) {
 }
 
 function showModal(queryType) {
-    $('.model-manger').html('');
+    $('.type-list').html('');
     if (queryType == 'FY') {
         $('.modal-title').html('费用类型列表');
     } else if (queryType == 'GS') {

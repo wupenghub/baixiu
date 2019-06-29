@@ -2133,4 +2133,21 @@ router.post('/baixiu/addOrderAmount',function (req,res) {
         })
     });
 });
+//根据id单春订单金额
+router.post('/baixiu/deleteOrderAmount',function (req,res) {
+    var id = req.body.id;
+    var deleteSql = "delete from order_char where id = "+id;
+    console.log('deleteOrderAmount删除订单金额：'+deleteSql);
+    DbUtils.queryData(deleteSql,function (result) {
+        res.json({
+            status:0,
+            desc:'删除成功'
+        })
+    },function (error) {
+        res.json({
+            status:-1,
+            error
+        })
+    });
+});
 module.exports = router;

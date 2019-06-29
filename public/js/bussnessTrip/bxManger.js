@@ -33,6 +33,9 @@ $(function () {
         $('.modal-body').empty();
         var html = template('add_amount');
         $('.modal-body').html(html);
+        $('.btn-info').on('click',function () {
+            $('.order-manger-tree').modal('hide');
+        });
         $('#search_cost_standard').on('click', function () {
             addTripCostRequest();
         });
@@ -102,8 +105,13 @@ function getOrderAmountList() {
     }, function (data) {
         console.log('=====' + JSON.stringify(data));
         var html = template('ordersListItems', data);
-        console.log(html)
         $('.cost_type_list_items').html(html);
+        $('.type_delete').on('click',function (event) {
+            event.stopPropagation();//阻止事件冒泡
+            var obj = event.target;
+            var id = obj.parentNode.dataset.id;
+            deleteOrderAmount(id);
+        });
 
     }, function (error) {
 
@@ -145,6 +153,7 @@ function modifyAmount() {
 
 //添加出差订单金额请求
 function addTripCostRequest() {
+    $('.type-list').empty();
     var userStr = localStorage.getItem('email');
     var email = '';
     if (userStr) {
@@ -157,7 +166,6 @@ function addTripCostRequest() {
         dataType: "json"
     }, function (result) {
         var html = template('typeList', result);
-        $('.type-list').empty();
         $('.type-list').html(html);
         // $('#order-amount-add').on('click',function () {
         //     if(!$('.line_content .cost_type_desc_view').val()&&!$('.line_content .cost_type_code_view').val(code)){
@@ -196,6 +204,21 @@ function addCostAmountRequest() {
     }, function (data) {
         if(data.status == 0){
             $('#order_tree').modal('hide');
+            getOrderAmountList();
+        }
+    }, function (error) {
+
+    });
+}
+//删除订单金额的请求
+function deleteOrderAmount(id) {
+    utils.ajaxSend({
+        type: 'post',
+        url: '/baixiu/deleteOrderAmount',
+        dataType: 'json',
+        data: {id}
+    }, function (data) {
+        if(data.status == 0){
             getOrderAmountList();
         }
     }, function (error) {

@@ -2059,4 +2059,78 @@ router.post('/baixiu/modifyAmount',function (req,res) {
         })
     });
 });
+//根据账号和订单查询费用标准
+router.get('/baixiu/searchCostStandard',function (req,res) {
+    var email = req.query.email;
+    var orderNo = req.query.orderNo;
+    var querySql = "SELECT\n" +
+        "\tCONCAT(\n" +
+        "\t\tct.company_type_desc,\n" +
+        "\t\tlt.level_desc,\n" +
+        "\t\tcy.cost_desc\n" +
+        "\t) AS costDesc,\n" +
+        "\tcs.cost_type AS costType,\n" +
+        "\tcs.max_cost AS ceilingAmount\n" +
+        "FROM\n" +
+        "\ttrip_order o,\n" +
+        "\tcost_standard cs,\n" +
+        "\tusers u,\n" +
+        "\tcompany_type ct,\n" +
+        "\tcompany_org org,\n" +
+        "\tlevel_table lt,\n" +
+        "\tcost_type cy\n" +
+        "WHERE\n" +
+        "\to.email = u.email\n" +
+        "AND u. LEVEL = cs. LEVEL\n" +
+        "AND o.end_company = org.company_code\n" +
+        "AND org.is_tz = cs.is_tz\n" +
+        "AND o.email = '"+email+"'\n" +
+        "AND o.order_no = '"+orderNo+"'\n" +
+        "AND lt.`level` = u.`level`\n" +
+        "AND cs.is_tz = ct.is_tz\n" +
+        "AND cs.cost_type = cy.cost_type\n" +
+        "GROUP BY\n" +
+        "\tcostType,\n" +
+        "\tcostDesc,\n" +
+        "\tceilingAmount;\n" +
+        "\n";
+    console.log('searchCostStandard查询:'+querySql);
+    DbUtils.queryData(querySql,function (result) {
+        res.json({
+            status:0,
+            returnData:result
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            return:error
+        })
+    })
+});
+//根据订单编号新增费用
+router.post('/baixiu/addOrderAmount',function (req,res) {
+    var orderNo = req.body.orderNo;
+    var costType = req.body.costType;
+    var amount = req.body.amount;
+    var insertSql = "INSERT INTO order_char\n" +
+        "VALUES\n" +
+        "\t(\n" +
+        "\t\tNULL,\n" +
+        "\t\t'"+orderNo+"',\n" +
+        "\t\t'"+costType+"',\n" +
+        "\t\t"+amount+"\n" +
+        "\t)";
+    console.log('addOrderAmount新增:'+insertSql);
+    DbUtils.queryData(insertSql,function () {
+        res.json({
+            status:0,
+            desc:'新增成功'
+        })
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:'新增是失败'
+        })
+    });
+});
 module.exports = router;

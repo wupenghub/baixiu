@@ -60,7 +60,7 @@
                 </div>
                 <div class="cost_type_list">
                     <div class="cost_type_list_items"></div>
-                    <div type="button" class="add">
+                    <div type="button" class="add" id="add_trip_cost">
                         <span class="add_font glyphicon glyphicon-plus"></span>
                         <span class="add_text">添加记录</span>
                     </div>
@@ -83,18 +83,29 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" >订单费用修改</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">订单费用修改</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="order-manger-model">
-                        <span>请输入要修改的金额：</span>
-                        <input type="number" id="order-amount">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                        <button type="button" style="margin-left: 15px" class="btn btn-info" id="order-amount-modify">修改</button>
-                        <input type="hidden" id="order-char-id">
-                    </div>
-                    <hr/>
+                <div class="modal-body clearfix">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade cost-type-tree" id="cost_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="title">费用标准选择</h4>
+                </div>
+                <div class="cost-body clearfix">
+                    <ul class="type-list">
+
+                    </ul>
                 </div>
 
             </div>
@@ -129,13 +140,60 @@
     <script type="text/art-template" id="ordersListItems">
         <ul class="list-group">
             <% if(returnData){ %>
-            <% for(var i = 0;i<returnData.length ;i++){ %>
-                <li class="list-group-item" data-toggle="modal" data-target="#order_tree" data-id="<%= returnData[i].id %>" data-amount="<%= returnData[i].amount %>" onclick="showCostInfo(this)"><%= returnData[i].costDesc%>：<%=
+            <% for(var i = 0;i
+            <returnData.length ;i++){ %>
+                <li class="list-group-item" data-toggle="modal" data-target="#order_tree"
+                    data-id="<%= returnData[i].id %>" data-amount="<%= returnData[i].amount %>"
+                    onclick="showCostInfo(this)"><%= returnData[i].costDesc%>：<%=
                     returnData[i].amount%>元
                 </li>
                 <% } %>
                 <% } %>
         </ul>
+    </script>
+    <script type="text/art-template" id="modify_amount">
+        <div class="order-manger-model">
+            <span>请输入要修改的金额：</span>
+            <input type="number" id="order-amount">
+            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+            <button type="button" style="margin-left: 15px" class="btn btn-info" id="order-amount-modify">修改</button>
+            <input type="hidden" id="order-char-id">
+        </div>
+        <hr/>
+    </script>
+    <script type="text/art-template" id="add_amount">
+        <div class="line_content clearfix">
+            <div class="search_text_div_tip">
+                <sapn class="text-content">费用类型：</sapn>
+            </div>
+            <div class="search_text_div">
+                <input type="text" class="search_text cost_type_desc_view" readonly="readonly">
+                <input type="hidden" class="cost_type_code_view" readonly="readonly">
+                <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
+                        data-target="#cost_tree" id="search_cost_standard"></button>
+                <span style="color: red;display:inline-block;margin: 5px 0 0 10px;float:left">*</span>
+            </div>
+        </div>
+        <hr style="display: block;margin: 0" />
+        <div class="line_content clearfix">
+            <div class="search_text_div_tip">
+                <sapn class="text-content">费用金额：</sapn>
+            </div>
+            <div class="search_text_div">
+                <input type="number" class="amount">
+                <span style="color: red;display:inline-block;margin: 5px 0 0 10px;float:left">*</span>
+            </div>
+        </div>
+        <hr style="display: block;margin: 0" />
+        <button type="button" style="margin:10px 5px 10px 0" class="btn btn-info" id="order-amount-add">添加</button>
+        <button type="button" style="margin:10px 0 10px 5px" class="btn btn-info" >返回</button>
+    </script>
+    <script type="text/art-template" id="typeList">
+        <% if(returnData){ %>
+        <% for(var i = 0;i<returnData.length ;i++){ %>
+            <li class="type-item" data-cost-code="<%=  returnData[i].costType %>" onclick="chooseCostType(this)"><%= returnData[i].costDesc %></li>
+            <% } %>
+            <% } %>
     </script>
     <script>NProgress.done()</script>
 </body>

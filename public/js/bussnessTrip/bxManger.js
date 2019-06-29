@@ -22,13 +22,31 @@ $(function () {
         }
         getOrderAmountList();
     });
-    $('#order-amount-modify').on('click', function () {
-        if (!$('#order-amount').val()) {
-            alert('请输入要修改的金额');
+    //添加出差订单金额按钮点击事件
+    $('#add_trip_cost').on('click', function () {
+        if (!$('#order-no').val()) {
+            alert('请先填写订单号');
             return;
         }
-        modifyAmount();
-
+        $('#order_tree').modal('show');
+        $('.modal-title').html('添加费用');
+        $('.modal-body').empty();
+        var html = template('add_amount');
+        $('.modal-body').html(html);
+        $('#search_cost_standard').on('click', function () {
+            addTripCostRequest();
+        });
+        $('#order-amount-add').on('click', function () {
+            if (!$('.line_content .cost_type_desc_view').val() && !$('.line_content .cost_type_code_view').val()) {
+                alert('请选择费用类型');
+                return;
+            }
+            if (!$('.amount').val()) {
+                alert('请填写金额');
+                return;
+            }
+            addCostAmountRequest();
+        });
     });
     //获取订单数据
     getOrderListData(1, utils.pageSize);
@@ -69,6 +87,7 @@ function getOrderListData(offset, pageSize) {
         alert('请求出问题');
     });
 }
+
 function getOrderAmountList() {
     var userStr = localStorage.getItem('email');
     var email = '';
@@ -90,9 +109,21 @@ function getOrderAmountList() {
 
     })
 }
+
 function showCostInfo(obj) {
+    var html = template('modify_amount');
+    $('.modal-title').html('订单费用修改');
+    $('.modal-body').empty();
+    $('.modal-body').html(html);
     $('#order-amount').val(obj.dataset.amount);
     $('#order-char-id').val(obj.dataset.id);
+    $('#order-amount-modify').on('click', function () {
+        if (!$('#order-amount').val()) {
+            alert('请输入要修改的金额');
+            return;
+        }
+        modifyAmount();
+    });
 }
 
 //修改订单金额请求
@@ -101,13 +132,73 @@ function modifyAmount() {
         type: 'post',
         url: '/baixiu/modifyAmount',
         dataType: 'json',
-        data: {id:$('#order-char-id').val(),amount:$('#order-amount').val()}
+        data: {id: $('#order-char-id').val(), amount: $('#order-amount').val()}
     }, function (data) {
-        if(data.status == 0) {
+        if (data.status == 0) {
             $('.order-manger-tree').modal('hide');
             getOrderAmountList();
         }
     }, function (error) {
         alert(error);
+    });
+}
+
+//添加出差订单金额请求
+function addTripCostRequest() {
+    var userStr = localStorage.getItem('email');
+    var email = '';
+    if (userStr) {
+        email = JSON.parse(userStr)[0];
+    }
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/searchCostStandard',
+        data: {email, orderNo: $('#order-no').val()},
+        dataType: "json"
+    }, function (result) {
+        var html = template('typeList', result);
+        $('.type-list').empty();
+        $('.type-list').html(html);
+        // $('#order-amount-add').on('click',function () {
+        //     if(!$('.line_content .cost_type_desc_view').val()&&!$('.line_content .cost_type_code_view').val(code)){
+        //         alert('请选择费用类型');
+        //         return;
+        //     }
+        //     if(!$('.amount').val()){
+        //         alert('请填写金额');
+        //         return;
+        //     }
+        // });
+    }, function (error) {
+
+    });
+}
+
+//选择费用类型
+function chooseCostType(obj) {
+    var code = obj.dataset.costCode;
+    var desc = obj.innerHTML;
+    $('.line_content .cost_type_desc_view').val(desc);
+    $('.line_content .cost_type_code_view').val(code);
+    $('#cost_tree').modal('hide');
+}
+
+//添加费用类型请求
+function addCostAmountRequest() {
+    var orderNo = $('#order-no').val();
+    var costType = $('.line_content .cost_type_code_view').val();
+    var amount = $('.amount').val();
+    utils.ajaxSend({
+        type: 'post',
+        url: '/baixiu/addOrderAmount',
+        dataType: 'json',
+        data: {orderNo, costType, amount}
+    }, function (data) {
+        if(data.status == 0){
+            $('#order_tree').modal('hide');
+            getOrderAmountList();
+        }
+    }, function (error) {
+
     });
 }

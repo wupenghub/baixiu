@@ -1178,10 +1178,12 @@ router.get('/baixiu/getOrderList', function (req, res) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
             var querySql = "SELECT\n" +
-                "\to.*,\n" +
-                "\t\t(datediff(o.end_date, o.start_date) + 1) AS totalDay,\n" +
-                "\tDATE_FORMAT(o.start_date, \"%Y-%m-%d\") as start_date_str,\n" +
-                "\tDATE_FORMAT(o.end_date, \"%Y-%m-%d\") as end_date_str,(\n" +
+                "\to.*, (\n" +
+                "\t\tdatediff(o.end_date, o.start_date) + 1\n" +
+                "\t) AS totalDay,\n" +
+                "\tDATE_FORMAT(o.start_date, \"%Y-%m-%d\") AS start_date_str,\n" +
+                "\tDATE_FORMAT(o.end_date, \"%Y-%m-%d\") AS end_date_str,\n" +
+                "\t(\n" +
                 "\t\tSELECT\n" +
                 "\t\t\torg.company_desc\n" +
                 "\t\tFROM\n" +
@@ -1256,11 +1258,34 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "\t\t\t\tWHERE\n" +
                 "\t\t\t\t\torg.company_code = o.end_company\n" +
                 "\t\t\t)\n" +
-                "\t) AS endAddressDesc\n" +
+                "\t) AS endAddressDesc,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\tsum(\n" +
+                "\t\t\t\tCASE\n" +
+                "\t\t\t\tWHEN oc.cost_amount > cs.max_cost THEN\n" +
+                "\t\t\t\t\tcs.max_cost\n" +
+                "\t\t\t\tELSE\n" +
+                "\t\t\t\t\toc.cost_amount\n" +
+                "\t\t\t\tEND\n" +
+                "\t\t\t)\n" +
+                "\t\tFROM\n" +
+                "\t\t\torder_char oc,\n" +
+                "\t\t\tusers u,\n" +
+                "\t\t\tcompany_org org,\n" +
+                "\t\t\tcost_standard cs\n" +
+                "\t\tWHERE\n" +
+                "\t\t\toc.order_no = o.order_no\n" +
+                "\t\tAND u.email = o.email\n" +
+                "\t\tAND u.`level` = cs.`level`\n" +
+                "\t\tAND o.end_company = org.company_code\n" +
+                "\t\tAND org.is_tz = cs.is_tz\n" +
+                "\t\tAND oc.cost_type = cs.cost_type\n" +
+                "\t) AS bxAmonut\n" +
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
-                "\to.email = '" + req.query.email + "'\n" +
+                "\to.email = '"+req.query.email+"'\n" +
                 "ORDER BY\n" +
                 "\to.start_date DESC\n" +
                 "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;

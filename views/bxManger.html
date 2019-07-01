@@ -30,8 +30,33 @@
             </li>
             <li role="presentation"><a href="#order_modify" id="order-modify" data-toggle="tab">订单修改</a></li>
         </ul>
-        <div class="tab-content order-content">
+        <div class="tab-content order-content clearfix">
             <div class="tab-pane active" id="order_list">
+                <div style="background:#ffffff;" class="clearfix">
+                    <div class="search_text_div_model">
+                        <sapn class="text-content-model">起始公司：</sapn>
+                        <input type="text" class="search_text_model start_company_type_desc_view"  readonly="readonly">
+                        <input style="display: none" class="start_company_type_code_view" readonly="readonly">
+                        <button class="search_btn_model glyphicon glyphicon-search"  data-toggle="modal"
+                                data-target="#modal_tree" onclick="companyChoose('start')"></button>
+                     </div>
+                    <div class="search_text_div_model">
+                        <sapn class="text-content-model">目的公司：</sapn>
+                        <input type="text" class="search_text_model end_company_type_desc_view"  readonly="readonly">
+                        <input style="display: none" class="end_company_type_code_view" readonly="readonly">
+                        <button class="search_btn_model glyphicon glyphicon-search" data-toggle="modal"
+                                data-target="#modal_tree" onclick="companyChoose('end')" ></button>
+                    </div>
+                    <div class="search_text_div_model">
+                        <sapn class="text-content-model">起始时间：</sapn>
+                        <input type="date" class="date_time" id="start_time" >
+                    </div>
+                    <div class="search_text_div_model">
+                        <sapn class="text-content-model">结束时间：</sapn>
+                        <input type="date" class="date_time" id="end_time" >
+                    </div>
+                    <button type="button" class="btn btn-info" id="order-search-content">查询</button>
+                </div>
                 <div class="page-action">
                     <ul class="pagination pagination-sm pull-right pages-nav">
                     </ul>
@@ -43,7 +68,7 @@
                         <th class="text-center">起始公司</th>
                         <th class="text-center">目的公司</th>
                         <th class="text-center">起始时间</th>
-                        <th class="text-center">结束公司</th>
+                        <th class="text-center">结束时间</th>
                         <th class="text-center">出差天数</th>
                         <th class="text-center">报销金额</th>
                         <th class="text-center" width="100">订单修改</th>
@@ -94,6 +119,7 @@
             </div>
         </div>
     </div>
+    <!-- 费用类型Modal -->
     <div class="modal fade cost-type-tree" id="cost_tree" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -108,6 +134,23 @@
                     </ul>
                 </div>
 
+            </div>
+        </div>
+    </div>
+    <!-- 公司Modal -->
+    <div class="modal fade company-manger-tree" id="company_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
+                </div>
+                <div >
+                    <ul class="company-manger-model">
+
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

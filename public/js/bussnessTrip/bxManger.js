@@ -225,3 +225,50 @@ function deleteOrderAmount(id) {
 
     });
 }
+//选择公司
+function companyChoose(type) {
+    $('.company-manger-tree .company-manger-model').html('');
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/queryCompanyList',
+        data: {},
+        dataType: "json"
+    }, function (result) {
+        for (var i = 0; i < result.returnDate.length; i++) {
+            //循环遍历集合元素,添加公司目录。
+            // utils.addTableMnues(tbody,result.returnDate[i],null,0);
+            utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'), result.returnDate[i], null, 0);
+            $('#company_tree').modal('show');
+        }
+    }, function (error) {
+
+    });
+    /* for(var i = 0;i<dataJson.dataJsonArr.length;i++){
+         //循环遍历集合元素,添加菜单目录。
+         utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),dataJson.dataJsonArr[i],null,0);
+     }*/
+
+};
+//点选公司
+function chooseMnue(obj) {
+    if (chooseCompany) {
+        window.parentObj = obj;
+    } else {
+        // addressObj = obj;
+        window.inputTextCode.val(obj.id);
+    }
+    window.inputText.val(obj.mnue_desc);
+    // if(isUpdate == 'Y'){
+    //     mnueObj = obj;
+    //     $('.company-manger .search_text').val(mnueObj.mnue_desc);
+    // }else{
+    //     window.obj = obj;
+    //     $('.company-manger .search_text').val(window.obj.mnue_desc);
+    // }
+    //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
+    //  $('.company-manger .search_text').val(window.parentObj.mnue_desc);
+    console.log(JSON.stringify(obj))
+    $('.company-manger-tree').modal('hide');
+}
+
+

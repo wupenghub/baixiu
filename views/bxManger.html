@@ -142,11 +142,14 @@
             <% if(returnData){ %>
             <% for(var i = 0;i
             <returnData.length ;i++){ %>
-                <li class="list-group-item" data-toggle="modal" data-target="#order_tree"
+                <li class="list-group-item over" data-toggle="modal" data-target="#order_tree"
                     data-id="<%= returnData[i].id %>" data-amount="<%= returnData[i].amount %>"
                     onclick="showCostInfo(this)"><%= returnData[i].costDesc%>：<%=
                     returnData[i].amount%>元
-                    <span class="type_delete glyphicon glyphicon-remove over"></span>
+                    <%  if(returnData[i].amount > returnData[i].ceilingAmount) {%>
+                    <span class="over">（金额超过上限金额，上限金额为：<%= returnData[i].ceilingAmount%>元）</span>
+                    <% } %>
+                    <span class="type_delete glyphicon glyphicon-remove"></span>
 
                 </li>
                 <% } %>

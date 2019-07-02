@@ -52,10 +52,17 @@ $(function () {
         });
     });
     //获取订单数据
+    $('#order-search-content').on('click',function () {
+        var startCompanyCode = $('.start_company_type_code_view').val();
+        var endCompanyCode = $('.end_company_type_code_view').val();
+        var startTime = $('#start_time').val();
+        var endTime = $('#end_time').val();
+        getOrderListData(1, utils.pageSize,startCompanyCode,endCompanyCode,startTime,endTime);
+    });
     getOrderListData(1, utils.pageSize);
 });
 
-function getOrderListData(offset, pageSize) {
+function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,startTime,endTime) {
     var userStr = localStorage.getItem('email');
     var email = '';
     if (userStr) {
@@ -65,7 +72,7 @@ function getOrderListData(offset, pageSize) {
         type: 'get',
         url: '/baixiu/getOrderList',
         dataType: 'json',
-        data: {offset, pageSize, email}
+        data: {offset, pageSize, email,startCompanyCode,endCompanyCode,startTime,endTime}
     }, function (data) {
         var ordersListHtml = template('ordersList', data);
         $('.orders table tbody').html(ordersListHtml);
@@ -73,7 +80,7 @@ function getOrderListData(offset, pageSize) {
         returnData = data.returnData;
         data.returnData.totalCount = data.totalCount;
         utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-            getOrderListData(currentPage, pageSize);
+            getOrderListData(currentPage, pageSize,startCompanyCode,endCompanyCode,startTime,endTime);
         });
         //注册修改功能点击事件
         $('.order_edit').on('click', function () {
@@ -228,6 +235,7 @@ function deleteOrderAmount(id) {
 //选择公司
 function companyChoose(type) {
     $('.company-manger-tree .company-manger-model').html('');
+    window.chooseCompanyType = type;
     utils.ajaxSend({
         type: 'get',
         url: '/baixiu/queryCompanyList',
@@ -251,24 +259,15 @@ function companyChoose(type) {
 };
 //点选公司
 function chooseMnue(obj) {
-    if (chooseCompany) {
-        window.parentObj = obj;
-    } else {
-        // addressObj = obj;
-        window.inputTextCode.val(obj.id);
-    }
-    window.inputText.val(obj.mnue_desc);
-    // if(isUpdate == 'Y'){
-    //     mnueObj = obj;
-    //     $('.company-manger .search_text').val(mnueObj.mnue_desc);
-    // }else{
-    //     window.obj = obj;
-    //     $('.company-manger .search_text').val(window.obj.mnue_desc);
-    // }
-    //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
-    //  $('.company-manger .search_text').val(window.parentObj.mnue_desc);
-    console.log(JSON.stringify(obj))
     $('.company-manger-tree').modal('hide');
+    if(window.chooseCompanyType == 'start'){
+        $('.start_company_type_desc_view').val(obj.mnue_desc);
+        $('.start_company_type_code_view').val(obj.id);
+    }else if(window.chooseCompanyType == 'end'){
+        $('.end_company_type_desc_view').val(obj.mnue_desc);
+        $('.end_company_type_code_view').val(obj.id);
+    }
 }
+
 
 

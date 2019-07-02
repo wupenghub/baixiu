@@ -1167,13 +1167,29 @@ router.get('/baixiu/getOrderList', function (req, res) {
     returnObj.returnData = {
         offset: req.query.offset,
         pageSize: req.query.pageSize,
+        startCompanyCode:req.query.startCompanyCode,
+        endCompanyCode:req.query.endCompanyCode,
+        startTime:req.query.startTime,
+        endTime:req.query.endTime
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
         "FROM\n" +
         "\ttrip_order o\n" +
         "WHERE\n" +
-        "\to.email = '" + req.query.email + "'";
+        "\to.email = '" + req.query.email + "'\n";
+    if(req.query.startCompanyCode){
+        queryCountSql += "and o.start_company = '"+req.query.startCompanyCode+"'\n";
+    }
+    if(req.query.endCompanyCode){
+        queryCountSql += "and o.end_company = '"+req.query.endCompanyCode+"'\n";
+    }
+    if(req.query.startTime){
+        queryCountSql += "and o.start_date >= STR_TO_DATE('"+req.query.startTime+"', \"%Y-%m-%d\")\n";
+    }
+    if(req.query.endTime){
+        queryCountSql += "and o.start_date <= STR_TO_DATE('"+req.query.endTime+"', \"%Y-%m-%d\")\n";
+    }
     DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
@@ -1285,10 +1301,24 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
-                "\to.email = '"+req.query.email+"'\n" +
-                "ORDER BY\n" +
-                "\to.start_date DESC\n" +
-                "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+                "\to.email = '"+req.query.email+"'\n";
+            if(req.query.startCompanyCode){
+                querySql += "and o.start_company = '"+req.query.startCompanyCode+"'\n";
+            }
+            if(req.query.endCompanyCode){
+                querySql += "and o.end_company = '"+req.query.endCompanyCode+"'\n";
+            }
+            if(req.query.startTime){
+                querySql += "and o.start_date >= STR_TO_DATE('"+req.query.startTime+"', \"%Y-%m-%d\")\n";
+            }
+            if(req.query.endTime){
+                querySql += "and o.start_date <= STR_TO_DATE('"+req.query.endTime+"', \"%Y-%m-%d\")\n";
+            }
+            querySql +=  "ORDER BY\n" +
+                "\to.start_date DESC\n" ;
+            if(req.query.offset && req.query.pageSize) {
+                querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+            }
             console.log('getOrderList查询数据：' + querySql);
             // querySql += ' LIMIT ' + ((req.query.offset - 1) * req.query.pageSize) + ',\n' + req.query.pageSize;
             DbUtils.queryData(querySql, function (resultList) {

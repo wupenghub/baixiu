@@ -165,7 +165,7 @@
         <% for(var i = 0;i
         <ordersJsonArray.length ;i++){ %>
             <tr>
-                <td><a href="#"><%= ordersJsonArray[i].order_no %></a></td>
+                <td><a href="/baixiu/downLoadBxCost?orderNo=<%= ordersJsonArray[i].order_no %>"><%= ordersJsonArray[i].order_no %></a></td>
                 <td class="text-center"><%= ordersJsonArray[i].startCompanyDesc %></td>
                 <td class="text-center"><%= ordersJsonArray[i].endCompanyDesc %></td>
                 <td class="text-center"><%= ordersJsonArray[i].start_date_str %></td>

@@ -1190,9 +1190,10 @@ router.get('/baixiu/getOrderList', function (req, res) {
     if(req.query.endTime){
         queryCountSql += "and o.start_date <= STR_TO_DATE('"+req.query.endTime+"', \"%Y-%m-%d\")\n";
     }
+    console.log("queryCountSql:"+queryCountSql);
     DbUtils.queryData(queryCountSql, function (result) {
+        returnObj.totalCount = result[0].count;
         if (result && result[0].count != '0') {
-            returnObj.totalCount = result[0].count;
             var querySql = "SELECT\n" +
                 "\to.*, (\n" +
                 "\t\tdatediff(o.end_date, o.start_date) + 1\n" +

@@ -79,9 +79,12 @@ function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,start
         //渲染分页页签
         returnData = data.returnData;
         data.returnData.totalCount = data.totalCount;
-        utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-            getOrderListData(currentPage, pageSize,startCompanyCode,endCompanyCode,startTime,endTime);
-        });
+        $('.pages-nav').empty();
+        if(data.totalCount > 0) {
+            utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
+                getOrderListData(currentPage, pageSize, startCompanyCode, endCompanyCode, startTime, endTime);
+            });
+        }
         //注册修改功能点击事件
         $('.order_edit').on('click', function () {
             var orderNo = this.dataset.no;

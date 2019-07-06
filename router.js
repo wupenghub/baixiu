@@ -4,7 +4,8 @@ var DbUtils = require('./DbUtils');
 var utils = require('./util/utils');
 var mail = require('./util/mail');
 var md5 = require('md5-node');
-var uuid = require('node-uuid')
+var uuid = require('node-uuid');
+let excelUtils = require('./util/ExcelUtils.js');
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -1710,7 +1711,8 @@ router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
 router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
     var querySql ="SELECT\n" +
         "\tct.cost_type AS costTypeCode,\n" +
-        "\tct.cost_desc AS costTypeDesc\n" +
+        "\tct.cost_desc AS costTypeDesc,\n" +
+        "\tct.fixed AS fixed\n" +
         "FROM\n" +
         "\tcost_type ct where ct.cost_type = '"+req.query.costTypeCode+"'";
     console.log('searchCostMaintenanceTypeInfo：'+querySql);
@@ -2208,6 +2210,7 @@ router.post('/baixiu/deleteOrderAmount',function (req,res) {
 });
 //生成报销excel
 router.get('/baixiu/downLoadBxCost',function (req,res) {
-    
+    var orderNo = req.query.orderNo;
+
 });
 module.exports = router;

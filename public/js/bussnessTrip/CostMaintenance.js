@@ -60,6 +60,9 @@ $(function () {
                 if(data.returnData.length > 0){
                     $('.cost_type_div').show();
                     $('#cost_type_desc_modify').val(data.returnData[0].costTypeDesc);
+                    if(data.returnData[0].fixed == '0'){
+                        
+                    }
                 }else {
                     $('.cost_type_div').hide();
                     $('#cost_type_desc_modify').val('');

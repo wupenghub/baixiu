@@ -126,7 +126,6 @@ var utils = {
     //在弹框界面添加菜单结构
     mnueTreeInModel(parentNode, dataObj, spanNoContent, index) {
         if (dataObj.sonList && dataObj.sonList.length > 0) {//包含子节点
-            console.log('========')
             //如果该父节点中包含其他子节点，先添加父节点
             var dirObj = $('<li id="mnueTreeInModelLi' + dataObj.id + '" data-open="on">' +
                 '<span class="glyphicon glyphicon-menu-down" onclick="toggle(\'#mnueTreeInModelLi\',this,' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')"></span>' +

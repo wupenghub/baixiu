@@ -25,12 +25,14 @@ $(function () {
             alert('请输入费用类型名称');
             return;
         }
+        var fix = $("input[type='radio'].fixed:checked").val();
         utils.ajaxSend({
             type: 'get',
             url: '/baixiu/modifyCostTypeMaintenanceInfo',
             data: {
                 costTypeCode: $('.cost_type_code_view').val(),
-                costTypeDesc:$('#cost_type_desc_modify').val()
+                costTypeDesc:$('#cost_type_desc_modify').val(),
+                fix
             },
             dataType: "json"
         }, function (data) {
@@ -57,17 +59,16 @@ $(function () {
         }, function (data) {
             console.log(data)
             if (data.status == 0) {
-                if(data.returnData.length > 0){
+                if(data.returnData.result.length > 0){
                     $('.cost_type_div').show();
-                    $('#cost_type_desc_modify').val(data.returnData[0].costTypeDesc);
-                    if(data.returnData[0].fixed == '0'){
-                        
-                    }
+                    $('#cost_type_desc_modify').val(data.returnData.result[0].costTypeDesc);
                 }else {
                     $('.cost_type_div').hide();
                     $('#cost_type_desc_modify').val('');
                 }
-
+                var fixHtml = template('fixType',data.returnData);
+                $('.fix_group').html(fixHtml);
+                $('#is_fix_'+data.returnData.result[0].fixed).attr("checked",true);
             } else {
 
             }

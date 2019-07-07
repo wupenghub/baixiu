@@ -65,10 +65,8 @@
                        <span> 费用类型名称：</span><input type="text" id="cost_type_desc_modify" placeholder="请输入要修改的名称">
                         <div class="radio-group">
                             是否固定费用：
-                            <input type="radio" id="is_fix" name="fixed" value="0" checked>
-                            <label for="is_fix">是</label>
-                            <input type="radio" id="not_fix" name="fixed" value="1">
-                            <label for="not_fix">否</label>
+                            <div class="fix_group">
+                            </div>
                         </div>
                         <button type="button" class="btn btn-info" id="cost-type-modify">修改</button>
                     </div>
@@ -148,6 +146,19 @@
             <li class="type-item" data-cost-code="<%=  returnData[i].code %>" onclick="showInfo('<%= returnData[i].queryType %>',this)"><%= returnData[i].descr %></li>
         <% } %>
         <% } %>
+    </script>
+    <script type="text/art-template" id="fixType">
+        <% if(fixList){ %>
+        <% for(var i = 0;i<fixList.length ;i++){ %>
+            <% if(i == 0){ %>
+            <input type="radio" id="is_fix_<%= fixList[i].fixed %>" class="fixed" name="fixed" value="<%= fixList[i].fixed %>" checked>
+            <label for="is_fix_<%= fixList[i].fixed %>"><%= fixList[i].desc %></label>
+            <% } else{%>
+            <input type="radio" id="is_fix_<%= fixList[i].fixed %>" class="fixed" name="fixed" value="<%= fixList[i].fixed %>">
+            <label for="is_fix_<%= fixList[i].fixed %>"><%= fixList[i].desc %></label>
+            <% } %>
+            <% } %>
+            <% } %>
     </script>
     <script>NProgress.done()</script>
 </body>

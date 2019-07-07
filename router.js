@@ -1716,11 +1716,17 @@ router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
         "FROM\n" +
         "\tcost_type ct where ct.cost_type = '"+req.query.costTypeCode+"'";
     console.log('searchCostMaintenanceTypeInfo：'+querySql);
+    var date = {};
+    date.returnData = {};
     DbUtils.queryData(querySql, function (result) {
-        res.json({
-            status:0,
-            returnData:result
+        querySql = "select * from fix_l";
+        date.returnData.result = result;
+        date.status = 0;
+        DbUtils.queryData(querySql,function (resultFix) {
+            date.returnData.fixList = resultFix;
+            res.json(date);
         });
+
     }, function (error) {
         res.json({
             status:0,
@@ -1731,7 +1737,8 @@ router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
 //费用类型修改
 router.get('/baixiu/modifyCostTypeMaintenanceInfo',function (req,res) {
     var updateSql = "UPDATE cost_type cs\n" +
-        "SET cs.cost_desc = '"+req.query.costTypeDesc+"'\n" +
+        "SET cs.cost_desc = '"+req.query.costTypeDesc+"',\n" +
+        "cs.fixed ="+req.query.fix+"\n"
         "WHERE\n" +
         "\tcs.cost_type = '"+req.query.costTypeCode+"'";
     console.log('modifyCostTypeMaintenanceInfo：'+updateSql);

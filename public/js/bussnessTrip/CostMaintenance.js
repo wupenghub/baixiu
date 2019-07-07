@@ -25,14 +25,14 @@ $(function () {
             alert('请输入费用类型名称');
             return;
         }
-        var fix = $("input[type='radio'].fixed:checked").val();
+        var costCyc = $("input[type='radio'].fixed:checked").val();
         utils.ajaxSend({
             type: 'get',
             url: '/baixiu/modifyCostTypeMaintenanceInfo',
             data: {
                 costTypeCode: $('.cost_type_code_view').val(),
                 costTypeDesc:$('#cost_type_desc_modify').val(),
-                fix
+                costCyc
             },
             dataType: "json"
         }, function (data) {
@@ -68,7 +68,8 @@ $(function () {
                 }
                 var fixHtml = template('fixType',data.returnData);
                 $('.fix_group').html(fixHtml);
-                $('#is_fix_'+data.returnData.result[0].fixed).attr("checked",true);
+                console.log('#is_fix_'+data.returnData.result[0].cost_cyc)
+                $('#is_fix_'+data.returnData.result[0].cost_cyc).attr("checked",true);
             } else {
 
             }

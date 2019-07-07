@@ -151,11 +151,11 @@
         <% if(fixList){ %>
         <% for(var i = 0;i<fixList.length ;i++){ %>
             <% if(i == 0){ %>
-            <input type="radio" id="is_fix_<%= fixList[i].fixed %>" class="fixed" name="fixed" value="<%= fixList[i].fixed %>" checked>
-            <label for="is_fix_<%= fixList[i].fixed %>"><%= fixList[i].desc %></label>
+            <input type="radio" id="is_fix_<%= fixList[i].cost_cyc %>" class="fixed" name="fixed" value="<%= fixList[i].cost_cyc %>" checked>
+            <label for="is_fix_<%= fixList[i].cost_cyc %>"><%= fixList[i].desc %></label>
             <% } else{%>
-            <input type="radio" id="is_fix_<%= fixList[i].fixed %>" class="fixed" name="fixed" value="<%= fixList[i].fixed %>">
-            <label for="is_fix_<%= fixList[i].fixed %>"><%= fixList[i].desc %></label>
+            <input type="radio" id="is_fix_<%= fixList[i].cost_cyc %>" class="fixed" name="fixed" value="<%= fixList[i].cost_cyc %>">
+            <label for="is_fix_<%= fixList[i].cost_cyc %>"><%= fixList[i].desc %></label>
             <% } %>
             <% } %>
             <% } %>

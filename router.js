@@ -1712,14 +1712,14 @@ router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
     var querySql ="SELECT\n" +
         "\tct.cost_type AS costTypeCode,\n" +
         "\tct.cost_desc AS costTypeDesc,\n" +
-        "\tct.fixed AS fixed\n" +
+        "\tct.cost_cyc AS cost_cyc\n" +
         "FROM\n" +
         "\tcost_type ct where ct.cost_type = '"+req.query.costTypeCode+"'";
     console.log('searchCostMaintenanceTypeInfo：'+querySql);
     var date = {};
     date.returnData = {};
     DbUtils.queryData(querySql, function (result) {
-        querySql = "select * from fix_l";
+        querySql = "select * from cost_standard_cyc";
         date.returnData.result = result;
         date.status = 0;
         DbUtils.queryData(querySql,function (resultFix) {
@@ -1738,7 +1738,7 @@ router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
 router.get('/baixiu/modifyCostTypeMaintenanceInfo',function (req,res) {
     var updateSql = "UPDATE cost_type cs\n" +
         "SET cs.cost_desc = '"+req.query.costTypeDesc+"',\n" +
-        "cs.fixed ="+req.query.fix+"\n"
+        "cs.cost_cyc ="+req.query.costCyc+"\n"+
         "WHERE\n" +
         "\tcs.cost_type = '"+req.query.costTypeCode+"'";
     console.log('modifyCostTypeMaintenanceInfo：'+updateSql);

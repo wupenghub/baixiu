@@ -1356,14 +1356,28 @@ router.get('/baixiu/searchOrderCost', function (req, res) {
         "\t) AS costDesc,\n" +
         "\tcs.cost_type AS costType,\n" +
         "\toc.cost_amount AS amount,\n" +
-        "\tcs.max_cost AS ceilingAmount\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tCASE\n" +
+        "\t\tWHEN c.cost_cyc = 1 THEN\n" +
+        "\t\t\tcs.max_cost * (\n" +
+        "\t\t\t\tdatediff(\n" +
+        "\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t\t\t) + 1\n" +
+        "\t\t\t)\n" +
+        "\t\tELSE\n" +
+        "\t\t\tcs.max_cost\n" +
+        "\t\tEND\n" +
+        "\t) AS ceilingAmount\n" +
         "FROM\n" +
         "\ttrip_order o,\n" +
         "\torder_char oc,\n" +
         "\tcost_standard cs,\n" +
         "\tusers u,\n" +
         "\tcompany_type ct,\n" +
-        "\tcompany_org org\n" +
+        "\tcompany_org org,\n" +
+        "\tcost_type c\n" +
         "WHERE\n" +
         "\to.email = u.email\n" +
         "AND u. LEVEL = cs. LEVEL\n" +
@@ -1371,7 +1385,8 @@ router.get('/baixiu/searchOrderCost', function (req, res) {
         "AND org.is_tz = cs.is_tz\n" +
         "AND oc.cost_type = cs.cost_type\n" +
         "AND o.order_no = oc.order_no\n" +
-        "AND o.email = '"+ req.query.email +"'\n" +
+        "AND cs.cost_type = c.cost_type\n" +
+        "AND o.email = '"+req.query.email+"'\n" +
         "AND o.order_no = '"+req.query.orderNo+"'\n" +
         "GROUP BY\n" +
         "\toc.id,\n" +

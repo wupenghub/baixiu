@@ -19,6 +19,23 @@ $(function () {
     });
     $('#cost-add').on('click',function () {
         init();
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/getCostTypeIsByDay',
+            data: {
+            },
+            dataType: "json"
+        },function (result) {
+            console.log(result)
+            if(result.status == 0){
+                var fixHtml = template('fixType',result);
+                console.log(fixHtml);
+                $('.fix_group_add').show();
+                $('.fix_cost').html(fixHtml);
+            }
+        },function (error) {
+
+        });
     });
     $('#cost-type-modify').on('click', function () {
         if (!$('#cost_type_desc_modify').val()) {
@@ -115,6 +132,8 @@ function init() {
     $('#cost_type_max_count_modify').val('');
     $('.max_amount_view').val('');
     $('.cost_type_div').hide();
+    $('.fix_cost').html('');
+    $('.fix_group').html('');
 }
 function getCostTypeListData(offset, pageSize) {
     utils.ajaxSend({

@@ -2230,6 +2230,21 @@ router.post('/baixiu/deleteOrderAmount',function (req,res) {
         })
     });
 });
+
+router.get('/baixiu/getCostTypeIsByDay',function (req,res) {
+    var querySql = "select * from cost_standard_cyc";
+    DbUtils.queryData(querySql,function (result) {
+        var returnData = {};
+        returnData.status = 0;
+        returnData.fixList = result
+        res.json(returnData);
+    },function (error) {
+        res.json({
+            status:-1,
+            error
+        });
+    });
+});
 //生成报销excel
 router.get('/baixiu/downLoadBxCost',function (req,res) {
     var orderNo = req.query.orderNo;

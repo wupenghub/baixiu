@@ -109,7 +109,7 @@ $(function () {
         utils.ajaxSend({
             type: 'get',
             url: '/baixiu/addCostTypeInfo',
-            data: {costType,costTypeDesc},
+            data: {costType,costTypeDesc,costCyc:$("input[type='radio'].fixed:checked").val()},
             dataType: "json"},function (data) {
             if(data.status == 1){
                 alert(data.desc);

@@ -1814,7 +1814,7 @@ router.get('/baixiu/addCostTypeInfo',function (req,res) {
                 desc:'此费用类型已经存在，不能重复添加'
             })
         }else{
-            var querySql = "insert into cost_type VALUES('"+req.query.costType+"','"+req.query.costTypeDesc+"')";
+            var querySql = "insert into cost_type VALUES('"+req.query.costType+"','"+req.query.costTypeDesc+"','"+req.query.costCyc+"')";
             console.log('addCostStandardInfo新增:'+querySql);
             DbUtils.queryData(querySql,function (result) {
                 res.json({

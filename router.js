@@ -1281,8 +1281,32 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "\t\tSELECT\n" +
                 "\t\t\tsum(\n" +
                 "\t\t\t\tCASE\n" +
-                "\t\t\t\tWHEN oc.cost_amount > cs.max_cost THEN\n" +
-                "\t\t\t\t\tcs.max_cost\n" +
+                "\t\t\t\tWHEN oc.cost_amount > (\n" +
+                "\t\t\t\t\tCASE\n" +
+                "\t\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
+                "\t\t\t\t\t\t(\n" +
+                "\t\t\t\t\t\t\tdatediff(\n" +
+                "\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+                "\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+                "\t\t\t\t\t\t\t) + 1\n" +
+                "\t\t\t\t\t\t) * cs.max_cost\n" +
+                "\t\t\t\t\tELSE\n" +
+                "\t\t\t\t\t\tcs.max_cost\n" +
+                "\t\t\t\t\tEND\n" +
+                "\t\t\t\t) THEN\n" +
+                "\t\t\t\t\t(\n" +
+                "\t\t\t\t\t\tCASE\n" +
+                "\t\t\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
+                "\t\t\t\t\t\t\t(\n" +
+                "\t\t\t\t\t\t\t\tdatediff(\n" +
+                "\t\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+                "\t\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+                "\t\t\t\t\t\t\t\t) + 1\n" +
+                "\t\t\t\t\t\t\t) * cs.max_cost\n" +
+                "\t\t\t\t\t\tELSE\n" +
+                "\t\t\t\t\t\t\tcs.max_cost\n" +
+                "\t\t\t\t\t\tEND\n" +
+                "\t\t\t\t\t)\n" +
                 "\t\t\t\tELSE\n" +
                 "\t\t\t\t\toc.cost_amount\n" +
                 "\t\t\t\tEND\n" +
@@ -1291,7 +1315,8 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "\t\t\torder_char oc,\n" +
                 "\t\t\tusers u,\n" +
                 "\t\t\tcompany_org org,\n" +
-                "\t\t\tcost_standard cs\n" +
+                "\t\t\tcost_standard cs,\n" +
+                "\t\t\tcost_type ct\n" +
                 "\t\tWHERE\n" +
                 "\t\t\toc.order_no = o.order_no\n" +
                 "\t\tAND u.email = o.email\n" +
@@ -1299,6 +1324,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "\t\tAND o.end_company = org.company_code\n" +
                 "\t\tAND org.is_tz = cs.is_tz\n" +
                 "\t\tAND oc.cost_type = cs.cost_type\n" +
+                "\t\tAND cs.cost_type = ct.cost_type\n" +
                 "\t) AS bxAmonut\n" +
                 "FROM\n" +
                 "\ttrip_order o\n" +

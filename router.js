@@ -2274,6 +2274,161 @@ router.get('/baixiu/getCostTypeIsByDay',function (req,res) {
 //生成报销excel
 router.get('/baixiu/downLoadBxCost',function (req,res) {
     var orderNo = req.query.orderNo;
+    var querySql = "SELECT\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tl.level_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tlevel_table l,\n" +
+        "\t\t\tusers u\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tl.`level` = u.`level`\n" +
+        "\t\tAND u.email = o.email\n" +
+        "\t) AS levelDesc,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tos.company_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org os\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tos.company_code = o.start_company\n" +
+        "\t) AS department,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tu.nickname\n" +
+        "\t\tFROM\n" +
+        "\t\t\tusers u\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tu.email = o.email\n" +
+        "\t) AS NAME,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\ta.address_desc\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org os,\n" +
+        "\t\t\taddress a\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tos.company_code = o.end_company\n" +
+        "\t\tAND a.address_code = os.address_code\n" +
+        "\t) AS address,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\torg.is_tz\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org org\n" +
+        "\t\tWHERE\n" +
+        "\t\t\torg.company_code = o.end_company\n" +
+        "\t) AS isTz,\n" +
+        "\t(\n" +
+        "\t\tdatediff(\n" +
+        "\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t) + 1\n" +
+        "\t) AS tripTime,\n" +
+        "\tdatediff(\n" +
+        "\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t) AS accommodationTime,\n" +
+        "\tgetStandardCost (o.order_no, 'ZS') AS zsStandard,\n" +
+        "\tgetBxCostByType (o.order_no, 'ZS') AS zsCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'CY') AS cyStandard,\n" +
+        "\tgetBxCostByType (o.order_no, 'JT') AS jtStandard,\n" +
+        "\tgetBxCostByType (o.order_no, 'JT') + getBxCostByType (o.order_no, 'CY') AS totalBz,\n" +
+        "\tgetBxCostByType (o.order_no, 'JP') + getBxCostByType (o.order_no, 'JPRY') + getBxCostByType (o.order_no, 'BXF') AS jpTotal,\n" +
+        "\tgetBxCostByType (o.order_no, 'JP') AS jpCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'JPRY') AS jpryCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'BXF') AS bxfCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'GT') AS gtfCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'CZF') AS czcCost,\n" +
+        "\tgetBxCostByType (o.order_no, 'TXF') AS txfCost,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tSUM(\n" +
+        "\t\t\t\tCASE\n" +
+        "\t\t\t\tWHEN c.cost_amount > CASE\n" +
+        "\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
+        "\t\t\t\t\t(\n" +
+        "\t\t\t\t\t\tCASE\n" +
+        "\t\t\t\t\t\tWHEN ct.cost_type = 'ZS' THEN\n" +
+        "\t\t\t\t\t\t\tdatediff(\n" +
+        "\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t\t\t\t\t\t)\n" +
+        "\t\t\t\t\t\tELSE\n" +
+        "\t\t\t\t\t\t\t(\n" +
+        "\t\t\t\t\t\t\t\tdatediff(\n" +
+        "\t\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t\t\t\t\t\t\t) + 1\n" +
+        "\t\t\t\t\t\t\t)\n" +
+        "\t\t\t\t\t\tEND\n" +
+        "\t\t\t\t\t) * cs.max_cost\n" +
+        "\t\t\t\tELSE\n" +
+        "\t\t\t\t\tcs.max_cost\n" +
+        "\t\t\t\tEND THEN\n" +
+        "\t\t\t\t\tCASE\n" +
+        "\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
+        "\t\t\t\t\t(\n" +
+        "\t\t\t\t\t\tCASE\n" +
+        "\t\t\t\t\t\tWHEN ct.cost_type = 'ZS' THEN\n" +
+        "\t\t\t\t\t\t\tdatediff(\n" +
+        "\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t\t\t\t\t\t)\n" +
+        "\t\t\t\t\t\tELSE\n" +
+        "\t\t\t\t\t\t\t(\n" +
+        "\t\t\t\t\t\t\t\tdatediff(\n" +
+        "\t\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
+        "\t\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
+        "\t\t\t\t\t\t\t\t) + 1\n" +
+        "\t\t\t\t\t\t\t)\n" +
+        "\t\t\t\t\t\tEND\n" +
+        "\t\t\t\t\t) * cs.max_cost\n" +
+        "\t\t\t\tELSE\n" +
+        "\t\t\t\t\tcs.max_cost\n" +
+        "\t\t\t\tEND\n" +
+        "\t\t\t\tELSE\n" +
+        "\t\t\t\t\tc.cost_amount\n" +
+        "\t\t\t\tEND\n" +
+        "\t\t\t)\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcost_standard cs,\n" +
+        "\t\t\tcost_type ct,\n" +
+        "\t\t\torder_char c\n" +
+        "\t\tWHERE\n" +
+        "\t\t\tcs.cost_type = ct.cost_type\n" +
+        "\t\tAND cs.cost_type = c.cost_type\n" +
+        "\t\tAND c.order_no = o.order_no\n" +
+        "\t\tAND cs.is_tz = (\n" +
+        "\t\t\tSELECT\n" +
+        "\t\t\t\torg.is_tz\n" +
+        "\t\t\tFROM\n" +
+        "\t\t\t\tcompany_org org\n" +
+        "\t\t\tWHERE\n" +
+        "\t\t\t\torg.company_code = o.end_company\n" +
+        "\t\t)\n" +
+        "\t\tAND cs.`level` = (\n" +
+        "\t\t\tSELECT\n" +
+        "\t\t\t\tu.`level`\n" +
+        "\t\t\tFROM\n" +
+        "\t\t\t\tusers u\n" +
+        "\t\t\tWHERE\n" +
+        "\t\t\t\tu.email = o.email\n" +
+        "\t\t)\n" +
+        "\t) AS totalBXF\n" +
+        "FROM\n" +
+        "\ttrip_order o\n" +
+        "WHERE\n" +
+        "\to.order_no = '"+orderNo+"'";
+    DbUtils.queryData(querySql,function (result) {
+        console.log('downLoadBxCost:'+querySql);
+        console.log(result);
+        res.json({
+            status:0,
+            resultDate:result
+        });
+    },function (error) {
 
+    });
 });
 module.exports = router;

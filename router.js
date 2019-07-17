@@ -2422,11 +2422,11 @@ router.get('/baixiu/downLoadBxCost',function (req,res) {
         "\to.order_no = '"+orderNo+"'";
     DbUtils.queryData(querySql,function (result) {
         console.log('downLoadBxCost:'+querySql);
-        console.log(result);
-        res.json({
-            status:0,
-            resultDate:result
-        });
+        var dataArray = [];
+        for(var key in result[0]){
+            dataArray.push(result[0][key])
+        }
+        excelUtils.writeExcel({'报销':[dataArray]},"报销文件.xlsx");
     },function (error) {
 
     });

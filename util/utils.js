@@ -1,3 +1,5 @@
+var path = require('path');
+var fs = require('fs');
 var utils = {
     addList(result, obj) {
         //判断当前节点是否有父节点
@@ -111,6 +113,20 @@ var utils = {
                 $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
             }
         }
+    },
+    exportFile(res, fileName) {
+        var file = path.join(__dirname,'../'+fileName);
+        res.writeHead(200, {
+            'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+            'Content-Disposition': 'attachment; filename=' + encodeURI(fileName),//告诉浏览器这是一个需要下载的文件
+        });//设置响应头
+        var readStream = fs.createReadStream(file);//得到文件输入流
+        readStream.on('data', (chunk) => {
+            res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+        });
+        readStream.on('end', () => {
+            res.end();
+        });
     }
 };
 module.exports = utils;

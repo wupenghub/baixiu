@@ -2331,7 +2331,32 @@ router.get('/baixiu/downLoadBxCost',function (req,res) {
         "\t) AS accommodationTime,\n" +
         "\tgetStandardCost (o.order_no, 'ZS') AS zsStandard,\n" +
         "\tgetBxCostByType (o.order_no, 'ZS') AS zsCost,\n" +
-        "\tgetBxCostByType (o.order_no, 'CY') AS cyStandard,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tCASE\n" +
+        "\t\tWHEN org.is_tz = 1 THEN\n" +
+        "\t\t\tgetBxCostByType (o.order_no, 'CY')\n" +
+        "\t\tELSE\n" +
+        "\t\t\t''\n" +
+        "\t\tEND\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org org\n" +
+        "\t\tWHERE\n" +
+        "\t\t\torg.company_code = o.end_company\n" +
+        "\t) AS cyYdCost,\n" +
+        "\t(\n" +
+        "\t\tSELECT\n" +
+        "\t\t\tCASE\n" +
+        "\t\tWHEN org.is_tz <> 1 THEN\n" +
+        "\t\t\tgetBxCostByType (o.order_no, 'CY')\n" +
+        "\t\tELSE\n" +
+        "\t\t\t0\n" +
+        "\t\tEND\n" +
+        "\t\tFROM\n" +
+        "\t\t\tcompany_org org\n" +
+        "\t\tWHERE\n" +
+        "\t\t\torg.company_code = o.end_company\n" +
+        "\t) AS cyCost,\n" +
         "\tgetBxCostByType (o.order_no, 'JT') AS jtStandard,\n" +
         "\tgetBxCostByType (o.order_no, 'JT') + getBxCostByType (o.order_no, 'CY') AS totalBz,\n" +
         "\tgetBxCostByType (o.order_no, 'JP') + getBxCostByType (o.order_no, 'JPRY') + getBxCostByType (o.order_no, 'BXF') AS jpTotal,\n" +
@@ -2422,11 +2447,11 @@ router.get('/baixiu/downLoadBxCost',function (req,res) {
         "\to.order_no = '"+orderNo+"'";
     DbUtils.queryData(querySql,function (result) {
         console.log('downLoadBxCost:'+querySql);
-        var dataArray = [];
-        for(var key in result[0]){
-            dataArray.push(result[0][key])
-        }
-        excelUtils.writeExcel({'报销':[dataArray]},"报销文件.xlsx");
+        excelUtils.renderExcel(result,function () {
+            utils.exportFile(res,'报销.xlsx')
+        },function (err) {
+            
+        });
     },function (error) {
 
     });

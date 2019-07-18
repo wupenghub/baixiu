@@ -1,5 +1,7 @@
 var fs = require('fs');
 var xlsx = require('xlsx');
+var ejsExcel = require('ejsexcel');
+var path = require('path');
 module.exports = {
     readExcel(path, sheetNameArr, readSuccess) {
         const workbook = xlsx.readFile(path);
@@ -15,6 +17,7 @@ module.exports = {
     writeExcel(data,fileName) {
         var sheetNames = [];
         var sheets = [];
+        console.log(JSON.stringify(data))
         for (var item in data) {
             sheetNames.push(item);
             sheets.push(xlsx.utils.aoa_to_sheet(data[item]));
@@ -37,5 +40,20 @@ module.exports = {
             type: 'binary'
         };
         xlsx.writeFile(workbook, fileName);
+    },
+    renderExcel(result,success,error){
+        //获取Excel模板的buffer对象
+        var exlBuf = fs.readFileSync(path.join(__dirname,'../差旅费计算表.xlsx'));
+        ejsExcel.renderExcel(exlBuf,result).then(function (exlBuf2) {
+            fs.writeFile(path.join(__dirname,'../报销.xlsx'),exlBuf2,function (err) {
+                if(!err){
+                    success();
+                }else{
+                    error(err);
+                }
+            });
+        }).catch(function (err) {
+
+        })
     }
 };

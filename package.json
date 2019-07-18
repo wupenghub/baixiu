@@ -14,6 +14,7 @@
     "body-parser": "^1.18.3",
     "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.3",
+    "ejsexcel": "^3.5.5",
     "express": "^4.16.4",
     "express-art-template": "^1.0.1",
     "express-session": "^1.15.6",

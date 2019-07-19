@@ -23,47 +23,28 @@
     </nav>
     <div class="container-fluid">
         <div class="page-title">
-            <h1>职位类型维护</h1>
+            <h1>个人信息维护</h1>
         </div>
         <ul class="nav nav-tabs cost-tabs" role="tablist">
-            <li role="presentation" class="active cost_list_li"><a href="#cost_list" id="cost-list" data-toggle="tab">职位类型列表</a>
+            <li role="presentation" class="active cost_list_li"><a href="#cost_modify" id="cost-list" data-toggle="tab">人员修改</a>
             </li>
-            <li role="presentation" class="cost_modify_li"><a href="#cost_modify" id="cost-modify" data-toggle="tab">职位类型修改</a></li>
-            <li role="presentation" class="cost_add_li"><a href="#cost_add" id="cost-add" data-toggle="tab">职位类型添加</a></li>
+            <li role="presentation" class="cost_modify_li"><a href="#cost_add" id="cost-modify" data-toggle="tab">人员添加</a></li>
         </ul>
         <div class="tab-content cost-content">
-            <div class="tab-pane active" id="cost_list">
-                <div class="page-action">
-                    <ul class="pagination pagination-sm pull-right pages-nav">
-                    </ul>
-                </div>
-                <table class="table table-striped table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th class="text-center">职位类型编码</th>
-                        <th class="text-center">职位类型描述</th>
-                        <th class="text-center">职位类型修改</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
             <div class="tab-pane" id="cost_modify">
                 <div style="background:#ffffff;" class="clearfix">
-                    <div class="search_text_div">
-                        <sapn class="text-content">职位类型：</sapn>
-                        <input type="text" class="search_text cost_type_desc_view"  readonly="readonly">
-                        <input style="display: none" class="cost_type_code_view" readonly="readonly">
-                        <button class="search_btn glyphicon glyphicon-search" data-toggle="modal"
-                                data-target="#modal_tree" onclick="showModal('ZJ')"></button>
+                    <div class="search_text_div clearfix">
+                        <span class="text-content">职位类型代码：</span>
+                        <input type="number" class="search_text cost_type_code_view">
+                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                     </div>
-                    <button type="button" class="btn btn-info cost-search">查询</button>
-                </div>
-                <div class="cost_type_list">
-                    <div class="cost_type_div">
-                       <span> 职位类型名称：</span><input type="text" id="cost_type_desc_modify" placeholder="请输入要修改的名称">
-                        <button type="button" class="btn btn-info" id="cost-type-modify">修改</button>
+                    <div class="search_text_div clearfix">
+                        <sapn class="text-content">职位类型描述：</sapn>
+                        <input type="text" class="search_text cost_type_desc_view">
+                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                    </div>
+                    <div class="btn_group">
+                        <button type="button" class="btn btn-info">新增</button>
                     </div>
                 </div>
             </div>
@@ -118,7 +99,7 @@
     <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
     <script src="/public/vendors/util/utils.js"></script>
     <script src="/public/js/bussnessTrip/levelMaintenance.js"></script>
-    <script type="text/javascript" id="template">{{dataJsonArr}}</script>
+    <script type="text/javascript" id="template">{{dataJson}}</script>
     <script type="text/art-template" id="costsList">
         <% if(costTypeJsonArray) {%>
             <% for(var i = 0;i<costTypeJsonArray.length ;i++){ %>

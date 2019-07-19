@@ -41,11 +41,16 @@ module.exports = {
         };
         xlsx.writeFile(workbook, fileName);
     },
-    renderExcel(result,success,error){
+    renderExcel(result,success,error,outPut){
+        //判断是否有bxFile文件夹
+        let dirpath = path.join(__dirname,'../bxFile');
+        if(!fs.existsSync(dirpath)){
+            fs.mkdirSync(dirpath);
+        }
         //获取Excel模板的buffer对象
         var exlBuf = fs.readFileSync(path.join(__dirname,'../差旅费计算表.xlsx'));
         ejsExcel.renderExcel(exlBuf,result).then(function (exlBuf2) {
-            fs.writeFile(path.join(__dirname,'../报销.xlsx'),exlBuf2,function (err) {
+            fs.writeFile(path.join(__dirname,'../bxFile/'+outPut),exlBuf2,function (err) {
                 if(!err){
                     success();
                 }else{

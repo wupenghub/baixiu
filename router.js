@@ -2448,10 +2448,10 @@ router.get('/baixiu/downLoadBxCost',function (req,res) {
     DbUtils.queryData(querySql,function (result) {
         console.log('downLoadBxCost:'+querySql);
         excelUtils.renderExcel(result,function () {
-            utils.exportFile(res,'报销.xlsx')
+            utils.exportFile(res,'./bxFile/'+result[0].NAME+'报销'+orderNo+'.xlsx');
         },function (err) {
             
-        });
+        },result[0].NAME+'报销'+orderNo+'.xlsx');
     },function (error) {
 
     });

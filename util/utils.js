@@ -127,6 +127,21 @@ var utils = {
         readStream.on('end', () => {
             res.end();
         });
+    },
+    deleDirectory(dirpath){
+        let files = [];
+        if(fs.existsSync(dirpath)){
+            files = fs.readdirSync(dirpath);
+            files.forEach((file) => {
+                let curPath = path.join(dirpath,file);
+                if(fs.statSync(curPath).isDirectory()){
+                    utils.deleDirectory(curPath); //递归删除文件夹
+                } else {
+                    fs.unlinkSync(curPath); //删除文件
+                }
+            });
+            fs.rmdirSync(dirpath);
+        }
     }
 };
 module.exports = utils;

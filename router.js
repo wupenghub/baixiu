@@ -64,6 +64,38 @@ router.post('/baixiu/login', function (req, res) {
 //退出登录
 //忘记密码
 //注册页面
+//退出登录接口
+router.get('/baixiu/loginout',function (req,res) {
+    req.session.user = null;
+    utils.isLogin(req, res);
+});
+router.get('/baixiu/personMaintenance',function (req,res) {
+    //1、判断此用户是否已经登录过
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    // 2、查询对应的菜单数据
+    var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
+    DbUtils.queryData(sql, function (result) {
+        for (var i = 0; i < result.length; i++) {
+            utils.addList(result, result[i]);
+        }
+        // 将result中所有节点parent_id值不为空的给踢出掉
+        var array = [];
+        for (var i = 0; i < result.length; i++) {
+            if (!result[i]['parent_id']) {
+                array.push(result[i]);
+            }
+        }
+        var dataJson = {};
+        dataJson.user = req.session.user[0];
+        dataJson.dataJsonArr = array;
+        req.session.userInfo = JSON.stringify(dataJson);
+        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson)});
+    });
+});
 router.get('/baixiu/registered', function (req, res) {
     res.render('registered.html');
 });

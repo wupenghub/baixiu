@@ -39,6 +39,7 @@ function getInitInfo() {
         $('#personMaintenance_modify .nick_name').val(user.nickname);
         $('#personMaintenance_modify #level_type_desc_view').val(user.levelDesc);
         $('#personMaintenance_modify #level_type_code_view').val(user.level);
+        $('#personMaintenance_modify .avatar_read').attr('src',user.avatar);
     }, function (error) {
 
     });
@@ -104,7 +105,6 @@ function uploadDataByObj(obj,url) {
     var formData = new FormData();//获取form值
     for(var item in obj){
         formData.append(item,obj[item]);
-        console.log(item+'==='+obj[item]);
     }
     utils.ajaxSend({
         type:'post',
@@ -114,7 +114,9 @@ function uploadDataByObj(obj,url) {
         contentType:false  // 不设置内容类型
 
     },function (data) {
-
+        if(data.status == 1){
+            alert(data.desc);
+        }
     },function (error) {
 
     });

@@ -28,7 +28,7 @@
         <ul class="nav nav-tabs personMaintenance-tabs" role="tablist">
             <li role="presentation" class="active person_maintenance_li"><a href="#personMaintenance_modify" id="personMaintenance-list" data-toggle="tab">人员修改</a>
             </li>
-            <li role="presentation" class="person_add_li"><a href="#personMaintenance_add" id="personMaintenance-modify" data-toggle="tab">人员添加</a></li>
+            <!--<li role="presentation" class="person_add_li"><a href="#personMaintenance_add" id="personMaintenance-modify" data-toggle="tab">人员添加</a></li>-->
         </ul>
         <div class="tab-content personMaintenance-content">
             <div class="tab-pane personMaintenance_show active" id="personMaintenance_modify">
@@ -36,21 +36,25 @@
                     <div class="search_text_div clearfix">
                         <span class="text-content">请输入登录账号：</span>
                         <input type="email" placeholder="邮箱账号" class="search_text account" readonly>
+                        <input type="checkbox" id="is_pwd_modify">
+                        <label for="is_pwd_modify">是否修改密码</label>
                     </div>
-                    <div class="search_text_div clearfix">
-                        <span class="text-content">请输入原始密码：</span>
-                        <input type="password"  placeholder="原始密码" autocomplete='new-password' class="search_text old_pwd">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                    </div>
-                    <div class="search_text_div clearfix">
-                        <span class="text-content">请输入要修改的密码：</span>
-                        <input type="password" placeholder="修改密码" class="search_text modify_pwd">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                    </div>
-                    <div class="search_text_div clearfix">
-                        <span class="text-content">请再次输入密码：</span>
-                        <input type="password" placeholder="确认密码" class="search_text confirm_pwd">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                    <div class="password" style="display: none">
+                        <div class="search_text_div clearfix">
+                            <span class="text-content">请输入原始密码：</span>
+                            <input type="password"  placeholder="原始密码" autocomplete='new-password' class="search_text old_pwd">
+                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        </div>
+                        <div class="search_text_div clearfix">
+                            <span class="text-content">请输入要修改的密码：</span>
+                            <input type="password" placeholder="修改密码" class="search_text modify_pwd">
+                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        </div>
+                        <div class="search_text_div clearfix">
+                            <span class="text-content">请再次输入密码：</span>
+                            <input type="password" placeholder="确认密码" class="search_text confirm_pwd">
+                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        </div>
                     </div>
                     <div class="search_text_div clearfix">
                         <span class="text-content">请输入昵称：</span>
@@ -74,23 +78,23 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane personMaintenance_show" id="personMaintenance_add">
-                <div style="background:#ffffff;" class="clearfix">
-                    <div class="search_text_div clearfix">
-                        <span class="text-content">职位类型代码：</span>
-                        <input type="number" class="search_text personMaintenance_type_code_view">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                    </div>
-                    <div class="search_text_div clearfix">
-                        <sapn class="text-content">职位类型描述：</sapn>
-                        <input type="text" class="search_text personMaintenance_type_desc_view">
-                        <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                    </div>
-                    <div class="btn_group">
-                        <button type="button" class="btn btn-info btn_show" id="personMaintenance-standard-add">新增</button>
-                    </div>
-                </div>
-            </div>
+            <!--<div class="tab-pane personMaintenance_show" id="personMaintenance_add">-->
+                <!--<div style="background:#ffffff;" class="clearfix">-->
+                    <!--<div class="search_text_div clearfix">-->
+                        <!--<span class="text-content">职位类型代码：</span>-->
+                        <!--<input type="number" class="search_text personMaintenance_type_code_view">-->
+                        <!--<span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>-->
+                    <!--</div>-->
+                    <!--<div class="search_text_div clearfix">-->
+                        <!--<sapn class="text-content">职位类型描述：</sapn>-->
+                        <!--<input type="text" class="search_text personMaintenance_type_desc_view">-->
+                        <!--<span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>-->
+                    <!--</div>-->
+                    <!--<div class="btn_group">-->
+                        <!--<button type="button" class="btn btn-info btn_show" id="personMaintenance-standard-add">新增</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
     <div class="aside">

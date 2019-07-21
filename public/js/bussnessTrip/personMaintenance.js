@@ -9,6 +9,19 @@ $(function () {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
+    $('#personMaintenance_modify .btn_modify').on('click',function () {
+        if(check()){
+            uploadDataByObj({
+                email:$('#personMaintenance_modify .account').val(),
+                oldPwd:$('#personMaintenance_modify .old_pwd').val(),
+                modifyPwd:$('#personMaintenance_modify .modify_pwd').val(),
+                confirmPwd:$('#personMaintenance_modify .confirm_pwd').val(),
+                nickName:$('#personMaintenance_modify .nick_name').val(),
+                level:$('#personMaintenance_modify #level_type_code_view').val(),
+                templateFile:$("#personMaintenance_modify .actorInputFile")[0].files[0]
+            },'/baixiu/modifyUser');
+        }
+    });
     getInitInfo();
 
 });
@@ -30,6 +43,27 @@ function getInitInfo() {
 
     });
 }
+
+function check() {
+    if(!$('#personMaintenance_modify .old_pwd').val()){
+        alert('原始密码不能为空');
+        return false;
+    }
+    if(!$('#personMaintenance_modify .modify_pwd').val()){
+        alert('修改密码不能为空');
+        return false;
+    }
+    if(!$('#personMaintenance_modify .confirm_pwd').val()){
+        alert('确认密码不能为空');
+        return false;
+    }
+    if($('#personMaintenance_modify .confirm_pwd').val()!=$('#personMaintenance_modify .modify_pwd').val()){
+        alert('二次输入的密码不一致');
+        return false;
+    }
+    return true
+}
+
 function showModal(queryType) {
     $('.model-manger').html('');
     if (queryType == 'FY') {
@@ -64,4 +98,24 @@ function showInfo(type,obj) {
         $('.personMaintenance #level_type_code_view').val(obj.dataset.costCode);
     }
     $('.level-manger-tree').modal('hide');
+}
+
+function uploadDataByObj(obj,url) {
+    var formData = new FormData();//获取form值
+    for(var item in obj){
+        formData.append(item,obj[item]);
+        console.log(item+'==='+obj[item]);
+    }
+    utils.ajaxSend({
+        type:'post',
+        url,
+        data:formData,
+        processData: false,  // 不处理数据
+        contentType:false  // 不设置内容类型
+
+    },function (data) {
+
+    },function (error) {
+
+    });
 }

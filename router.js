@@ -7,7 +7,8 @@ var md5 = require('md5-node');
 var uuid = require('node-uuid');
 let excelUtils = require('./util/ExcelUtils.js');
 var mysql = require('mysql');
-
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -2517,5 +2518,16 @@ router.get('/baixiu/searchUser', function (req, res) {
 
     });
 
+});
+
+router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
+    var tmp_path = req.files.templateFile.path;
+    var email = req.body.email;
+    var oldPwd = req.body.oldPwd;
+    var modifyPwd = req.body.modifyPwd;
+    var confirmPwd = req.body.confirmPwd;
+    var nickName = req.body.nickName;
+    var level = req.body.level;
+    console.log(tmp_path+'==='+email+'==='+oldPwd+'==='+oldPwd+'==='+modifyPwd+'==='+confirmPwd+'==='+nickName+'==='+level);
 });
 module.exports = router;

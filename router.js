@@ -6,6 +6,8 @@ var mail = require('./util/mail');
 var md5 = require('md5-node');
 var uuid = require('node-uuid');
 let excelUtils = require('./util/ExcelUtils.js');
+var mysql = require('mysql');
+
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -65,11 +67,11 @@ router.post('/baixiu/login', function (req, res) {
 //忘记密码
 //注册页面
 //退出登录接口
-router.get('/baixiu/loginout',function (req,res) {
+router.get('/baixiu/loginout', function (req, res) {
     req.session.user = null;
     utils.isLogin(req, res);
 });
-router.get('/baixiu/personMaintenance',function (req,res) {
+router.get('/baixiu/personMaintenance', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1200,10 +1202,10 @@ router.get('/baixiu/getOrderList', function (req, res) {
     returnObj.returnData = {
         offset: req.query.offset,
         pageSize: req.query.pageSize,
-        startCompanyCode:req.query.startCompanyCode,
-        endCompanyCode:req.query.endCompanyCode,
-        startTime:req.query.startTime,
-        endTime:req.query.endTime
+        startCompanyCode: req.query.startCompanyCode,
+        endCompanyCode: req.query.endCompanyCode,
+        startTime: req.query.startTime,
+        endTime: req.query.endTime
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
@@ -1211,19 +1213,19 @@ router.get('/baixiu/getOrderList', function (req, res) {
         "\ttrip_order o\n" +
         "WHERE\n" +
         "\to.email = '" + req.query.email + "'\n";
-    if(req.query.startCompanyCode){
-        queryCountSql += "and o.start_company = '"+req.query.startCompanyCode+"'\n";
+    if (req.query.startCompanyCode) {
+        queryCountSql += "and o.start_company = '" + req.query.startCompanyCode + "'\n";
     }
-    if(req.query.endCompanyCode){
-        queryCountSql += "and o.end_company = '"+req.query.endCompanyCode+"'\n";
+    if (req.query.endCompanyCode) {
+        queryCountSql += "and o.end_company = '" + req.query.endCompanyCode + "'\n";
     }
-    if(req.query.startTime){
-        queryCountSql += "and o.start_date >= STR_TO_DATE('"+req.query.startTime+"', \"%Y-%m-%d\")\n";
+    if (req.query.startTime) {
+        queryCountSql += "and o.start_date >= STR_TO_DATE('" + req.query.startTime + "', \"%Y-%m-%d\")\n";
     }
-    if(req.query.endTime){
-        queryCountSql += "and o.start_date <= STR_TO_DATE('"+req.query.endTime+"', \"%Y-%m-%d\")\n";
+    if (req.query.endTime) {
+        queryCountSql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
     }
-    console.log("queryCountSql:"+queryCountSql);
+    console.log("queryCountSql:" + queryCountSql);
     DbUtils.queryData(queryCountSql, function (result) {
         returnObj.totalCount = result[0].count;
         if (result && result[0].count != '0') {
@@ -1361,22 +1363,22 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
-                "\to.email = '"+req.query.email+"'\n";
-            if(req.query.startCompanyCode){
-                querySql += "and o.start_company = '"+req.query.startCompanyCode+"'\n";
+                "\to.email = '" + req.query.email + "'\n";
+            if (req.query.startCompanyCode) {
+                querySql += "and o.start_company = '" + req.query.startCompanyCode + "'\n";
             }
-            if(req.query.endCompanyCode){
-                querySql += "and o.end_company = '"+req.query.endCompanyCode+"'\n";
+            if (req.query.endCompanyCode) {
+                querySql += "and o.end_company = '" + req.query.endCompanyCode + "'\n";
             }
-            if(req.query.startTime){
-                querySql += "and o.start_date >= STR_TO_DATE('"+req.query.startTime+"', \"%Y-%m-%d\")\n";
+            if (req.query.startTime) {
+                querySql += "and o.start_date >= STR_TO_DATE('" + req.query.startTime + "', \"%Y-%m-%d\")\n";
             }
-            if(req.query.endTime){
-                querySql += "and o.start_date <= STR_TO_DATE('"+req.query.endTime+"', \"%Y-%m-%d\")\n";
+            if (req.query.endTime) {
+                querySql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
             }
-            querySql +=  "ORDER BY\n" +
-                "\to.start_date DESC\n" ;
-            if(req.query.offset && req.query.pageSize) {
+            querySql += "ORDER BY\n" +
+                "\to.start_date DESC\n";
+            if (req.query.offset && req.query.pageSize) {
                 querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
             }
             console.log('getOrderList查询数据：' + querySql);
@@ -1444,8 +1446,8 @@ router.get('/baixiu/searchOrderCost', function (req, res) {
         "AND oc.cost_type = cs.cost_type\n" +
         "AND o.order_no = oc.order_no\n" +
         "AND cs.cost_type = c.cost_type\n" +
-        "AND o.email = '"+req.query.email+"'\n" +
-        "AND o.order_no = '"+req.query.orderNo+"'\n" +
+        "AND o.email = '" + req.query.email + "'\n" +
+        "AND o.order_no = '" + req.query.orderNo + "'\n" +
         "GROUP BY\n" +
         "\toc.id,\n" +
         "\tcostDesc,\n" +
@@ -1558,7 +1560,7 @@ router.get('/baixiu/searchCostTypeList', function (req, res) {
 });
 //查询费用类型信息
 router.get('/baixiu/searchCostTypeInfo', function (req, res) {
-    var querySql ="SELECT\n" +
+    var querySql = "SELECT\n" +
         "\tcs.cost_type AS costTypeCode,\n" +
         "\tCONCAT(\n" +
         "\t\tct.company_type_desc,\n" +
@@ -1594,73 +1596,73 @@ router.get('/baixiu/searchCostTypeInfo', function (req, res) {
         "\tcs.is_tz = ct.is_tz\n" +
         "AND cs. LEVEL = lt. LEVEL\n" +
         "AND cs. STATUS = 0\n" +
-        "AND cs.is_tz = "+req.query.companyType+"\n" +
-        "AND cs.cost_type = '"+req.query.costTypeCode+"'\n" +
-        "AND cs. LEVEL = "+req.query.levelCode;
-    console.log('查询searchCostTypeInfo：'+querySql);
+        "AND cs.is_tz = " + req.query.companyType + "\n" +
+        "AND cs.cost_type = '" + req.query.costTypeCode + "'\n" +
+        "AND cs. LEVEL = " + req.query.levelCode;
+    console.log('查询searchCostTypeInfo：' + querySql);
     DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
     }, function (error) {
         res.json({
-            status:0,
-            returnData:error
+            status: 0,
+            returnData: error
         });
     });
 });
-router.get('/baixiu/modifyCostTypeInfo',function (req,res) {
+router.get('/baixiu/modifyCostTypeInfo', function (req, res) {
     var updateSql = "UPDATE cost_standard cs,\n" +
         " cost_type ct\n" +
-        "SET cs.max_cost = '"+req.query.costMaxAmount+"',\n" +
-        " ct.cost_desc = '"+req.query.costTypeDesc+"'\n" +
+        "SET cs.max_cost = '" + req.query.costMaxAmount + "',\n" +
+        " ct.cost_desc = '" + req.query.costTypeDesc + "'\n" +
         "WHERE\n" +
-        "\tcs. LEVEL = "+req.query.levelCode+"\n" +
-        "AND cs.is_tz = "+req.query.companyType+"\n" +
-        "AND cs.cost_type = '"+req.query.costTypeCode+"'\n" +
+        "\tcs. LEVEL = " + req.query.levelCode + "\n" +
+        "AND cs.is_tz = " + req.query.companyType + "\n" +
+        "AND cs.cost_type = '" + req.query.costTypeCode + "'\n" +
         "AND ct.cost_type = cs.cost_type";
-    console.log('更新modifyCostTypeInfo：'+updateSql);
-    DbUtils.queryData(updateSql,function (result) {
-        if(result.affectedRows > 0){
+    console.log('更新modifyCostTypeInfo：' + updateSql);
+    DbUtils.queryData(updateSql, function (result) {
+        if (result.affectedRows > 0) {
             res.json({
-                status:0,
-                desc:'修改成功'
+                status: 0,
+                desc: '修改成功'
             });
-        }else{
+        } else {
             res.json({
-                status:0,
-                desc:'没有修改项'
+                status: 0,
+                desc: '没有修改项'
             });
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'更新失败'
+            status: -1,
+            desc: '更新失败'
         });
     });
 });
 //查询公司、职位、费用类型接口
-router.get('/baixiu/searchType',function (req,res) {
+router.get('/baixiu/searchType', function (req, res) {
     var queryType = req.query.queryType;
     var querySql = "";
-    if(queryType == 'FY'){//费用类型列表
+    if (queryType == 'FY') {//费用类型列表
         querySql = "select c.cost_type as code,c.cost_desc as descr from cost_type c";
-    }else if(queryType == 'GS'){//公司类型列表
+    } else if (queryType == 'GS') {//公司类型列表
         querySql = "select t.is_tz as code,t.company_type_desc as descr from company_type t";
-    }else if(queryType == 'ZJ'){//职级类型列表
+    } else if (queryType == 'ZJ') {//职级类型列表
         querySql = "select l.level as code,l.level_desc as descr from level_table l";
     }
     var returnObj = {};
-    DbUtils.queryData(querySql,function (result) {
+    DbUtils.queryData(querySql, function (result) {
         returnObj.status = 0;
         returnObj.returnData = result;
-        for(var i = 0;i<result.length;i++){
+        for (var i = 0; i < result.length; i++) {
             returnObj.returnData[i].queryType = queryType;
         }
         returnObj.desc = '查询成功';
         res.json(returnObj);
-    },function (error) {
+    }, function (error) {
         returnObj.status = -1;
         returnObj.error = error;
         res.json(returnObj);
@@ -1668,66 +1670,66 @@ router.get('/baixiu/searchType',function (req,res) {
 
 });
 //新增费用标准表
-router.get('/baixiu/addCostStandardInfo',function (req,res) {
+router.get('/baixiu/addCostStandardInfo', function (req, res) {
     var querySql = "SELECT\n" +
         "\tcount(1) AS count\n" +
         "FROM\n" +
         "\tcost_standard cs\n" +
         "WHERE\n" +
-        "\tcs.cost_type = '"+req.query.costType+"'\n" +
-        "AND cs.is_tz = "+req.query.companyType+"\n" +
-        "AND cs. LEVEL = "+req.query.levelType;
-    console.log('addCostStandardInfo查询：'+querySql);
-    DbUtils.queryData(querySql,function (result) {
-        if(parseInt(result[0].count) > 0){
+        "\tcs.cost_type = '" + req.query.costType + "'\n" +
+        "AND cs.is_tz = " + req.query.companyType + "\n" +
+        "AND cs. LEVEL = " + req.query.levelType;
+    console.log('addCostStandardInfo查询：' + querySql);
+    DbUtils.queryData(querySql, function (result) {
+        if (parseInt(result[0].count) > 0) {
             res.json({
-                status:1,
-                desc:'此费用标准已经存在，不能重复添加'
+                status: 1,
+                desc: '此费用标准已经存在，不能重复添加'
             })
-        }else{
-            var querySql = "insert into cost_standard VALUES ('"+req.query.costType+"',"+req.query.maxAmount+","+req.query.levelType+","+req.query.companyType+",0)"
-            console.log('addCostStandardInfo新增:'+querySql);
-            DbUtils.queryData(querySql,function (result) {
+        } else {
+            var querySql = "insert into cost_standard VALUES ('" + req.query.costType + "'," + req.query.maxAmount + "," + req.query.levelType + "," + req.query.companyType + ",0)"
+            console.log('addCostStandardInfo新增:' + querySql);
+            DbUtils.queryData(querySql, function (result) {
                 res.json({
-                    status:0,
-                    desc:'新增成功'
+                    status: 0,
+                    desc: '新增成功'
                 })
             })
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'服务器出错'
+            status: -1,
+            desc: '服务器出错'
         })
     });
 });
 //删除费用标准数据
-router.get('/baixiu/costStandardDelete',function (req,res) {
-   var costTypeCode = req.query.costTypeCode;
-   var companyTypeCode = req.query.companyTypeCode;
-   var levelTypeCode = req.query.levelTypeCode;
-   var deleteSql = "DELETE\n" +
-       "FROM\n" +
-       "\tcost_standard\n" +
-       "WHERE\n" +
-       "\tcost_type = '"+costTypeCode+"'\n" +
-       "AND LEVEL = "+levelTypeCode+"\n" +
-       "AND is_tz = "+companyTypeCode;
-   console.log('costStandardDelete删除：'+deleteSql);
-   DbUtils.queryData(deleteSql,function (result) {
-       res.json({
-           status:0,
-           desc:'删除成功'
-       });
-   },function (error) {
-       res.json({
-           status:-1,
-           desc:'删除失败'
-       });
-   });
+router.get('/baixiu/costStandardDelete', function (req, res) {
+    var costTypeCode = req.query.costTypeCode;
+    var companyTypeCode = req.query.companyTypeCode;
+    var levelTypeCode = req.query.levelTypeCode;
+    var deleteSql = "DELETE\n" +
+        "FROM\n" +
+        "\tcost_standard\n" +
+        "WHERE\n" +
+        "\tcost_type = '" + costTypeCode + "'\n" +
+        "AND LEVEL = " + levelTypeCode + "\n" +
+        "AND is_tz = " + companyTypeCode;
+    console.log('costStandardDelete删除：' + deleteSql);
+    DbUtils.queryData(deleteSql, function (result) {
+        res.json({
+            status: 0,
+            desc: '删除成功'
+        });
+    }, function (error) {
+        res.json({
+            status: -1,
+            desc: '删除失败'
+        });
+    });
 });
 //费用类型维护模块
-router.get('/baixiu/costTypeMaintenance',function (req,res) {
+router.get('/baixiu/costTypeMaintenance', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1736,7 +1738,7 @@ router.get('/baixiu/costTypeMaintenance',function (req,res) {
     res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo});
 });
 //费用类型列表查询
-router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
+router.get('/baixiu/searchCostTypeMaintenanceList', function (req, res) {
     var returnObj = {};
     returnObj.returnData = {
         offset: req.query.offset,
@@ -1745,7 +1747,7 @@ router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
         "FROM\n" +
-        "\tcost_type c\n" ;
+        "\tcost_type c\n";
     DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
@@ -1781,110 +1783,110 @@ router.get('/baixiu/searchCostTypeMaintenanceList',function (req,res) {
     });
 });
 //费用类型信息查询
-router.get('/baixiu/searchCostMaintenanceTypeInfo',function (req,res) {
-    var querySql ="SELECT\n" +
+router.get('/baixiu/searchCostMaintenanceTypeInfo', function (req, res) {
+    var querySql = "SELECT\n" +
         "\tct.cost_type AS costTypeCode,\n" +
         "\tct.cost_desc AS costTypeDesc,\n" +
         "\tct.cost_cyc AS cost_cyc\n" +
         "FROM\n" +
-        "\tcost_type ct where ct.cost_type = '"+req.query.costTypeCode+"'";
-    console.log('searchCostMaintenanceTypeInfo：'+querySql);
+        "\tcost_type ct where ct.cost_type = '" + req.query.costTypeCode + "'";
+    console.log('searchCostMaintenanceTypeInfo：' + querySql);
     var date = {};
     date.returnData = {};
     DbUtils.queryData(querySql, function (result) {
         querySql = "select * from cost_standard_cyc";
         date.returnData.result = result;
         date.status = 0;
-        DbUtils.queryData(querySql,function (resultFix) {
+        DbUtils.queryData(querySql, function (resultFix) {
             date.returnData.fixList = resultFix;
             res.json(date);
         });
 
     }, function (error) {
         res.json({
-            status:0,
-            returnData:error
+            status: 0,
+            returnData: error
         });
     });
 });
 //费用类型修改
-router.get('/baixiu/modifyCostTypeMaintenanceInfo',function (req,res) {
+router.get('/baixiu/modifyCostTypeMaintenanceInfo', function (req, res) {
     var updateSql = "UPDATE cost_type cs\n" +
-        "SET cs.cost_desc = '"+req.query.costTypeDesc+"',\n" +
-        "cs.cost_cyc ="+req.query.costCyc+"\n"+
+        "SET cs.cost_desc = '" + req.query.costTypeDesc + "',\n" +
+        "cs.cost_cyc =" + req.query.costCyc + "\n" +
         "WHERE\n" +
-        "\tcs.cost_type = '"+req.query.costTypeCode+"'";
-    console.log('modifyCostTypeMaintenanceInfo：'+updateSql);
-    DbUtils.queryData(updateSql,function (result) {
-        if(result.affectedRows > 0){
+        "\tcs.cost_type = '" + req.query.costTypeCode + "'";
+    console.log('modifyCostTypeMaintenanceInfo：' + updateSql);
+    DbUtils.queryData(updateSql, function (result) {
+        if (result.affectedRows > 0) {
             res.json({
-                status:0,
-                desc:'修改成功'
+                status: 0,
+                desc: '修改成功'
             });
-        }else{
+        } else {
             res.json({
-                status:0,
-                desc:'没有修改项'
+                status: 0,
+                desc: '没有修改项'
             });
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'更新失败'
+            status: -1,
+            desc: '更新失败'
         });
     });
 });
 //新增费用类型表
 //新增费用标准表
-router.get('/baixiu/addCostTypeInfo',function (req,res) {
-    var querySql = "select count(1) as count from cost_type ct where ct.cost_type = '"+req.query.costType+"'";
-    console.log('addCostTypeInfo查询：'+querySql);
-    DbUtils.queryData(querySql,function (result) {
-        if(parseInt(result[0].count) > 0){
+router.get('/baixiu/addCostTypeInfo', function (req, res) {
+    var querySql = "select count(1) as count from cost_type ct where ct.cost_type = '" + req.query.costType + "'";
+    console.log('addCostTypeInfo查询：' + querySql);
+    DbUtils.queryData(querySql, function (result) {
+        if (parseInt(result[0].count) > 0) {
             res.json({
-                status:1,
-                desc:'此费用类型已经存在，不能重复添加'
+                status: 1,
+                desc: '此费用类型已经存在，不能重复添加'
             })
-        }else{
-            var querySql = "insert into cost_type VALUES('"+req.query.costType+"','"+req.query.costTypeDesc+"','"+req.query.costCyc+"')";
-            console.log('addCostStandardInfo新增:'+querySql);
-            DbUtils.queryData(querySql,function (result) {
+        } else {
+            var querySql = "insert into cost_type VALUES('" + req.query.costType + "','" + req.query.costTypeDesc + "','" + req.query.costCyc + "')";
+            console.log('addCostStandardInfo新增:' + querySql);
+            DbUtils.queryData(querySql, function (result) {
                 res.json({
-                    status:0,
-                    desc:'新增成功'
+                    status: 0,
+                    desc: '新增成功'
                 })
             })
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'服务器出错'
+            status: -1,
+            desc: '服务器出错'
         })
     });
 });
 //删除费用类型数据
-router.get('/baixiu/costTypeDelete',function (req,res) {
+router.get('/baixiu/costTypeDelete', function (req, res) {
     var costTypeCode = req.query.costTypeCode;
     var deleteSql = "DELETE\n" +
         "FROM\n" +
         "\tcost_type\n" +
         "WHERE\n" +
-        "\tcost_type = '"+costTypeCode+"'"
-    console.log('costTypeDelete删除：'+deleteSql);
-    DbUtils.queryData(deleteSql,function (result) {
+        "\tcost_type = '" + costTypeCode + "'"
+    console.log('costTypeDelete删除：' + deleteSql);
+    DbUtils.queryData(deleteSql, function (result) {
         res.json({
-            status:0,
-            desc:'删除成功'
+            status: 0,
+            desc: '删除成功'
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'删除失败'
+            status: -1,
+            desc: '删除失败'
         });
     });
 });
 //公司类别维护模块
-router.get('/baixiu/companyMaintenance',function (req,res) {
+router.get('/baixiu/companyMaintenance', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -1893,7 +1895,7 @@ router.get('/baixiu/companyMaintenance',function (req,res) {
     res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo});
 });
 //获取公司类别数据列表
-router.get('/baixiu/searchCompanyTypeMaintenanceList',function (req,res) {
+router.get('/baixiu/searchCompanyTypeMaintenanceList', function (req, res) {
     var returnObj = {};
     returnObj.returnData = {
         offset: req.query.offset,
@@ -1902,8 +1904,8 @@ router.get('/baixiu/searchCompanyTypeMaintenanceList',function (req,res) {
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
         "FROM\n" +
-        "\tcompany_type c\n" ;
-    console.log('searchCompanyTypeMaintenanceList查询个数：'+queryCountSql);
+        "\tcompany_type c\n";
+    console.log('searchCompanyTypeMaintenanceList查询个数：' + queryCountSql);
     DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
@@ -1939,101 +1941,101 @@ router.get('/baixiu/searchCompanyTypeMaintenanceList',function (req,res) {
     });
 });
 //获取公司类别信息
-router.get('/baixiu/searchCompanyMaintenanceTypeInfo',function (req,res) {
-    var querySql ="SELECT\n" +
+router.get('/baixiu/searchCompanyMaintenanceTypeInfo', function (req, res) {
+    var querySql = "SELECT\n" +
         "\tct.is_tz AS costTypeCode,\n" +
         "\tct.company_type_desc AS costTypeDesc\n" +
         "FROM\n" +
-        "\tcompany_type ct where ct.is_tz ="+req.query.costTypeCode;
-    console.log('searchCompanyMaintenanceTypeInfo：'+querySql);
+        "\tcompany_type ct where ct.is_tz =" + req.query.costTypeCode;
+    console.log('searchCompanyMaintenanceTypeInfo：' + querySql);
     DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
     }, function (error) {
         res.json({
-            status:0,
-            returnData:error
+            status: 0,
+            returnData: error
         });
     });
 });
 //修改公司名称
-router.get('/baixiu/modifyCompanyTypeMaintenanceInfo',function (req,res) {
+router.get('/baixiu/modifyCompanyTypeMaintenanceInfo', function (req, res) {
     var updateSql = "UPDATE company_type cs\n" +
-        "SET cs.company_type_desc = '"+req.query.costTypeDesc+"'\n" +
+        "SET cs.company_type_desc = '" + req.query.costTypeDesc + "'\n" +
         "WHERE\n" +
-        "\tcs.is_tz = '"+req.query.costTypeCode+"'";
-    console.log('modifyCostTypeMaintenanceInfo：'+updateSql);
-    DbUtils.queryData(updateSql,function (result) {
-        if(result.affectedRows > 0){
+        "\tcs.is_tz = '" + req.query.costTypeCode + "'";
+    console.log('modifyCostTypeMaintenanceInfo：' + updateSql);
+    DbUtils.queryData(updateSql, function (result) {
+        if (result.affectedRows > 0) {
             res.json({
-                status:0,
-                desc:'修改成功'
+                status: 0,
+                desc: '修改成功'
             });
-        }else{
+        } else {
             res.json({
-                status:0,
-                desc:'没有修改项'
+                status: 0,
+                desc: '没有修改项'
             });
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'更新失败'
+            status: -1,
+            desc: '更新失败'
         });
     });
 });
 //新增公司类型
-router.get('/baixiu/addCompanyTypeInfo',function (req,res) {
-    var querySql = "select count(1) as count from company_type ct where ct.is_tz = "+req.query.costType;
-    console.log('addCompanyTypeInfo查询：'+querySql);
-    DbUtils.queryData(querySql,function (result) {
-        if(parseInt(result[0].count) > 0){
+router.get('/baixiu/addCompanyTypeInfo', function (req, res) {
+    var querySql = "select count(1) as count from company_type ct where ct.is_tz = " + req.query.costType;
+    console.log('addCompanyTypeInfo查询：' + querySql);
+    DbUtils.queryData(querySql, function (result) {
+        if (parseInt(result[0].count) > 0) {
             res.json({
-                status:1,
-                desc:'此公司类型已经存在，不能重复添加'
+                status: 1,
+                desc: '此公司类型已经存在，不能重复添加'
             })
-        }else{
-            var querySql = "insert into company_type VALUES("+req.query.costType+",'"+req.query.costTypeDesc+"')";
-            console.log('addCompanyTypeInfo新增:'+querySql);
-            DbUtils.queryData(querySql,function (result) {
+        } else {
+            var querySql = "insert into company_type VALUES(" + req.query.costType + ",'" + req.query.costTypeDesc + "')";
+            console.log('addCompanyTypeInfo新增:' + querySql);
+            DbUtils.queryData(querySql, function (result) {
                 res.json({
-                    status:0,
-                    desc:'新增成功'
+                    status: 0,
+                    desc: '新增成功'
                 })
             })
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'服务器出错'
+            status: -1,
+            desc: '服务器出错'
         })
     });
 });
 //删除公司类型
-router.get('/baixiu/companyTypeDelete',function (req,res) {
+router.get('/baixiu/companyTypeDelete', function (req, res) {
     var costTypeCode = req.query.costTypeCode;
     var deleteSql = "DELETE\n" +
         "FROM\n" +
         "\tcompany_type\n" +
         "WHERE\n" +
-        "\tis_tz = "+costTypeCode;
-    console.log('costTypeDelete删除：'+deleteSql);
-    DbUtils.queryData(deleteSql,function (result) {
+        "\tis_tz = " + costTypeCode;
+    console.log('costTypeDelete删除：' + deleteSql);
+    DbUtils.queryData(deleteSql, function (result) {
         res.json({
-            status:0,
-            desc:'删除成功'
+            status: 0,
+            desc: '删除成功'
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'删除失败'
+            status: -1,
+            desc: '删除失败'
         });
     });
 });
 //职位类型维护模块
-router.get('/baixiu/levelMaintenance',function (req,res) {
+router.get('/baixiu/levelMaintenance', function (req, res) {
     //1、判断此用户是否已经登录过
     var user = utils.isLogin(req, res);
     if (!user) {
@@ -2042,7 +2044,7 @@ router.get('/baixiu/levelMaintenance',function (req,res) {
     res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo});
 });
 //查看职位类型列表
-router.get('/baixiu/searchLevelTypeMaintenanceList',function (req,res) {
+router.get('/baixiu/searchLevelTypeMaintenanceList', function (req, res) {
     var returnObj = {};
     returnObj.returnData = {
         offset: req.query.offset,
@@ -2051,7 +2053,7 @@ router.get('/baixiu/searchLevelTypeMaintenanceList',function (req,res) {
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
         "FROM\n" +
-        "\tlevel_table c\n" ;
+        "\tlevel_table c\n";
     DbUtils.queryData(queryCountSql, function (result) {
         if (result && result[0].count != '0') {
             returnObj.totalCount = result[0].count;
@@ -2087,118 +2089,118 @@ router.get('/baixiu/searchLevelTypeMaintenanceList',function (req,res) {
     });
 });
 //获取职位列别信息
-router.get('/baixiu/searchLevelMaintenanceTypeInfo',function (req,res) {
-    var querySql ="SELECT\n" +
+router.get('/baixiu/searchLevelMaintenanceTypeInfo', function (req, res) {
+    var querySql = "SELECT\n" +
         "\tct.level AS costTypeCode,\n" +
         "\tct.level_desc AS costTypeDesc\n" +
         "FROM\n" +
-        "\tlevel_table ct where ct.level ="+req.query.costTypeCode;
-    console.log('searchLevelMaintenanceTypeInfo：'+querySql);
+        "\tlevel_table ct where ct.level =" + req.query.costTypeCode;
+    console.log('searchLevelMaintenanceTypeInfo：' + querySql);
     DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
     }, function (error) {
         res.json({
-            status:0,
-            returnData:error
+            status: 0,
+            returnData: error
         });
     });
 });
 //新增职位类别信息
-router.get('/baixiu/addLevelTypeInfo',function (req,res) {
-    var querySql = "select count(1) as count from level_table ct where ct.LEVEL = "+req.query.costType;
-    console.log('addLevelTypeInfo查询：'+querySql);
-    DbUtils.queryData(querySql,function (result) {
-        if(parseInt(result[0].count) > 0){
+router.get('/baixiu/addLevelTypeInfo', function (req, res) {
+    var querySql = "select count(1) as count from level_table ct where ct.LEVEL = " + req.query.costType;
+    console.log('addLevelTypeInfo查询：' + querySql);
+    DbUtils.queryData(querySql, function (result) {
+        if (parseInt(result[0].count) > 0) {
             res.json({
-                status:1,
-                desc:'此公司类型已经存在，不能重复添加'
+                status: 1,
+                desc: '此公司类型已经存在，不能重复添加'
             })
-        }else{
-            var querySql = "insert into level_table VALUES("+req.query.costType+",'"+req.query.costTypeDesc+"')";
-            console.log('addLevelTypeInfo新增:'+querySql);
-            DbUtils.queryData(querySql,function (result) {
+        } else {
+            var querySql = "insert into level_table VALUES(" + req.query.costType + ",'" + req.query.costTypeDesc + "')";
+            console.log('addLevelTypeInfo新增:' + querySql);
+            DbUtils.queryData(querySql, function (result) {
                 res.json({
-                    status:0,
-                    desc:'新增成功'
+                    status: 0,
+                    desc: '新增成功'
                 })
             })
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'服务器出错'
+            status: -1,
+            desc: '服务器出错'
         })
     });
 });
 //修改职位类别信息
-router.get('/baixiu/modifyLevelTypeMaintenanceInfo',function (req,res) {
+router.get('/baixiu/modifyLevelTypeMaintenanceInfo', function (req, res) {
     var updateSql = "UPDATE level_table cs\n" +
-        "SET cs.level_desc = '"+req.query.costTypeDesc+"'\n" +
+        "SET cs.level_desc = '" + req.query.costTypeDesc + "'\n" +
         "WHERE\n" +
-        "\tcs.level = '"+req.query.costTypeCode+"'";
-    console.log('modifyLevelTypeMaintenanceInfo：'+updateSql);
-    DbUtils.queryData(updateSql,function (result) {
-        if(result.affectedRows > 0){
+        "\tcs.level = '" + req.query.costTypeCode + "'";
+    console.log('modifyLevelTypeMaintenanceInfo：' + updateSql);
+    DbUtils.queryData(updateSql, function (result) {
+        if (result.affectedRows > 0) {
             res.json({
-                status:0,
-                desc:'修改成功'
+                status: 0,
+                desc: '修改成功'
             });
-        }else{
+        } else {
             res.json({
-                status:0,
-                desc:'没有修改项'
+                status: 0,
+                desc: '没有修改项'
             });
         }
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'更新失败'
+            status: -1,
+            desc: '更新失败'
         });
     });
 });
 //删除职位类别信息
-router.get('/baixiu/levelTypeDelete',function (req,res) {
+router.get('/baixiu/levelTypeDelete', function (req, res) {
     var costTypeCode = req.query.costTypeCode;
     var deleteSql = "DELETE\n" +
         "FROM\n" +
         "\tlevel_table\n" +
         "WHERE\n" +
-        "\tlevel = "+costTypeCode;
-    console.log('costTypeDelete删除：'+deleteSql);
-    DbUtils.queryData(deleteSql,function (result) {
+        "\tlevel = " + costTypeCode;
+    console.log('costTypeDelete删除：' + deleteSql);
+    DbUtils.queryData(deleteSql, function (result) {
         res.json({
-            status:0,
-            desc:'删除成功'
+            status: 0,
+            desc: '删除成功'
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'删除失败'
+            status: -1,
+            desc: '删除失败'
         });
     });
 });
 //更新金额
-router.post('/baixiu/modifyAmount',function (req,res) {
+router.post('/baixiu/modifyAmount', function (req, res) {
     var id = req.body.id;
     var amount = req.body.amount;
-    var updateSql = "UPDATE order_char oc set oc.cost_amount = "+amount+" where oc.id = "+id;
-    console.log('modifyAmount修改金额：'+updateSql);
-    DbUtils.queryData(updateSql,function (result) {
+    var updateSql = "UPDATE order_char oc set oc.cost_amount = " + amount + " where oc.id = " + id;
+    console.log('modifyAmount修改金额：' + updateSql);
+    DbUtils.queryData(updateSql, function (result) {
         res.json({
-            status:0
+            status: 0
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
+            status: -1,
             error
         })
     });
 });
 //根据账号和订单查询费用标准
-router.get('/baixiu/searchCostStandard',function (req,res) {
+router.get('/baixiu/searchCostStandard', function (req, res) {
     var email = req.query.email;
     var orderNo = req.query.orderNo;
     var querySql = "SELECT\n" +
@@ -2222,8 +2224,8 @@ router.get('/baixiu/searchCostStandard',function (req,res) {
         "AND u. LEVEL = cs. LEVEL\n" +
         "AND o.end_company = org.company_code\n" +
         "AND org.is_tz = cs.is_tz\n" +
-        "AND o.email = '"+email+"'\n" +
-        "AND o.order_no = '"+orderNo+"'\n" +
+        "AND o.email = '" + email + "'\n" +
+        "AND o.order_no = '" + orderNo + "'\n" +
         "AND lt.`level` = u.`level`\n" +
         "AND cs.is_tz = ct.is_tz\n" +
         "AND cs.cost_type = cy.cost_type\n" +
@@ -2232,21 +2234,21 @@ router.get('/baixiu/searchCostStandard',function (req,res) {
         "\tcostDesc,\n" +
         "\tceilingAmount;\n" +
         "\n";
-    console.log('searchCostStandard查询:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('searchCostStandard查询:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            return:error
+            status: -1,
+            return: error
         })
     })
 });
 //根据订单编号新增费用
-router.post('/baixiu/addOrderAmount',function (req,res) {
+router.post('/baixiu/addOrderAmount', function (req, res) {
     var orderNo = req.body.orderNo;
     var costType = req.body.costType;
     var amount = req.body.amount;
@@ -2254,57 +2256,57 @@ router.post('/baixiu/addOrderAmount',function (req,res) {
         "VALUES\n" +
         "\t(\n" +
         "\t\tNULL,\n" +
-        "\t\t'"+orderNo+"',\n" +
-        "\t\t'"+costType+"',\n" +
-        "\t\t"+amount+"\n" +
+        "\t\t'" + orderNo + "',\n" +
+        "\t\t'" + costType + "',\n" +
+        "\t\t" + amount + "\n" +
         "\t)";
-    console.log('addOrderAmount新增:'+insertSql);
-    DbUtils.queryData(insertSql,function () {
+    console.log('addOrderAmount新增:' + insertSql);
+    DbUtils.queryData(insertSql, function () {
         res.json({
-            status:0,
-            desc:'新增成功'
+            status: 0,
+            desc: '新增成功'
         })
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:'新增是失败'
+            status: -1,
+            desc: '新增是失败'
         })
     });
 });
 //根据id单春订单金额
-router.post('/baixiu/deleteOrderAmount',function (req,res) {
+router.post('/baixiu/deleteOrderAmount', function (req, res) {
     var id = req.body.id;
-    var deleteSql = "delete from order_char where id = "+id;
-    console.log('deleteOrderAmount删除订单金额：'+deleteSql);
-    DbUtils.queryData(deleteSql,function (result) {
+    var deleteSql = "delete from order_char where id = " + id;
+    console.log('deleteOrderAmount删除订单金额：' + deleteSql);
+    DbUtils.queryData(deleteSql, function (result) {
         res.json({
-            status:0,
-            desc:'删除成功'
+            status: 0,
+            desc: '删除成功'
         })
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
+            status: -1,
             error
         })
     });
 });
 
-router.get('/baixiu/getCostTypeIsByDay',function (req,res) {
+router.get('/baixiu/getCostTypeIsByDay', function (req, res) {
     var querySql = "select * from cost_standard_cyc";
-    DbUtils.queryData(querySql,function (result) {
+    DbUtils.queryData(querySql, function (result) {
         var returnData = {};
         returnData.status = 0;
         returnData.fixList = result
         res.json(returnData);
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
+            status: -1,
             error
         });
     });
 });
 //生成报销excel
-router.get('/baixiu/downLoadBxCost',function (req,res) {
+router.get('/baixiu/downLoadBxCost', function (req, res) {
     var orderNo = req.query.orderNo;
     var querySql = "SELECT\n" +
         "\t(\n" +
@@ -2476,16 +2478,44 @@ router.get('/baixiu/downLoadBxCost',function (req,res) {
         "FROM\n" +
         "\ttrip_order o\n" +
         "WHERE\n" +
-        "\to.order_no = '"+orderNo+"'";
+        "\to.order_no = '" + orderNo + "'";
+    DbUtils.queryData(querySql, function (result) {
+        console.log('downLoadBxCost:' + querySql);
+        excelUtils.renderExcel(result, function () {
+            utils.exportFile(res, './bxFile/' + result[0].NAME + '报销' + orderNo + '.xlsx');
+        }, function (err) {
+
+        }, result[0].NAME + '报销' + orderNo + '.xlsx');
+    }, function (error) {
+
+    });
+});
+/**个人中心模块*/
+router.get('/baixiu/searchUser', function (req, res) {
+    var user = utils.isLogin(req, res);
+    if (!user) {
+        //session不存在，则需要直接返回登录界面
+        return;
+    }
+    var user = user[0];
+    var level = mysql.escape(user.level);
+    var querySql = `
+        SELECT
+            l.level_desc as levelDesc
+        FROM
+            level_table l
+        WHERE
+            l. LEVEL = ${level}
+    `;
+    console.log('searchUser:'+querySql);
     DbUtils.queryData(querySql,function (result) {
-        console.log('downLoadBxCost:'+querySql);
-        excelUtils.renderExcel(result,function () {
-            utils.exportFile(res,'./bxFile/'+result[0].NAME+'报销'+orderNo+'.xlsx');
-        },function (err) {
-            
-        },result[0].NAME+'报销'+orderNo+'.xlsx');
+        console.log(result)
+        user.levelDesc = result[0].levelDesc;
+        console.log(user)
+        res.json(user)
     },function (error) {
 
     });
+
 });
 module.exports = router;

@@ -1,7 +1,7 @@
 var utils = {
-    parentObj:{},
-    showNum:5,
-    pageSize:10,
+    parentObj: {},
+    showNum: 5,
+    pageSize: 10,
     addList(result, obj) {
         //判断当前节点是否有父节点
         if (obj['parent_id']) {
@@ -17,13 +17,13 @@ var utils = {
                             if (result[i]['sonList'][j].id == obj.id) {
                                 index == j;
                                 isContain = true;
-                               /* // 如果包含了该元素，再次判断,该元素是否发生过改变
-                                if (result[i]['sonList'][j].length != obj.length) {
-                                    //发生过改变，重新替换父节点中对应的子节点
-                                    result[i]['sonList'][j] = obj;
-                                    //并且让父节点进一步通知其对应的父节点
-                                    this.addList(result, result[i]);
-                                }*/
+                                /* // 如果包含了该元素，再次判断,该元素是否发生过改变
+                                 if (result[i]['sonList'][j].length != obj.length) {
+                                     //发生过改变，重新替换父节点中对应的子节点
+                                     result[i]['sonList'][j] = obj;
+                                     //并且让父节点进一步通知其对应的父节点
+                                     this.addList(result, result[i]);
+                                 }*/
                                 break;
                             }
                         }
@@ -85,8 +85,8 @@ var utils = {
                 '</td>' +
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
-                '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
-                '<td>'+(dataObj.company_type_desc?dataObj.company_type_desc:'')+'</td>' +
+                '<td>' + (dataObj.addressDesc ? dataObj.addressDesc : '') + '</td>' +
+                '<td>' + (dataObj.company_type_desc ? dataObj.company_type_desc : '') + '</td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +
@@ -109,8 +109,8 @@ var utils = {
                 '</td>' +
                 '<td>' + dataObj.url + '</td>' +
                 '<td></td>' +
-                '<td>'+(dataObj.addressDesc?dataObj.addressDesc:'')+'</td>' +
-                '<td>'+(dataObj.company_type_desc?dataObj.company_type_desc:'')+'</td>' +
+                '<td>' + (dataObj.addressDesc ? dataObj.addressDesc : '') + '</td>' +
+                '<td>' + (dataObj.company_type_desc ? dataObj.company_type_desc : '') + '</td>' +
                 '<td>' +
                 '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
                 '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +
@@ -151,113 +151,113 @@ var utils = {
         }
     },
     //根据子节点找到相应的父节点
-    findParentBySon(jsonArray,son){
-        for(var i = 0;i<jsonArray.length;i++){
-            if(jsonArray[i].sonList&&jsonArray[i].sonList.length > 0){
-                if(jsonArray[i].id == son.parent_id){
+    findParentBySon(jsonArray, son) {
+        for (var i = 0; i < jsonArray.length; i++) {
+            if (jsonArray[i].sonList && jsonArray[i].sonList.length > 0) {
+                if (jsonArray[i].id == son.parent_id) {
                     utils.parentObj = jsonArray[i];
                     return;
                 }
-                utils.findParentBySon(jsonArray[i].sonList,son);
+                utils.findParentBySon(jsonArray[i].sonList, son);
             }
         }
     },
     //分页页码显示
-    pageList(pageObj,parentNode,fun){
+    pageList(pageObj, parentNode, fun) {
         var pageList = '<li id="per-page"><a href="#">上一页</a></li>';
         var totalPage = Math.ceil(pageObj.totalCount / pageObj.returnData.pageSize);
         var currentPage = parseInt(pageObj.returnData.offset);
-        var leftArea = currentPage - Math.floor(utils.showNum/2);
-        var rightArea = currentPage + Math.floor(utils.showNum/2);
-        if(pageObj.totalCount <= pageObj.returnData.pageSize){
+        var leftArea = currentPage - Math.floor(utils.showNum / 2);
+        var rightArea = currentPage + Math.floor(utils.showNum / 2);
+        if (pageObj.totalCount <= pageObj.returnData.pageSize) {
             leftArea = 1;
             rightArea = 1;
         }
-        if(leftArea < 1){
+        if (leftArea < 1) {
             leftArea = 1;
             rightArea = utils.showNum;
-            if(totalPage < rightArea){
+            if (totalPage < rightArea) {
                 rightArea = totalPage;
             }
         }
-        if(rightArea > totalPage){
+        if (rightArea > totalPage) {
             rightArea = totalPage;
-            leftArea = rightArea -utils.showNum + 1;
-            if(leftArea < 1){
+            leftArea = rightArea - utils.showNum + 1;
+            if (leftArea < 1) {
                 leftArea = 1;
             }
         }
         // rightArea = rightArea > totalPage ? totalPage : rightArea;
-        for(var i = leftArea;i<= rightArea;i++){
-            if(i == currentPage){
-                pageList += '<li class="active"><a href="#" class="pageNums">'+i+'</a></li>';
-            }else{
-                pageList += '<li><a href="#" class="pageNums">'+i+'</a></li>';
+        for (var i = leftArea; i <= rightArea; i++) {
+            if (i == currentPage) {
+                pageList += '<li class="active"><a href="#" class="pageNums">' + i + '</a></li>';
+            } else {
+                pageList += '<li><a href="#" class="pageNums">' + i + '</a></li>';
             }
         }
-       pageList += ' <li id="next-page"><a href="#">下一页</a></li>';
-       parentNode.html(pageList);
-        if(currentPage <= 1) {
+        pageList += ' <li id="next-page"><a href="#">下一页</a></li>';
+        parentNode.html(pageList);
+        if (currentPage <= 1) {
             $('#per-page').addClass('disabled');
-            $('#per-page').css('disabled','disabled');
-        }else if(currentPage >= totalPage){
+            $('#per-page').css('disabled', 'disabled');
+        } else if (currentPage >= totalPage) {
             $('#next-page').addClass('disabled');
-        }else{
+        } else {
             $('#per-page').removeClass('disabled');
             $('#next-page').removeClass('disabled');
         }
         $('#per-page').unbind();
-        $('#per-page').on('click',function (e) {
+        $('#per-page').on('click', function (e) {
             currentPage--;
-            currentPage = currentPage < 1?1:currentPage;
-            if(fun){
-                fun(currentPage,utils.pageSize);
+            currentPage = currentPage < 1 ? 1 : currentPage;
+            if (fun) {
+                fun(currentPage, utils.pageSize);
             }
             // getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
         });
         $('#next-page').unbind();
-        $('#next-page').on('click',function (e) {
+        $('#next-page').on('click', function (e) {
             currentPage++;
-            currentPage = currentPage > totalPage ? totalPage:currentPage;
-            if(fun){
-                fun(currentPage,utils.pageSize);
+            currentPage = currentPage > totalPage ? totalPage : currentPage;
+            if (fun) {
+                fun(currentPage, utils.pageSize);
             }
             // getPostsData(currentPage,utils.pageSize,$('#category-list').val(),$('#status-options').val());
         });
-       parentNode.unbind();
-       parentNode.on('click','.pageNums',function (event) {
-           if(fun){
-               fun($(event.target).html(),utils.pageSize);
-           }
-           // getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
-       });
+        parentNode.unbind();
+        parentNode.on('click', '.pageNums', function (event) {
+            if (fun) {
+                fun($(event.target).html(), utils.pageSize);
+            }
+            // getPostsData($(event.target).html(),utils.pageSize,$('#category-list').val(),$('#status-options').val());
+        });
     },
     // 验证用户名是否存在
-    isExitUser(userName,fun){
+    isExitUser(userName, fun) {
         $.ajax({
-            type:'post',
-            url:'/baixiu/isExitUser',
-            dataType:'json',
-            data:{
+            type: 'post',
+            url: '/baixiu/isExitUser',
+            dataType: 'json',
+            data: {
                 userName
             },
-            success:function (data) {
+            success: function (data) {
                 fun(data);
             },
-            error:function () {
+            error: function () {
                 alert('请求失败！');
             }
         });
     },
-    ajaxSend(obj,success,err){
+    ajaxSend(obj, success, err) {
         // 显示请求动画
-        if($('.mask')) {
+        if ($('.mask')) {
             var maskHeight = $('.mask').outerHeight();
             var maskWidth = $('.mask').outerWidth();
             var loadHeight = $('.mask .loading').outerHeight();
             var loadWidth = $('.mask .loading').outerWidth();
-            $('.mask .loading').css('left',((maskWidth-loadWidth)/2)+'px');
-            $('.mask .loading').css('top',(((maskHeight-loadHeight)/2)+'px'));
+            $('.mask .loading').css('left', ((maskWidth - loadWidth) / 2) + 'px');
+            $('.mask .loading').css('top', (((maskHeight - loadHeight) / 2) + 'px'));
             $('.mask').show();
             $('.mask .loading').show();
         }
@@ -266,23 +266,61 @@ var utils = {
             url: obj.url,
             data: obj.data,
             dataType: obj.dataType,
-            processData:obj.processData,
-            contentType:obj.contentType,
+            processData: obj.processData,
+            contentType: obj.contentType,
             success: function (data) {
                 //关闭动画
-                if($('.mask')) {
+                if ($('.mask')) {
                     $('.mask').hide();
                 }
                 success(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 //关闭动画
-                if($('.mask')) {
+                if ($('.mask')) {
                     $('.mask').hide();
                 }
                 err(errorThrown);
             }
 
         });
+    },
+    fileFilter() {
+        var isUploadImg = false;
+        //在input file内容改变的时候触发事件******************上传图片
+        $('#filed').change(function () {
+            var file = $('#filed').get(0).files[0];
+            var fileSize = file.size, fileType = file.type;
+            if (file.name.lastIndexOf('.') == -1) {    //如果不存在"."
+                return false;
+            }
+            var AllImgExt = ".jpg|.jpeg|.gif|.bmp|.png|.swf|";
+            var extName = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();//（把路径中的所有字母全部转换为小写）
+            if (AllImgExt.indexOf(extName + "|") == -1) {
+                $.dialog({content: '非法图片格式', time: 2000});
+                return false;
+            }
+            if (fileSize < 3145728) {
+                if (window.FileReader) {
+                    //创建用来读取此文件的对象
+                    var reader = new FileReader();
+                    //使用该对象读取file文件
+                    reader.readAsDataURL(file);
+                    //读取文件成功后执行的方法函数
+                    reader.onload = function (e) {
+                        //读取成功后返回的一个参数e，整个的一个进度事件
+                        console.log(e);
+                        //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                        //的base64编码格式的地址
+                        $('#imgshow').get(0).src = e.target.result;
+                        isUploadImg = true;
+                    }
+                }
+            } else {
+                $.dialog({content: '图片大小超过限制', time: 2000});
+                return false;
+            }
+
+        })
     }
 };

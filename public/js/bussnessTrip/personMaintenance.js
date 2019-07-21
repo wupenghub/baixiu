@@ -1,6 +1,7 @@
 var returnData = null;
 $(function () {
     var data = $("#template").html().replace(/&#34;/g, '"');
+    console.log(data)
     var dataJson = JSON.parse(data);
     var rootNode = $('.aside .nav');
     $('.avatar').prop('src', dataJson.user.avatar);
@@ -9,6 +10,11 @@ $(function () {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }
+    $('#personMaintenance_modify #is_pwd_modify').on('change',function (e) {
+        var isChecked=$(e.target).is(':checked');
+        isChecked?$('#personMaintenance_modify .password').show():$('#personMaintenance_modify .password').hide();
+
+    });
     $('#personMaintenance_modify .btn_modify').on('click',function () {
         if(check()){
             uploadDataByObj({
@@ -18,8 +24,19 @@ $(function () {
                 confirmPwd:$('#personMaintenance_modify .confirm_pwd').val(),
                 nickName:$('#personMaintenance_modify .nick_name').val(),
                 level:$('#personMaintenance_modify #level_type_code_view').val(),
+                isModifyPwd:$('#personMaintenance_modify #is_pwd_modify').is(':checked'),
                 templateFile:$("#personMaintenance_modify .actorInputFile")[0].files[0]
             },'/baixiu/modifyUser');
+        }
+    });
+    $('#personMaintenance_modify .actorInputFile').on('change',function (e) {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            console.log(reader.result);
+            $('#personMaintenance_modify .avatar_read').attr('src',reader.result);
+
         }
     });
     getInitInfo();
@@ -40,27 +57,31 @@ function getInitInfo() {
         $('#personMaintenance_modify #level_type_desc_view').val(user.levelDesc);
         $('#personMaintenance_modify #level_type_code_view').val(user.level);
         $('#personMaintenance_modify .avatar_read').attr('src',user.avatar);
+        $('#personMaintenance_modify .actorInputFile').val(user.avatar);
     }, function (error) {
 
     });
 }
 
 function check() {
-    if(!$('#personMaintenance_modify .old_pwd').val()){
-        alert('原始密码不能为空');
-        return false;
-    }
-    if(!$('#personMaintenance_modify .modify_pwd').val()){
-        alert('修改密码不能为空');
-        return false;
-    }
-    if(!$('#personMaintenance_modify .confirm_pwd').val()){
-        alert('确认密码不能为空');
-        return false;
-    }
-    if($('#personMaintenance_modify .confirm_pwd').val()!=$('#personMaintenance_modify .modify_pwd').val()){
-        alert('二次输入的密码不一致');
-        return false;
+    var isChecked=$('#personMaintenance_modify #is_pwd_modify').is(':checked');
+    if(isChecked) {
+        if (!$('#personMaintenance_modify .old_pwd').val()) {
+            alert('原始密码不能为空');
+            return false;
+        }
+        if (!$('#personMaintenance_modify .modify_pwd').val()) {
+            alert('修改密码不能为空');
+            return false;
+        }
+        if (!$('#personMaintenance_modify .confirm_pwd').val()) {
+            alert('确认密码不能为空');
+            return false;
+        }
+        if ($('#personMaintenance_modify .confirm_pwd').val() != $('#personMaintenance_modify .modify_pwd').val()) {
+            alert('二次输入的密码不一致');
+            return false;
+        }
     }
     return true
 }
@@ -116,6 +137,9 @@ function uploadDataByObj(obj,url) {
     },function (data) {
         if(data.status == 1){
             alert(data.desc);
+        }else if(data.status == 0) {
+            $('.avatar').prop('src', data.user.avatar);
+            $('.name').html(data.user.nickname);
         }
     },function (error) {
 

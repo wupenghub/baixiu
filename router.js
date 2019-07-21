@@ -9,6 +9,8 @@ let excelUtils = require('./util/ExcelUtils.js');
 var mysql = require('mysql');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
+var fs = require('fs');
+var path = require('path');
 //访问管理后台首页
 router.get('/', function (req, res) {
     //1、判断此用户是否已经登录过
@@ -2522,38 +2524,153 @@ router.get('/baixiu/searchUser', function (req, res) {
 
 router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
     var tmp_path = '';
-    if(req.files&&req.files.length > 0) {
+    if(req.files&&req.files.templateFile) {
         tmp_path = req.files.templateFile.path;
     }
     var email = req.body.email;
     var oldPwd = req.body.oldPwd;
     var modifyPwd = req.body.modifyPwd;
-    var confirmPwd = req.body.confirmPwd;
     var nickName = req.body.nickName;
     var level = req.body.level;
-    console.log(tmp_path+'==='+email+'==='+oldPwd+'==='+oldPwd+'==='+modifyPwd+'==='+confirmPwd+'==='+nickName+'==='+level);
-    email = mysql.escape(email);
-    var queryUser = `
+    var isModifyPwd = req.body.isModifyPwd;
+    var email = mysql.escape(email);
+    if(isModifyPwd == 'true') {
+        var queryUser = `
         SELECT
             u. PASSWORD
         FROM
             users u
         WHERE
             u.email = ${email}
-    `;
-    DbUtils.queryData(queryUser,function (data) {
-        var queryPwd = data[0].PASSWORD;
-        oldPwd = md5(md5(oldPwd) + 'p~1i');
-        if(queryPwd != oldPwd){
-            res.json({
-                status:1,
-                desc:'原始密码不正确'
-            })
-        }else{
-            //修改用户信息
-        }
-    },function (error) {
+        `;
+        DbUtils.queryData(queryUser, function (data) {
+            var queryPwd = data[0].PASSWORD;
+            oldPwd = md5(md5(oldPwd) + 'p~1i');
+            if (queryPwd != oldPwd) {
+                res.json({
+                    status: 1,
+                    desc: '原始密码不正确'
+                })
+            } else {
+                //修改用户信息
+                var updateSql = `
+                        UPDATE users u
+                        SET 
+                         u.email = ${email}`;
+                if(tmp_path){
+                    var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf('/')+1,tmp_path.length);
+                    updateSql += `,u.avatar = '${tmp_path_insert}'`
+                }
+                if(level){
+                    updateSql += `,u.LEVEL = ${level}`
+                }
+                if(nickName){
+                    nickName = mysql.escape(nickName);
+                    updateSql += `,u.nickname = ${nickName}`
+                }
+                if(modifyPwd){
+                    modifyPwd = mysql.escape(md5(md5(modifyPwd) + 'p~1i'));
+                    updateSql += `,u.password = ${modifyPwd}`
+                }
+                 updateSql += ` WHERE
+                    u.email = ${email}
+                `;
+                console.log('modifyUser:'+updateSql);
+                DbUtils.queryData(updateSql,function (result) {
+                    if(tmp_path) {
+                        fs.readFile(tmp_path, function (err, data) {
+                            fs.writeFile('./'+tmp_path_insert, data, function (err) {
+                                if (err) {
+                                    res.json({
+                                        status:-1,
+                                        desc:err
+                                    })
+                                } else {
+                                    var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd+ ' and u.`status`="activated"';
+                                    DbUtils.queryData(loginSql, function (result) {
+                                        if (result && result.length > 0) {
+                                            //登录成功，保存session
+                                            req.session.user = result;
+                                            res.json({status:0,user:result[0]});
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }else{
+                        var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd+ ' and u.`status`="activated"';
+                        DbUtils.queryData(loginSql, function (result) {
+                            if (result && result.length > 0) {
+                                //登录成功，保存session
+                                req.session.user = result;
+                                res.json({status:0,user:result[0]});
+                            }
+                        });
+                    }
+                },function (error) {
 
-    });
+                });
+            }
+        }, function (error) {
+
+        });
+    }else{
+        //修改用户信息
+        var updateSql = `
+                        UPDATE users u
+                        SET 
+                         u.email = ${email}`;
+        if(tmp_path){
+            var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf('/')+1,tmp_path.length);
+            updateSql += `,u.avatar = '${tmp_path_insert}'`
+        }
+        if(level){
+            updateSql += `,u.LEVEL = ${level}`
+        }
+        if(nickName){
+            nickName = mysql.escape(nickName);
+            updateSql += `,u.nickname = ${nickName}`
+        }
+        updateSql += ` WHERE
+                    u.email = '565784355@qq.com'
+                `;
+        console.log('modifyUser:'+updateSql);
+        DbUtils.queryData(updateSql,function (result) {
+            if(tmp_path) {
+                fs.readFile(tmp_path, function (err, data) {
+                    fs.writeFile('./'+tmp_path_insert, data, function (err) {
+                        if (err) {
+                            res.json({
+                                status:-1,
+                                desc:err
+                            })
+                        } else {
+                            var loginSql = 'select * from users u where u.`email` = ' + email + 'and u.`status`="activated"';
+                            console.log(loginSql)
+                            DbUtils.queryData(loginSql, function (result) {
+                                if (result && result.length > 0) {
+                                    //登录成功，保存session
+                                    req.session.user = result;
+                                    res.json({status:0,user:result[0]});
+                                }
+                            });
+                        }
+                    });
+                });
+            }else{
+                var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`status`="activated"';
+                console.log(loginSql)
+                DbUtils.queryData(loginSql, function (result) {
+                    if (result && result.length > 0) {
+                        //登录成功，保存session
+                        req.session.user = result;
+                        res.json({status:0,user:result[0]});
+                    }
+                });
+            }
+        },function (error) {
+
+        });
+    }
 });
 module.exports = router;

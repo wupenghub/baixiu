@@ -266,6 +266,8 @@ var utils = {
             url: obj.url,
             data: obj.data,
             dataType: obj.dataType,
+            processData:obj.processData,
+            contentType:obj.contentType,
             success: function (data) {
                 //关闭动画
                 if($('.mask')) {

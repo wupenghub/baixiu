@@ -2521,7 +2521,10 @@ router.get('/baixiu/searchUser', function (req, res) {
 });
 
 router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
-    var tmp_path = req.files.templateFile.path;
+    var tmp_path = '';
+    if(req.files&&req.files.length > 0) {
+        tmp_path = req.files.templateFile.path;
+    }
     var email = req.body.email;
     var oldPwd = req.body.oldPwd;
     var modifyPwd = req.body.modifyPwd;
@@ -2529,5 +2532,28 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
     var nickName = req.body.nickName;
     var level = req.body.level;
     console.log(tmp_path+'==='+email+'==='+oldPwd+'==='+oldPwd+'==='+modifyPwd+'==='+confirmPwd+'==='+nickName+'==='+level);
+    email = mysql.escape(email);
+    var queryUser = `
+        SELECT
+            u. PASSWORD
+        FROM
+            users u
+        WHERE
+            u.email = ${email}
+    `;
+    DbUtils.queryData(queryUser,function (data) {
+        var queryPwd = data[0].PASSWORD;
+        oldPwd = md5(md5(oldPwd) + 'p~1i');
+        if(queryPwd != oldPwd){
+            res.json({
+                status:1,
+                desc:'原始密码不正确'
+            })
+        }else{
+            //修改用户信息
+        }
+    },function (error) {
+
+    });
 });
 module.exports = router;

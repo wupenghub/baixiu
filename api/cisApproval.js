@@ -8,7 +8,6 @@ var multipartMiddleware = multipart();
 var fs = require('fs');
 let excelUtils = require('../util/ExcelUtils.js');
 var cisUtils = require('../util/CisUtils.js');
-var async = require("async");
 //下载模板
 router.post('/baixiu/cisTemplateDownLoad', function (req, res) {
     exportFile(res, req.body.filename);

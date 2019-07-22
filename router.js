@@ -242,6 +242,7 @@ router.get('/baixiu/MenuManger', function (req, res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
+    console.log(user);
     res.render('mnueManger.html', {dataJsonArr: req.session.userInfo});
 });
 //菜单管理->菜单删除
@@ -2558,7 +2559,7 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                         SET 
                          u.email = ${email}`;
                 if(tmp_path){
-                    var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf('/')+1,tmp_path.length);
+                    var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf(path.sep)+1,tmp_path.length);
                     updateSql += `,u.avatar = '${tmp_path_insert}'`
                 }
                 if(level){
@@ -2591,6 +2592,10 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                                         if (result && result.length > 0) {
                                             //登录成功，保存session
                                             req.session.user = result;
+                                            var userInfo = JSON.parse(req.session.userInfo);
+                                            userInfo.user = result[0];
+                                            req.session.userInfo = JSON.stringify(userInfo);
+                                            console.log(req.session.userInfo);
                                             res.json({status:0,user:result[0]});
                                         }
                                     });
@@ -2603,6 +2608,10 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                             if (result && result.length > 0) {
                                 //登录成功，保存session
                                 req.session.user = result;
+                                var userInfo = JSON.parse(req.session.userInfo);
+                                userInfo.user = result[0];
+                                req.session.userInfo = JSON.stringify(userInfo);
+                                console.log(req.session.userInfo);
                                 res.json({status:0,user:result[0]});
                             }
                         });
@@ -2621,7 +2630,7 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                         SET 
                          u.email = ${email}`;
         if(tmp_path){
-            var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf('/')+1,tmp_path.length);
+            var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf(path.sep)+1,tmp_path.length);
             updateSql += `,u.avatar = '${tmp_path_insert}'`
         }
         if(level){
@@ -2651,6 +2660,10 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                                 if (result && result.length > 0) {
                                     //登录成功，保存session
                                     req.session.user = result;
+                                    var userInfo = JSON.parse(req.session.userInfo);
+                                    userInfo.user = result[0];
+                                    req.session.userInfo = JSON.stringify(userInfo);
+                                    console.log(req.session.userInfo);
                                     res.json({status:0,user:result[0]});
                                 }
                             });
@@ -2664,6 +2677,10 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                     if (result && result.length > 0) {
                         //登录成功，保存session
                         req.session.user = result;
+                        var userInfo = JSON.parse(req.session.userInfo);
+                        userInfo.user = result[0];
+                        req.session.userInfo = JSON.stringify(userInfo);
+                        console.log(req.session.userInfo);
                         res.json({status:0,user:result[0]});
                     }
                 });

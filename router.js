@@ -48,7 +48,25 @@ router.post('/baixiu/login', function (req, res) {
     var emil = req.body.email;
     var password = req.body.password;
     password = md5(md5(password) + 'p~1i');
-    var loginSql = 'select * from users u where u.`email` = "' + emil + '" and u.`password` = "' + password + '" and u.`status`="activated"';
+    var loginSql = `
+                    SELECT
+                        u.id,
+                        u.avatar,
+                        u.bio,
+                        u.email,
+                        u. level,
+                        u.nickname,
+                        u. password,
+                        u. status,
+                        u.slug
+                    FROM
+                        users u
+                    WHERE
+                        u.email = ${mysql.escape(emil)}
+                    AND u.password = ${mysql.escape(password)}
+                    AND u.status = "activated"
+                    `;
+    console.log('login:'+loginSql);
     DbUtils.queryData(loginSql, function (result) {
         var loginData = {};
         if (result && result.length > 0) {

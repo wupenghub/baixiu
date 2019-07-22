@@ -2617,11 +2617,17 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                         });
                     }
                 },function (error) {
-
+                    res.json({
+                        status:-1,
+                        desc:error
+                    })
                 });
             }
         }, function (error) {
-
+            res.json({
+                status:-1,
+                desc:error
+            })
         });
     }else{
         //修改用户信息
@@ -2686,7 +2692,10 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                 });
             }
         },function (error) {
-
+            res.json({
+                status:-1,
+                desc:error
+            })
         });
     }
 });

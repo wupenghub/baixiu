@@ -2678,7 +2678,6 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                 });
             }else{
                 var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`status`="activated"';
-                console.log(loginSql)
                 DbUtils.queryData(loginSql, function (result) {
                     if (result && result.length > 0) {
                         //登录成功，保存session

@@ -12,7 +12,6 @@ var cisUtils = {
         }
         //不存在此人员则进行添加
         if (!contains) {
-            console.log('==============================')
             userArray.push(addNameUser);
         }
     },

@@ -30,13 +30,18 @@ $(function () {
         }
     });
     $('#personMaintenance_modify .actorInputFile').on('change',function (e) {
-        var file = this.files[0];
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(){
-            console.log(reader.result);
-            $('#personMaintenance_modify .avatar_read').attr('src',reader.result);
-
+        // 判断文件是否是图片格式
+        var fileName = $(e.target).val();
+        var suffixName = fileName.substring(fileName.lastIndexOf('.')+1,fileName.length);
+        if(suffixName =='jpg' || suffixName == 'png') {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                $('#personMaintenance_modify .avatar_read').attr('src', reader.result);
+            }
+        }else{
+            alert('暂不支持此格式图片文件');
         }
     });
     getInitInfo();
@@ -82,6 +87,12 @@ function check() {
             alert('二次输入的密码不一致');
             return false;
         }
+    }
+    var fileName = $('#personMaintenance_modify .actorInputFile').val();
+    var suffixName = fileName.substring(fileName.lastIndexOf('.')+1,fileName.length);
+    if(suffixName != 'jpg' && suffixName != 'png'){
+        alert('暂不支持此格式图片');
+        return false;
     }
     return true
 }

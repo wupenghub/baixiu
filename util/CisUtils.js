@@ -2,6 +2,20 @@
 var pinyin = require('pinyin');
 var DbUtils = require('../DbUtils');
 var cisUtils = {
+    addUser(userArray,addNameUser){
+        var contains = false;
+        for (var j = 0; j < userArray.length; j++) {
+            if (cisUtils.removeBlank(addNameUser.userName) == cisUtils.removeBlank(userArray[j].userName)) {
+                contains = true;
+                break;
+            }
+        }
+        //不存在此人员则进行添加
+        if (!contains) {
+            console.log('==============================')
+            userArray.push(addNameUser);
+        }
+    },
     addUserGroupPermissions(userArray, userGroupPermissionsArray, cisDivDesc) {
         for (var i = 0; i < userGroupPermissionsArray.length; i++) {
             var userGroupObj = userGroupPermissionsArray[i];
@@ -172,13 +186,14 @@ var cisUtils = {
         userRollData.push(userRollHead);
         userInfo.push(userHead);
         for(var i = 0;i<userArray.length;i++){
+            console.log(userArray[i].userName);
             var user = userArray[i];
             var userGroup = user.userGroupCode;
             var userDisp = user.userDispCode;
             var userRoll = user.userRollCode;
             var userObj = [];
-            var firstName = user.userName.substring(0,1);
-            var lastName = user.userName.substring(1,user.userName.length);
+            var firstName = user.userName&&user.userName.substring(0,1);
+            var lastName = user.userName&&user.userName.substring(1,user.userName.length);
             var userCode  = user.userCode;
             userObj.push(firstName);
             userObj.push(lastName);

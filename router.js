@@ -653,7 +653,7 @@ router.post('/baixiu/addRecord', function (req, res) {
             " o.end_company = '" + endCompany + "'\n" +
             "WHERE\n" +
             "\to.order_no = '" + req.body.orderNo + "'\n" +
-            "AND o.email = '565784355@qq.com'";
+            "AND o.email = '"+email+"'";
     }
     console.log("addRecord:" + querySql);
     DbUtils.queryData(querySql, function (result) {
@@ -2552,7 +2552,7 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
     var nickName = req.body.nickName;
     var level = req.body.level;
     var isModifyPwd = req.body.isModifyPwd;
-    var email = mysql.escape(email);
+    email = mysql.escape(email);
     if(isModifyPwd == 'true') {
         var queryUser = `
         SELECT
@@ -2665,7 +2665,7 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
             updateSql += `,u.nickname = ${nickName}`
         }
         updateSql += ` WHERE
-                    u.email = '565784355@qq.com'
+                    u.email = ${email}
                 `;
         console.log('modifyUser:'+updateSql);
         DbUtils.queryData(updateSql,function (result) {

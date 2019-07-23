@@ -19,10 +19,35 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
     var cisDivDesc = req.body.desc;
     var userArray = [];//定义一个人员数组，将人员放置在此集合中
     //['用户组权限','调度组','待办事项角色']
-    var sheetNames = ['用户组权限', '调度组', '待办事项角色'];
+    var sheetNames = ['员工基本信息','用户组权限', '调度组', '待办事项角色'];
     //添加人员并且配置人员的用户组权限，调度组，待办事项角色
     excelUtils.readExcel(tmp_path, sheetNames, function (data) {
         for (var item in data) {
+            //兼容深圳人员添加
+            if(item == '员工基本信息'){
+                var excelUserArray = data[item];
+                if(excelUserArray){
+                    for(var i = 0;i<excelUserArray.length;i++){
+                        var userObj = excelUserArray[i];
+                        var addUser = {};
+                        for (var item in userObj){
+                           if(item == '员工姓名'){
+                               addUser.userName = userObj[item]
+                           }
+                           if(item == '联系电话'){
+                               addUser.userPhone = userObj[item]
+                           }
+                            if(item == '员工编号'){
+                                addUser.userId = userObj[item]
+                            }
+                            if(item == '员工账号'){
+                                addUser.userCode = userObj[item].toUpperCase();
+                            }
+                        }
+                        cisUtils.addUser(userArray,addUser);
+                    }
+                }
+            }
             if (item == '用户组权限') {
                 cisUtils.addUserGroupPermissions(userArray, data[item], cisDivDesc);
             }
@@ -34,8 +59,8 @@ router.post('/baixiu/getExcel', multipartMiddleware, function (req, res) {
             }
         }
     });
-    //生成用户的cisId
-    cisUtils.generateCisId(userArray, cisDivCode);
+    //生成用户的cisId，贵燃需要使用，深燃不需要
+    // cisUtils.generateCisId(userArray, cisDivCode);
     cisUtils.matchCode(userArray,cisDivDesc,function () {
         var data = cisUtils.exportCisConfig(userArray);
 

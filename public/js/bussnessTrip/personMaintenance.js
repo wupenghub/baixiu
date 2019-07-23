@@ -88,11 +88,13 @@ function check() {
             return false;
         }
     }
-    var fileName = $('#personMaintenance_modify .actorInputFile').val();
-    var suffixName = fileName.substring(fileName.lastIndexOf('.')+1,fileName.length);
-    if(suffixName != 'jpg' && suffixName != 'png'){
-        alert('暂不支持此格式图片');
-        return false;
+    var fileName = $('#personMaintenance_modify .actorInputFile').val()
+    if(fileName) {
+        var suffixName = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length);
+        if (suffixName != 'jpg' && suffixName != 'png') {
+            alert('暂不支持此格式图片');
+            return false;
+        }
     }
     return true
 }
@@ -112,7 +114,6 @@ function showModal(queryType) {
         data: {queryType},
         dataType: "json"
     }, function (data) {
-        console.log(data)
         var html = template('typeList',data);
         $('.type-list').html(html);
     }, function (error) {

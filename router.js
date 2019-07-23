@@ -36,7 +36,8 @@ router.get('/', function (req, res) {
         dataJson.user = req.session.user[0];
         dataJson.dataJsonArr = array;
         req.session.userInfo = JSON.stringify(dataJson);
-        res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+        // res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+        res.redirect(302,'/baixiu/bxManger');
     });
 });
 //访问登录界面

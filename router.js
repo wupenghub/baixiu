@@ -37,7 +37,47 @@ router.get('/', function (req, res) {
         dataJson.dataJsonArr = array;
         req.session.userInfo = JSON.stringify(dataJson);
         // res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-        res.redirect(302,'/baixiu/bxManger');
+        var queryCountSql = `
+                                SELECT
+                                    count(1) as count
+                                FROM
+                                    sys_set s1
+                                WHERE
+                                    s1.sys_type = 'page'
+                                AND s1.type_code = 'home_page'
+                                AND s1.key_value = ${mysql.escape(dataJson.user.email)}
+                            `;
+        DbUtils.queryData(queryCountSql,function (result) {
+           if(parseInt(result[0].count) > 0){
+               var queryIndexSql = `
+                                    SELECT
+                                            CASE
+                                            WHEN s.result_value IS NULL THEN
+                                                '/'
+                                            WHEN s.result_value = '' THEN
+                                                '/'
+                                            ELSE
+                                                s.result_value
+                                            END as path
+                                    FROM
+                                        sys_set s
+                                    WHERE
+                                        s.sys_type = 'page'
+                                    AND s.type_code = 'home_page'
+                                    AND s.key_value = ${mysql.escape(dataJson.user.email)}
+                                   `;
+
+               DbUtils.queryData(queryIndexSql,function (result) {
+                   if(result[0].path == '/'){
+                       res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+                   }else{
+                       res.redirect(302,result[0].path);
+                   }
+               })
+           }else {
+               res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+           }
+        });
     });
 });
 //访问登录界面
@@ -117,7 +157,7 @@ router.get('/baixiu/personMaintenance', function (req, res) {
         dataJson.user = req.session.user[0];
         dataJson.dataJsonArr = array;
         req.session.userInfo = JSON.stringify(dataJson);
-        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson)});
+        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson),url:'/baixiu/personMaintenance'});
     });
 });
 router.get('/baixiu/registered', function (req, res) {
@@ -262,7 +302,7 @@ router.get('/baixiu/MenuManger', function (req, res) {
         return;
     }
     console.log(user);
-    res.render('mnueManger.html', {dataJsonArr: req.session.userInfo});
+    res.render('mnueManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/MenuManger'});
 });
 //菜单管理->菜单删除
 router.get('/baixiu/menuDelete', function (req, res) {
@@ -525,7 +565,7 @@ router.get('/baixiu/businessTrip', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo});
+    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/businessTrip'});
 });
 //查询订单记录
 router.get('/baixiu/searchOrder', function (req, res) {
@@ -730,7 +770,7 @@ router.get('/baixiu/companyManger', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('companyManger.html', {dataJsonArr: req.session.userInfo});
+    res.render('companyManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/companyManger'});
 });
 //查询公司列表
 router.get('/baixiu/queryCompanyList', function (req, res) {
@@ -1039,7 +1079,7 @@ router.get('/baixiu/addressManger', function (req, res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
-    res.render('addressManger.html', {dataJsonArr: req.session.userInfo});
+    res.render('addressManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/addressManger'});
 });
 //查询地址列表
 router.get('/baixiu/queryAddressList', function (req, res) {
@@ -1217,7 +1257,7 @@ router.get('/baixiu/bxManger', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('bxManger.html', {dataJsonArr: req.session.userInfo});
+    res.render('bxManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/bxManger'});
 });
 //获取订单信息
 router.get('/baixiu/getOrderList', function (req, res) {
@@ -1499,7 +1539,7 @@ router.get('/baixiu/costType', function (req, res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
-    res.render('costType.html', {dataJsonArr: req.session.userInfo});
+    res.render('costType.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/costType'});
 });
 //查询费用类型
 router.get('/baixiu/searchCostTypeList', function (req, res) {
@@ -1758,7 +1798,7 @@ router.get('/baixiu/costTypeMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo});
+    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/costTypeMaintenance'});
 });
 //费用类型列表查询
 router.get('/baixiu/searchCostTypeMaintenanceList', function (req, res) {
@@ -1915,7 +1955,7 @@ router.get('/baixiu/companyMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo});
+    res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/companyMaintenance'});
 });
 //获取公司类别数据列表
 router.get('/baixiu/searchCompanyTypeMaintenanceList', function (req, res) {
@@ -2064,7 +2104,7 @@ router.get('/baixiu/levelMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo});
+    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/levelMaintenance'});
 });
 //查看职位类型列表
 router.get('/baixiu/searchLevelTypeMaintenanceList', function (req, res) {
@@ -2716,5 +2756,82 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
             })
         });
     }
+});
+//设置主页路由
+router.post('/baixiu/setHomePage',function (req,res) {
+   var urlPath = req.body.urlPath;
+   var email =  req.session.user[0].email;
+   var queryCountSql = `
+                        SELECT
+                            count(1) as count
+                        FROM
+                            sys_set s
+                        WHERE
+                            s.sys_type = 'page'
+                        AND s.type_code = 'home_page'
+                        AND s.key_value = ${mysql.escape(email)}
+                       `;
+   DbUtils.queryData(queryCountSql,function (result) {
+       if(parseInt(result[0].count)>0){
+           //查询到有记录则进行修改
+           console.log('setHomePage:'+queryCountSql);
+           var querySql = `
+                           UPDATE sys_set s
+                            SET s.result_value = ${mysql.escape(urlPath)}
+                            WHERE
+                                s.sys_type = 'page'
+                            AND s.type_code = 'home_page'
+                            AND s.key_value = ${mysql.escape(email)}
+                          `;
+           DbUtils.queryData(querySql,function (result) {
+               res.json({
+                   status:0,
+                   desc:'设置成功'
+               });
+           },function (error) {
+               res.json({
+                   status:-1,
+                   desc:error
+               })
+           });
+       }else{
+           //无记录则直接添加
+           var insertSql = `
+                            INSERT INTO sys_set (
+                                id,
+                                sys_type,
+                                type_code,
+                                type_desc,
+                                key_value,
+                                result_value
+                            )
+                            VALUES
+                                (
+                                    NULL,
+                                    'page',
+                                    'home_page',
+                                    '主页',
+                                    ${mysql.escape(email)},
+                                    ${mysql.escape(urlPath)}
+                                )
+                           `;
+           DbUtils.queryData(insertSql,function (result) {
+               res.json({
+                   status:0,
+                   desc:'设置成功'
+               });
+           },function (error) {
+               res.json({
+                   status:-1,
+                   desc:error
+               })
+           });
+       }
+   },function (error) {
+       res.json({
+           status:-1,
+           desc:error
+       })
+   });
 });
 module.exports = router;

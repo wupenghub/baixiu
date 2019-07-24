@@ -83,6 +83,12 @@
                 <div class="search_text">
                     出差单号：<input type="text" placeholder="请输入订单编号" id="order-no"/>
                     <button type="button" class="btn btn-info" id="order-search">查询</button>
+                    <span style="margin-left: 10px">订单状态：</span>
+                    <select id="order_states">
+                        <!--<option>已报销</option>-->
+                        <!--<option>未报销</option>-->
+                    </select>
+                    <button type="button" class="btn btn-info" id="order-states-modify">修改</button>
                 </div>
                 <div class="cost_type_list">
                     <div class="cost_type_list_items"></div>
@@ -243,6 +249,28 @@
         <% if(returnData){ %>
         <% for(var i = 0;i<returnData.length ;i++){ %>
             <li class="type-item" data-cost-code="<%=  returnData[i].costType %>" onclick="chooseCostType(this)"><%= returnData[i].costDesc %></li>
+            <% } %>
+            <% } %>
+    </script>
+    <script type="text/art-template" id="order_status">
+        <% if(ordersJsonArray) { %>
+        <% for(var i = 0;i
+        <ordersJsonArray.length ;i++){ %>
+            <tr>
+                <td><a target="_blank" href="/baixiu/downLoadBxCost?orderNo=<%= ordersJsonArray[i].order_no %>"><%= ordersJsonArray[i].order_no %></a></td>
+                <td class="text-center"><%= ordersJsonArray[i].startCompanyDesc %></td>
+                <td class="text-center"><%= ordersJsonArray[i].endCompanyDesc %></td>
+                <td class="text-center"><%= ordersJsonArray[i].start_date_str %></td>
+                <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
+                <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
+                <td class="text-center"><%= ordersJsonArray[i].bxAmonut %></td>
+                <td class="text-center">
+                    <a href="javascript:;" class="btn btn-default btn-xs order_edit"
+                       data-no="<%= ordersJsonArray[i].order_no %>">编辑</a>
+                    <a href="javascript:;" class="btn btn-danger btn-xs order_delete"
+                       data-no="<%= ordersJsonArray[i].order_no %>">删除</a>
+                </td>
+            </tr>
             <% } %>
             <% } %>
     </script>

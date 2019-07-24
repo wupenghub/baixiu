@@ -285,42 +285,19 @@ var utils = {
 
         });
     },
-    fileFilter() {
-        var isUploadImg = false;
-        //在input file内容改变的时候触发事件******************上传图片
-        $('#filed').change(function () {
-            var file = $('#filed').get(0).files[0];
-            var fileSize = file.size, fileType = file.type;
-            if (file.name.lastIndexOf('.') == -1) {    //如果不存在"."
-                return false;
-            }
-            var AllImgExt = ".jpg|.jpeg|.gif|.bmp|.png|.swf|";
-            var extName = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();//（把路径中的所有字母全部转换为小写）
-            if (AllImgExt.indexOf(extName + "|") == -1) {
-                $.dialog({content: '非法图片格式', time: 2000});
-                return false;
-            }
-            if (fileSize < 3145728) {
-                if (window.FileReader) {
-                    //创建用来读取此文件的对象
-                    var reader = new FileReader();
-                    //使用该对象读取file文件
-                    reader.readAsDataURL(file);
-                    //读取文件成功后执行的方法函数
-                    reader.onload = function (e) {
-                        //读取成功后返回的一个参数e，整个的一个进度事件
-                        console.log(e);
-                        //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                        //的base64编码格式的地址
-                        $('#imgshow').get(0).src = e.target.result;
-                        isUploadImg = true;
-                    }
+    setHomePage(urlPath) {
+        utils.ajaxSend({
+                type: 'post',
+                url:'/baixiu/setHomePage',
+                data: {urlPath},
+                dataType:'json'
+            }, function (data) {
+                if(data.status == '0'){
+                }else{
+                    alert(data.desc);
                 }
-            } else {
-                $.dialog({content: '图片大小超过限制', time: 2000});
-                return false;
-            }
+            }, function (error) {
 
-        })
+            });
     }
 };

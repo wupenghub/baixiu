@@ -12,6 +12,7 @@ $(function () {
     $('#order-list').on('click', function () {
         $('#order-no').val('');
         $('.cost_type_list_items').html('');
+        $('#order_states').html('');
         getOrderListData(1, utils.pageSize);
     });
 
@@ -57,12 +58,35 @@ $(function () {
         var endCompanyCode = $('.end_company_type_code_view').val();
         var startTime = $('#start_time').val();
         var endTime = $('#end_time').val();
-        getOrderListData(1, utils.pageSize,startCompanyCode,endCompanyCode,startTime,endTime);
+        var orderStatus = $('.search_text_div_model .order_status_code').val();
+        getOrderListData(1, utils.pageSize,startCompanyCode,endCompanyCode,startTime,endTime,orderStatus);
+    });
+    $('#order-states-modify').on('click',function () {
+        if($('#order_states').val()&&$('#order-no').val()){
+            utils.ajaxSend({
+                type: 'post',
+                url: '/baixiu/updateOrderStatus',
+                dataType: 'json',
+                data: {orderNo:$('#order-no').val(),orderStates:$('#order_states').val()}
+            },function (data) {
+                if(data.status == 0){
+
+                }else{
+
+                }
+            },function (error) {
+                if(data.status == -1){
+                    alert(error)
+                }
+            });
+        }else{
+            alert('请输入订单号及订单状态');
+        }
     });
     getOrderListData(1, utils.pageSize);
 });
 
-function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,startTime,endTime) {
+function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,startTime,endTime,orderStatus) {
     var userStr = localStorage.getItem('email');
     var email = '';
     if (userStr) {
@@ -72,7 +96,7 @@ function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,start
         type: 'get',
         url: '/baixiu/getOrderList',
         dataType: 'json',
-        data: {offset, pageSize, email,startCompanyCode,endCompanyCode,startTime,endTime}
+        data: {offset, pageSize, email,startCompanyCode,endCompanyCode,startTime,endTime,orderStatus}
     }, function (data) {
         var ordersListHtml = template('ordersList', data);
         $('.orders table tbody').html(ordersListHtml);
@@ -82,7 +106,7 @@ function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,start
         $('.pages-nav').empty();
         if(data.totalCount > 0) {
             utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-                getOrderListData(currentPage, pageSize, startCompanyCode, endCompanyCode, startTime, endTime);
+                getOrderListData(currentPage, pageSize, startCompanyCode, endCompanyCode, startTime, endTime,orderStatus);
             });
         }
         //注册修改功能点击事件
@@ -93,6 +117,7 @@ function getOrderListData(offset, pageSize,startCompanyCode,endCompanyCode,start
             $('.orders .order-content div:first-child').removeClass('active');
             $('.orders .order-content div:last-child').addClass('active');
             $('#order-no').val(orderNo);
+            getOrderAmountList();
         });
         //给文章信息绑定删除按钮
         // bindDelete(offset,pageSize);
@@ -113,9 +138,10 @@ function getOrderAmountList() {
         data: {email, orderNo: $('#order-no').val()},
         dataType: "json"
     }, function (data) {
-        console.log('=====' + JSON.stringify(data));
         var html = template('ordersListItems', data);
         $('.cost_type_list_items').html(html);
+        var htmlStatus = template('order_status',data);
+        $('#order_states').html(htmlStatus);
         $('.type_delete').on('click',function (event) {
             event.stopPropagation();//阻止事件冒泡
             var obj = event.target;
@@ -200,7 +226,14 @@ function chooseCostType(obj) {
     $('.line_content .cost_type_code_view').val(code);
     $('#cost_tree').modal('hide');
 }
-
+//选择订单状态类型
+function chooseOrderStatusType(obj){
+    var code = obj.dataset.costCode;
+    var desc = obj.innerHTML;
+    $('.search_text_div_model .order_status_desc').val(desc);
+    $('.search_text_div_model .order_status_code').val(code);
+    $('#order_status_tree').modal('hide');
+}
 //添加费用类型请求
 function addCostAmountRequest() {
     var orderNo = $('#order-no').val();
@@ -270,6 +303,23 @@ function chooseMnue(obj) {
         $('.end_company_type_desc_view').val(obj.mnue_desc);
         $('.end_company_type_code_view').val(obj.id);
     }
+}
+//保险状态显示
+function orderStatus(){
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/queryOrderStatus',
+        data: {},
+        dataType: "json"
+    }, function (result) {
+        if(result.status == 0){
+            var html = template('order_status_list',result);
+            $('.order-status-manger-model').html(html);
+            $('#order_status_tree').modal('show');
+        }
+    }, function (error) {
+
+    });
 }
 
 

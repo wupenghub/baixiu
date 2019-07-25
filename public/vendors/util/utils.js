@@ -299,5 +299,22 @@ var utils = {
             }, function (error) {
 
             });
+    },
+    renderPage(){
+        var data = $("#template").html().replace(/&#34;/g, '"');
+        var dataJson = JSON.parse(data);
+        var rootNode = $('.aside .nav');
+        $('.avatar').prop('src', dataJson.user.avatar);
+        $('.name').html(dataJson.user.nickname);
+        for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
+            //循环遍历集合元素,添加菜单目录。
+            utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
+        }
+    },
+    renderChart(id,option){
+        // 基于准备好的dom，初始化echarts实例
+        var bxChart = echarts.init(document.getElementById(id));
+        // 使用刚指定的配置项和数据显示图表。
+        bxChart.setOption(option);
     }
 };

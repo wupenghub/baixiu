@@ -49,6 +49,13 @@
                                 data-target="#modal_tree" onclick="companyChoose('end')" ></button>
                     </div>
                     <div class="search_text_div_model">
+                        <sapn class="text-content-model">订单状态：</sapn>
+                        <input type="text" class="search_text_model order_status_desc"  readonly="readonly">
+                        <input style="display: none" class="order_status_code" readonly="readonly">
+                        <button class="search_btn_model glyphicon glyphicon-search" data-toggle="modal"
+                                data-target="#modal_tree" onclick="orderStatus()" ></button>
+                    </div>
+                    <div class="search_text_div_model">
                         <sapn class="text-content-model">起始时间：</sapn>
                         <input type="date" class="date_time" id="start_time" >
                     </div>
@@ -72,6 +79,7 @@
                         <th class="text-center">结束时间</th>
                         <th class="text-center">出差天数</th>
                         <th class="text-center">报销金额</th>
+                        <th class="text-center">报销状态</th>
                         <th class="text-center" width="100">订单修改</th>
                     </tr>
                     </thead>
@@ -85,10 +93,8 @@
                     <button type="button" class="btn btn-info" id="order-search">查询</button>
                     <span style="margin-left: 10px">订单状态：</span>
                     <select id="order_states">
-                        <!--<option>已报销</option>-->
-                        <!--<option>未报销</option>-->
                     </select>
-                    <button type="button" class="btn btn-info" id="order-states-modify">修改</button>
+                    <button style="margin-left: 10px" type="button" class="btn btn-info" id="order-states-modify">修改</button>
                 </div>
                 <div class="cost_type_list">
                     <div class="cost_type_list_items"></div>
@@ -161,6 +167,23 @@
             </div>
         </div>
     </div>
+    <!--保单状态Modal-->
+    <div class="modal fade order-status-manger-tree" id="order_status_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">保单状态列表</h4>
+                </div>
+                <div >
+                    <ul class="order-status-manger-model">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="../public/vendors/jquery/jquery.js"></script>
     <script src="/node_modules/art-template/lib/template-web.js"></script>
     <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
@@ -179,6 +202,7 @@
                 <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
                 <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
                 <td class="text-center"><%= ordersJsonArray[i].bxAmonut %></td>
+                <td class="text-center"><%= ordersJsonArray[i].orderDesc %></td>
                 <td class="text-center">
                     <a href="javascript:;" class="btn btn-default btn-xs order_edit"
                        data-no="<%= ordersJsonArray[i].order_no %>">编辑</a>
@@ -253,26 +277,28 @@
             <% } %>
     </script>
     <script type="text/art-template" id="order_status">
-        <% if(ordersJsonArray) { %>
-        <% for(var i = 0;i
-        <ordersJsonArray.length ;i++){ %>
-            <tr>
-                <td><a target="_blank" href="/baixiu/downLoadBxCost?orderNo=<%= ordersJsonArray[i].order_no %>"><%= ordersJsonArray[i].order_no %></a></td>
-                <td class="text-center"><%= ordersJsonArray[i].startCompanyDesc %></td>
-                <td class="text-center"><%= ordersJsonArray[i].endCompanyDesc %></td>
-                <td class="text-center"><%= ordersJsonArray[i].start_date_str %></td>
-                <td class="text-center"><%= ordersJsonArray[i].end_date_str %></td>
-                <td class="text-center"><%= ordersJsonArray[i].totalDay %></td>
-                <td class="text-center"><%= ordersJsonArray[i].bxAmonut %></td>
-                <td class="text-center">
-                    <a href="javascript:;" class="btn btn-default btn-xs order_edit"
-                       data-no="<%= ordersJsonArray[i].order_no %>">编辑</a>
-                    <a href="javascript:;" class="btn btn-danger btn-xs order_delete"
-                       data-no="<%= ordersJsonArray[i].order_no %>">删除</a>
-                </td>
-            </tr>
+        <% if(returnStatusResult) { %>
+            <% if(returnData && returnData.length>0){%>
+                <% for(var i = 0;i<returnStatusResult.length ;i++){ %>
+                    <% if(returnData[0].status == returnStatusResult[i].orderStatus){%>
+                        <option selected value="<%= returnStatusResult[i].orderStatus  %>"><%= returnStatusResult[i].orderDesc %></option>
+                    <% } else{ %>
+                        <option value="<%= returnStatusResult[i].orderStatus  %>"><%= returnStatusResult[i].orderDesc %></option>
+                    <% } %>
+                <% } %>
+            <% }else{ %>
+                <% for(var i = 0;i<returnStatusResult.length ;i++){ %>
+                    <option value="<%= returnStatusResult[i].orderStatus  %>"><%= returnStatusResult[i].orderDesc %></option>
+                <% } %>
             <% } %>
-            <% } %>
+        <% } %>
+    </script>
+    <script type="text/art-template" id="order_status_list">
+        <% if(returnData){ %>
+        <% for(var i = 0;i<returnData.length ;i++){ %>
+            <li class="type-item" data-cost-code="<%=  returnData[i].orderStatus %>" onclick="chooseOrderStatusType(this)"><%= returnData[i].orderDesc %></li>
+        <% } %>
+        <% } %>
     </script>
     <script>NProgress.done()</script>
 </body>

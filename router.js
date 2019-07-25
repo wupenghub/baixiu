@@ -599,8 +599,7 @@ router.get('/baixiu/searchOrder', function (req, res) {
                 "\ttrip_order o\n" +
                 "WHERE\n" +
                 "\to.start_date = str_to_date('" + date + "', '%Y-%m-%d')\n" +
-                "AND o.email = '" + email + "'\n" +
-                "AND o.order_status = 1\n";
+                "AND o.email = '" + email + "'\n";
             console.log(querySql);
             DbUtils.queryData(querySql, function (result) {
                 res.json({
@@ -683,7 +682,7 @@ router.post('/baixiu/addRecord', function (req, res) {
             "\t\t'" + endDate + "',\n" +
             "\t\t'" + startCompany + "',\n" +
             "\t\t'" + endCompany + "',\n" +
-            "\t\t1\n" +
+            "\t\t'P'\n" +
             "\t)"
     } else {
         querySql = "UPDATE trip_order o\n" +
@@ -1259,6 +1258,38 @@ router.get('/baixiu/bxManger', function (req, res) {
     }
     res.render('bxManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/bxManger'});
 });
+//查询订单状态接口
+router.get('/baixiu/queryOrderStatus',function (req,res) {
+    var querySql = `select s.order_status AS orderStatus, s.order_desc AS orderDesc from order_status s where s.del_flg = 0`;
+    DbUtils.queryData(querySql,function (result) {
+        res.json({
+            status:0,
+            returnData:result
+        });
+    },function (error) {
+        res.json({
+            stauts:-1,
+            desc:error
+        });
+    });
+});
+//修改订单状态接口
+router.post('/baixiu/updateOrderStatus',function (req,res) {
+    var orderNo = req.body.orderNo;
+    var orderStates = req.body.orderStates;
+    var updateSql = `update trip_order t set t.order_status = ${mysql.escape(orderStates)} where t.order_no = ${mysql.escape(orderNo)}`;
+    DbUtils.queryData(updateSql,function (result) {
+        res.json({
+            status:0,
+            desc:'修改成功'
+        });
+    },function (error) {
+        res.json({
+            status:-1,
+            desc:error
+        });
+    });
+});
 //获取订单信息
 router.get('/baixiu/getOrderList', function (req, res) {
     var returnObj = {};
@@ -1268,7 +1299,8 @@ router.get('/baixiu/getOrderList', function (req, res) {
         startCompanyCode: req.query.startCompanyCode,
         endCompanyCode: req.query.endCompanyCode,
         startTime: req.query.startTime,
-        endTime: req.query.endTime
+        endTime: req.query.endTime,
+        orderStatus:req.query.orderStatus
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
@@ -1287,6 +1319,9 @@ router.get('/baixiu/getOrderList', function (req, res) {
     }
     if (req.query.endTime) {
         queryCountSql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
+    }
+    if(req.query.orderStatus){
+        queryCountSql += "and o.order_status = '" + req.query.orderStatus + "'\n";
     }
     console.log("queryCountSql:" + queryCountSql);
     DbUtils.queryData(queryCountSql, function (result) {
@@ -1422,7 +1457,9 @@ router.get('/baixiu/getOrderList', function (req, res) {
                 "\t\tAND org.is_tz = cs.is_tz\n" +
                 "\t\tAND oc.cost_type = cs.cost_type\n" +
                 "\t\tAND cs.cost_type = ct.cost_type\n" +
-                "\t) AS bxAmonut\n" +
+                "\t) AS bxAmonut,\n" +
+                "\t(select s.order_desc from order_status s where s.order_status = o.order_status) as orderDesc,\n" +
+                "\t(select s.order_status from order_status s where s.order_status = o.order_status) as orderStatus\n" +
                 "FROM\n" +
                 "\ttrip_order o\n" +
                 "WHERE\n" +
@@ -1439,6 +1476,9 @@ router.get('/baixiu/getOrderList', function (req, res) {
             if (req.query.endTime) {
                 querySql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
             }
+            if(req.query.orderStatus){
+                querySql += "and o.order_status = '" + req.query.orderStatus + "'\n";
+            }
             querySql += "ORDER BY\n" +
                 "\to.start_date DESC\n";
             if (req.query.offset && req.query.pageSize) {
@@ -1447,7 +1487,6 @@ router.get('/baixiu/getOrderList', function (req, res) {
             console.log('getOrderList查询数据：' + querySql);
             // querySql += ' LIMIT ' + ((req.query.offset - 1) * req.query.pageSize) + ',\n' + req.query.pageSize;
             DbUtils.queryData(querySql, function (resultList) {
-                console.log('getOrderList查询数据：' + querySql);
                 if (resultList && resultList.length > 0) {
                     returnObj.getlist_status = 0;
                     returnObj.getlist_desc = '获取数据成功';
@@ -1467,66 +1506,88 @@ router.get('/baixiu/getOrderList', function (req, res) {
 });
 //查询订单对应的费用
 router.get('/baixiu/searchOrderCost', function (req, res) {
-    var querySql = "SELECT\n" +
-        "\toc.id AS id,\n" +
-        "\t(\n" +
-        "\t\tSELECT\n" +
-        "\t\t\tt.cost_desc\n" +
-        "\t\tFROM\n" +
-        "\t\t\tcost_type t\n" +
-        "\t\tWHERE\n" +
-        "\t\t\tt.cost_type = oc.cost_type\n" +
-        "\t) AS costDesc,\n" +
-        "\tcs.cost_type AS costType,\n" +
-        "\toc.cost_amount AS amount,\n" +
-        "\t(\n" +
-        "\t\tSELECT\n" +
-        "\t\t\tCASE\n" +
-        "\t\tWHEN c.cost_cyc = 1 THEN\n" +
-        "\t\t\tcs.max_cost * (\n" +
-        "\t\t\t\tdatediff(\n" +
-        "\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
-        "\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
-        "\t\t\t\t) + 1\n" +
-        "\t\t\t)\n" +
-        "\t\tELSE\n" +
-        "\t\t\tcs.max_cost\n" +
-        "\t\tEND\n" +
-        "\t) AS ceilingAmount\n" +
-        "FROM\n" +
-        "\ttrip_order o,\n" +
-        "\torder_char oc,\n" +
-        "\tcost_standard cs,\n" +
-        "\tusers u,\n" +
-        "\tcompany_type ct,\n" +
-        "\tcompany_org org,\n" +
-        "\tcost_type c\n" +
-        "WHERE\n" +
-        "\to.email = u.email\n" +
-        "AND u. LEVEL = cs. LEVEL\n" +
-        "AND o.end_company = org.company_code\n" +
-        "AND org.is_tz = cs.is_tz\n" +
-        "AND oc.cost_type = cs.cost_type\n" +
-        "AND o.order_no = oc.order_no\n" +
-        "AND cs.cost_type = c.cost_type\n" +
-        "AND o.email = '" + req.query.email + "'\n" +
-        "AND o.order_no = '" + req.query.orderNo + "'\n" +
-        "GROUP BY\n" +
-        "\toc.id,\n" +
-        "\tcostDesc,\n" +
-        "\tcostType,\n" +
-        "\tamount,\n" +
-        "\tceilingAmount";
+    var querySql = `
+                    SELECT
+                        oc.id AS id,
+                        (
+                            SELECT
+                                t.cost_desc
+                            FROM
+                                cost_type t
+                            WHERE
+                                t.cost_type = oc.cost_type
+                        ) AS costDesc,
+                        cs.cost_type AS costType,
+                        oc.cost_amount AS amount,
+                        (
+                            SELECT
+                                CASE
+                            WHEN c.cost_cyc = 1 THEN
+                                cs.max_cost * (
+                                    datediff(
+                                        str_to_date(o.end_date, '%Y-%m-%d'),
+                                        str_to_date(o.start_date, '%Y-%m-%d')
+                                    ) + 1
+                                )
+                            ELSE
+                                cs.max_cost
+                            END
+                        ) AS ceilingAmount,
+                        o.order_status AS status
+                    FROM
+                        trip_order o,
+                        order_char oc,
+                        cost_standard cs,
+                        users u,
+                        company_type ct,
+                        company_org org,
+                        cost_type c
+                    WHERE
+                        o.email = u.email
+                    AND u. LEVEL = cs. LEVEL
+                    AND o.end_company = org.company_code
+                    AND org.is_tz = cs.is_tz
+                    AND oc.cost_type = cs.cost_type
+                    AND o.order_no = oc.order_no
+                    AND cs.cost_type = c.cost_type
+                    AND o.email = ${mysql.escape(req.query.email)}
+                    AND o.order_no = ${mysql.escape(req.query.orderNo)}
+                    GROUP BY
+                        oc.id,
+                        costDesc,
+                        costType,
+                        amount,
+                        ceilingAmount,
+                        status
+                   `;
     console.log('searchOrderCost查询:' + querySql);
     DbUtils.queryData(querySql, function (result) {
         console.log(result);
-        res.json({
-            status: 0,
-            returnData: result
+        var queryOrderStatus = `
+                                SELECT
+                                    o.order_status AS orderStatus,
+                                    o.order_desc AS orderDesc
+                                FROM
+                                    order_status o
+                                WHERE
+                                    o.del_flg = 0       
+                               `;
+        DbUtils.queryData(queryOrderStatus,function (statusResult) {
+            res.json({
+                status: 0,
+                returnData: result,
+                returnStatusResult:statusResult
+            });
+        },function (error) {
+            res.json({
+                status: -1,
+                desc:error
+            });
         });
     }, function (error) {
         res.json({
-            status: -1
+            status: -1,
+            desc:error
         });
     });
 

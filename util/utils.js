@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var DbUtils = require('../DbUtils');
 var utils = {
     addList(result, obj) {
         //判断当前节点是否有父节点
@@ -16,13 +17,13 @@ var utils = {
                             if (result[i]['sonList'][j].id == obj.id) {
                                 index == j;
                                 isContain = true;
-                               /* // 如果包含了该元素，再次判断,该元素是否发生过改变
-                                if (result[i]['sonList'][j].length != obj.length) {
-                                    //发生过改变，重新替换父节点中对应的子节点
-                                    result[i]['sonList'][j] = obj;
-                                    //并且让父节点进一步通知其对应的父节点
-                                    this.addList(result, result[i]);
-                                }*/
+                                /* // 如果包含了该元素，再次判断,该元素是否发生过改变
+                                 if (result[i]['sonList'][j].length != obj.length) {
+                                     //发生过改变，重新替换父节点中对应的子节点
+                                     result[i]['sonList'][j] = obj;
+                                     //并且让父节点进一步通知其对应的父节点
+                                     this.addList(result, result[i]);
+                                 }*/
                                 break;
                             }
                         }
@@ -115,7 +116,7 @@ var utils = {
         }
     },
     exportFile(res, fileName) {
-        var file = path.join(__dirname,'../'+fileName);
+        var file = path.join(__dirname, '../' + fileName);
         res.writeHead(200, {
             'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
             'Content-Disposition': 'attachment; filename=' + encodeURI(fileName),//告诉浏览器这是一个需要下载的文件
@@ -128,13 +129,13 @@ var utils = {
             res.end();
         });
     },
-    deleDirectory(dirpath){
+    deleDirectory(dirpath) {
         let files = [];
-        if(fs.existsSync(dirpath)){
+        if (fs.existsSync(dirpath)) {
             files = fs.readdirSync(dirpath);
             files.forEach((file) => {
-                let curPath = path.join(dirpath,file);
-                if(fs.statSync(curPath).isDirectory()){
+                let curPath = path.join(dirpath, file);
+                if (fs.statSync(curPath).isDirectory()) {
                     utils.deleDirectory(curPath); //递归删除文件夹
                 } else {
                     fs.unlinkSync(curPath); //删除文件
@@ -142,6 +143,27 @@ var utils = {
             });
             fs.rmdirSync(dirpath);
         }
+    },
+    renderPage(req, res, html) {
+        // 2、查询对应的菜单数据
+        var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
+        DbUtils.queryData(sql, function (result) {
+            for (var i = 0; i < result.length; i++) {
+                utils.addList(result, result[i]);
+            }
+            // 将result中所有节点parent_id值不为空的给踢出掉
+            var array = [];
+            for (var i = 0; i < result.length; i++) {
+                if (!result[i]['parent_id']) {
+                    array.push(result[i]);
+                }
+            }
+            var dataJson = {};
+            dataJson.user = req.session.user[0];
+            dataJson.dataJsonArr = array;
+            req.session.userInfo = JSON.stringify(dataJson);
+            res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
+        })
     }
 };
 module.exports = utils;

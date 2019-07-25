@@ -2896,6 +2896,6 @@ router.post('/baixiu/setHomePage',function (req,res) {
 });
 //报销图表展示
 router.get('/baixiu/bxChart',function (req,res) {
-    utils.renderPage(req,res,'index.html')
+    utils.renderPage(req,res,'bxChart.html')
 });
 module.exports = router;

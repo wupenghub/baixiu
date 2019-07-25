@@ -27,7 +27,7 @@ app.disable('view cache');
 app.use(cookieParser());
 app.use(session({
         secret: '12345',
-        cookie: {maxAge: 6000000},
+        cookie: {maxAge: 300000},
         resave: true,
         saveUninitialized: false
     }

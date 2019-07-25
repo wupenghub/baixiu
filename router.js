@@ -36,7 +36,6 @@ router.get('/', function (req, res) {
         dataJson.user = req.session.user[0];
         dataJson.dataJsonArr = array;
         req.session.userInfo = JSON.stringify(dataJson);
-        // res.render('index.html', {dataJson: JSON.stringify(dataJson)});
         var queryCountSql = `
                                 SELECT
                                     count(1) as count
@@ -2895,4 +2894,6 @@ router.post('/baixiu/setHomePage',function (req,res) {
        })
    });
 });
+//报销图表展示
+
 module.exports = router;

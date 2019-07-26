@@ -273,6 +273,10 @@ var utils = {
                 if ($('.mask')) {
                     $('.mask').hide();
                 }
+                if(data.status == '-304'){
+                    window.location.href = '/baixiu/view/login.html';
+                    return;
+                }
                 success(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

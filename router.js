@@ -2896,6 +2896,50 @@ router.post('/baixiu/setHomePage',function (req,res) {
 });
 //报销图表展示
 router.get('/baixiu/bxChart',function (req,res) {
-    utils.renderPage(req,res,'bxChart.html')
+    utils.renderPage(req,res,'bxChart.html');
+});
+router.get('/baixiu/getBxStatistical',function (req,res) {
+    var querySql = `
+                        SELECT
+                            (
+                                SELECT
+                                    a.address_code
+                                FROM
+                                    address a
+                                WHERE
+                                    a.address_code = (
+                                        SELECT
+                                            org.address_code
+                                        FROM
+                                            company_org org
+                                        WHERE
+                                            org.company_code = o.end_company
+                                    )
+                            ) AS addressCode,
+                            (
+                                SELECT
+                                    a.address_desc
+                                FROM
+                                    address a
+                                WHERE
+                                    a.address_code = (
+                                        SELECT
+                                            org.address_code
+                                        FROM
+                                            company_org org
+                                        WHERE
+                                            org.company_code = o.end_company
+                                    )
+                            ) AS addressDesc,
+                            count(1) as times
+                            FROM
+                                trip_order o
+                            group by addressCode,addressDesc
+                   `;
+    DbUtils.queryData(querySql,function (result) {
+        console.log(result)
+    },function (error) {
+
+    });
 });
 module.exports = router;

@@ -1,8 +1,18 @@
 $(function () {
     utils.renderPage();
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/getBxStatistical',
+        dataType: 'json',
+        data: {orderNo:$('#order-no').val(),orderStates:$('#order_states').val()}
+    },function (data) {
+
+    },function (error) {
+
+    });
     var option = {
         title: {
-            text: 'ECharts 入门示例'
+            text: ''
         },
         tooltip: {},
         legend: {
@@ -18,6 +28,6 @@ $(function () {
             data: [5, 20, 36, 10, 10, 20]
         }]
     };
-    utils.renderChart('main',option);
+    utils.renderChart('company_statistical',option);
 
 });

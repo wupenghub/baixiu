@@ -46,8 +46,14 @@ var utils = {
     isLogin(req, res) {
         var user = req.session.user;
         if (!user) {
-            res.render('login.html', {});
-            return
+            if(req.headers['x-requested-with'] != null && req.headers['x-requested-with'] == 'XMLHttpRequest'){
+                res.json({
+                    status:-304
+                });
+            }else {
+                res.render('login.html', {});
+            }
+            return;
         }
         return user;
     },

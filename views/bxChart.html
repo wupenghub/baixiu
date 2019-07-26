@@ -8,12 +8,13 @@
   <link rel="stylesheet" href="/public/vendors/nprogress/nprogress.css">
   <link rel="stylesheet" href="/public/css/admin.css">
   <link rel="stylesheet" href="/public/css/load/load.css">
+  <link rel="stylesheet" href="/public/css/tripRecord/bxChart.css">
   <script src="/public/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
   <script>NProgress.start()</script>
   <script type="text/javascript" id="template">{{dataJson}}</script>
-  <div class="main">
+  <div class="bx_chart main">
     <nav class="navbar">
       <button class="btn btn-default navbar-btn fa fa-bars"></button>
       <span class="home-page glyphicon glyphicon-home" onclick="utils.setHomePage('{{url}}')" style="cursor: pointer"></span>
@@ -23,7 +24,7 @@
       </ul>
     </nav>
     <div class="container-fluid">
-      <div id="main" style="width: 600px;height:400px;"></div>
+      <div id="company_statistical"></div>
     </div>
   </div>
 
@@ -35,7 +36,7 @@
     <ul class="nav">
     </ul>
   </div>
-  <div class="mask">
+  <div class="mask" style="display: none">
     <span class="glyphicon glyphicon-refresh loading"></span>
   </div>
   <script src="/public/vendors/jquery/jquery.js"></script>

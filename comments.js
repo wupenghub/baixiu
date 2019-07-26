@@ -38,6 +38,8 @@ app.use('/baixiu/', function (req, res, next) {
         || req.originalUrl == '/baixiu/register' || req.originalUrl == '/baixiu/login' || req.originalUrl == '/baixiu/pwdUpdate'
         || req.originalUrl.indexOf('/baixiu/pwdReset') != -1
         || req.originalUrl.indexOf('/baixiu/activated') != -1
+        || req.originalUrl.indexOf('/public/') != -1
+        || req.originalUrl.indexOf('/views/') != -1
     ) {
         next();
         return;

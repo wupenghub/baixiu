@@ -10,14 +10,14 @@ const db_config={
 };
 const db_config_cis={
     connectionLimit: 5,
-   /* //贵燃
+    //贵燃
     user:"cisadm",
     password:"cisadm",
-    connectString : "120.78.213.19:1521/ccbstg"*/
-    //深燃
+    connectString : "172.18.5.138:1521/ccbstg",
+   /* //深燃
     user:"cisread",
    password:"c2i0s1r4ead",
-   connectString : "cisdr-scan.szgas.com:1521/CISDG"
+   connectString : "cisdr-scan.szgas.com:1521/CISDG"*/
 };
 oracledb.fetchAsBuffer = [ oracledb.BLOB ];
 oracledb.fetchAsString = [ oracledb.CLOB ];

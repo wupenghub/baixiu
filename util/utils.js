@@ -170,6 +170,35 @@ var utils = {
             req.session.userInfo = JSON.stringify(dataJson);
             res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
         })
+    },
+    asynCallBack(sqls,index){
+        var p = new Promise(function(resolve, reject){        //做一些异步操作
+            if(index < sqls.length){
+                resolve(sqls[index],index++);
+            }
+        });
+        return p;
+    },
+    test (json = []) {
+        // new Promise((resolve, reject) => {
+        //     DbUtils.queryData('select * from users', (data) => {
+        //         resolve(data)
+        //     })
+        //
+        // }).then(data => {
+        //     console.log(data);
+        //
+        //     return new Promise((resolve, reject) => {
+        //         DbUtils.queryData('select * from mnues', (data) => {
+        //             resolve(data)
+        //         })
+        //     })
+        // }).then(data => {
+        //     console.log(data);
+        // })
+        json.forEach((sql, callback) => {
+
+        })
     }
 };
 module.exports = utils;

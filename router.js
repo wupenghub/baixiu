@@ -46,9 +46,9 @@ router.get('/', function (req, res) {
                                 AND s1.type_code = 'home_page'
                                 AND s1.key_value = ${mysql.escape(dataJson.user.email)}
                             `;
-        DbUtils.queryData(queryCountSql,function (result) {
-           if(parseInt(result[0].count) > 0){
-               var queryIndexSql = `
+        DbUtils.queryData(queryCountSql, function (result) {
+            if (parseInt(result[0].count) > 0) {
+                var queryIndexSql = `
                                     SELECT
                                             CASE
                                             WHEN s.result_value IS NULL THEN
@@ -66,16 +66,16 @@ router.get('/', function (req, res) {
                                     AND s.key_value = ${mysql.escape(dataJson.user.email)}
                                    `;
 
-               DbUtils.queryData(queryIndexSql,function (result) {
-                   if(result[0].path == '/'){
-                       res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-                   }else{
-                       res.redirect(302,result[0].path);
-                   }
-               })
-           }else {
-               res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-           }
+                DbUtils.queryData(queryIndexSql, function (result) {
+                    if (result[0].path == '/') {
+                        res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+                    } else {
+                        res.redirect(302, result[0].path);
+                    }
+                })
+            } else {
+                res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+            }
         });
     });
 });
@@ -106,7 +106,7 @@ router.post('/baixiu/login', function (req, res) {
                     AND u.password = ${mysql.escape(password)}
                     AND u.status = "activated"
                     `;
-    console.log('login:'+loginSql);
+    console.log('login:' + loginSql);
     DbUtils.queryData(loginSql, function (result) {
         var loginData = {};
         if (result && result.length > 0) {
@@ -156,7 +156,7 @@ router.get('/baixiu/personMaintenance', function (req, res) {
         dataJson.user = req.session.user[0];
         dataJson.dataJsonArr = array;
         req.session.userInfo = JSON.stringify(dataJson);
-        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson),url:'/baixiu/personMaintenance'});
+        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson), url: '/baixiu/personMaintenance'});
     });
 });
 router.get('/baixiu/registered', function (req, res) {
@@ -301,7 +301,7 @@ router.get('/baixiu/MenuManger', function (req, res) {
         return;
     }
     console.log(user);
-    res.render('mnueManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/MenuManger'});
+    res.render('mnueManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/MenuManger'});
 });
 //菜单管理->菜单删除
 router.get('/baixiu/menuDelete', function (req, res) {
@@ -564,7 +564,7 @@ router.get('/baixiu/businessTrip', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/businessTrip'});
+    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/businessTrip'});
 });
 //查询订单记录
 router.get('/baixiu/searchOrder', function (req, res) {
@@ -692,7 +692,7 @@ router.post('/baixiu/addRecord', function (req, res) {
             " o.end_company = '" + endCompany + "'\n" +
             "WHERE\n" +
             "\to.order_no = '" + req.body.orderNo + "'\n" +
-            "AND o.email = '"+email+"'";
+            "AND o.email = '" + email + "'";
     }
     console.log("addRecord:" + querySql);
     DbUtils.queryData(querySql, function (result) {
@@ -768,7 +768,7 @@ router.get('/baixiu/companyManger', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('companyManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/companyManger'});
+    res.render('companyManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/companyManger'});
 });
 //查询公司列表
 router.get('/baixiu/queryCompanyList', function (req, res) {
@@ -1077,7 +1077,7 @@ router.get('/baixiu/addressManger', function (req, res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
-    res.render('addressManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/addressManger'});
+    res.render('addressManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/addressManger'});
 });
 //查询地址列表
 router.get('/baixiu/queryAddressList', function (req, res) {
@@ -1255,37 +1255,37 @@ router.get('/baixiu/bxManger', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('bxManger.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/bxManger'});
+    res.render('bxManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/bxManger'});
 });
 //查询订单状态接口
-router.get('/baixiu/queryOrderStatus',function (req,res) {
+router.get('/baixiu/queryOrderStatus', function (req, res) {
     var querySql = `select s.order_status AS orderStatus, s.order_desc AS orderDesc from order_status s where s.del_flg = 0`;
-    DbUtils.queryData(querySql,function (result) {
+    DbUtils.queryData(querySql, function (result) {
         res.json({
-            status:0,
-            returnData:result
+            status: 0,
+            returnData: result
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            stauts:-1,
-            desc:error
+            stauts: -1,
+            desc: error
         });
     });
 });
 //修改订单状态接口
-router.post('/baixiu/updateOrderStatus',function (req,res) {
+router.post('/baixiu/updateOrderStatus', function (req, res) {
     var orderNo = req.body.orderNo;
     var orderStates = req.body.orderStates;
     var updateSql = `update trip_order t set t.order_status = ${mysql.escape(orderStates)} where t.order_no = ${mysql.escape(orderNo)}`;
-    DbUtils.queryData(updateSql,function (result) {
+    DbUtils.queryData(updateSql, function (result) {
         res.json({
-            status:0,
-            desc:'修改成功'
+            status: 0,
+            desc: '修改成功'
         });
-    },function (error) {
+    }, function (error) {
         res.json({
-            status:-1,
-            desc:error
+            status: -1,
+            desc: error
         });
     });
 });
@@ -1299,7 +1299,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
         endCompanyCode: req.query.endCompanyCode,
         startTime: req.query.startTime,
         endTime: req.query.endTime,
-        orderStatus:req.query.orderStatus
+        orderStatus: req.query.orderStatus
     };
     var queryCountSql = "SELECT\n" +
         "\tcount(1) AS count\n" +
@@ -1319,7 +1319,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
     if (req.query.endTime) {
         queryCountSql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
     }
-    if(req.query.orderStatus){
+    if (req.query.orderStatus) {
         queryCountSql += "and o.order_status = '" + req.query.orderStatus + "'\n";
     }
     console.log("queryCountSql:" + queryCountSql);
@@ -1475,7 +1475,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
             if (req.query.endTime) {
                 querySql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
             }
-            if(req.query.orderStatus){
+            if (req.query.orderStatus) {
                 querySql += "and o.order_status = '" + req.query.orderStatus + "'\n";
             }
             querySql += "ORDER BY\n" +
@@ -1571,22 +1571,22 @@ router.get('/baixiu/searchOrderCost', function (req, res) {
                                 WHERE
                                     o.del_flg = 0       
                                `;
-        DbUtils.queryData(queryOrderStatus,function (statusResult) {
+        DbUtils.queryData(queryOrderStatus, function (statusResult) {
             res.json({
                 status: 0,
                 returnData: result,
-                returnStatusResult:statusResult
+                returnStatusResult: statusResult
             });
-        },function (error) {
+        }, function (error) {
             res.json({
                 status: -1,
-                desc:error
+                desc: error
             });
         });
     }, function (error) {
         res.json({
             status: -1,
-            desc:error
+            desc: error
         });
     });
 
@@ -1599,7 +1599,7 @@ router.get('/baixiu/costType', function (req, res) {
         //session不存在，则需要直接返回登录界面
         return;
     }
-    res.render('costType.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/costType'});
+    res.render('costType.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/costType'});
 });
 //查询费用类型
 router.get('/baixiu/searchCostTypeList', function (req, res) {
@@ -1858,7 +1858,7 @@ router.get('/baixiu/costTypeMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/costTypeMaintenance'});
+    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/costTypeMaintenance'});
 });
 //费用类型列表查询
 router.get('/baixiu/searchCostTypeMaintenanceList', function (req, res) {
@@ -2015,7 +2015,7 @@ router.get('/baixiu/companyMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/companyMaintenance'});
+    res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/companyMaintenance'});
 });
 //获取公司类别数据列表
 router.get('/baixiu/searchCompanyTypeMaintenanceList', function (req, res) {
@@ -2164,7 +2164,7 @@ router.get('/baixiu/levelMaintenance', function (req, res) {
     if (!user) {
         return;
     }
-    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo,url:'/baixiu/levelMaintenance'});
+    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/levelMaintenance'});
 });
 //查看职位类型列表
 router.get('/baixiu/searchLevelTypeMaintenanceList', function (req, res) {
@@ -2630,13 +2630,13 @@ router.get('/baixiu/searchUser', function (req, res) {
         WHERE
             l. LEVEL = ${level}
     `;
-    console.log('searchUser:'+querySql);
-    DbUtils.queryData(querySql,function (result) {
+    console.log('searchUser:' + querySql);
+    DbUtils.queryData(querySql, function (result) {
         console.log(result)
         user.levelDesc = result[0].levelDesc;
         console.log(user)
         res.json(user)
-    },function (error) {
+    }, function (error) {
 
     });
 
@@ -2644,7 +2644,7 @@ router.get('/baixiu/searchUser', function (req, res) {
 
 router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
     var tmp_path = '';
-    if(req.files&&req.files.templateFile) {
+    if (req.files && req.files.templateFile) {
         tmp_path = req.files.templateFile.path;
     }
     var email = req.body.email;
@@ -2654,7 +2654,7 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
     var level = req.body.level;
     var isModifyPwd = req.body.isModifyPwd;
     email = mysql.escape(email);
-    if(isModifyPwd == 'true') {
+    if (isModifyPwd == 'true') {
         var queryUser = `
         SELECT
             u. PASSWORD
@@ -2677,36 +2677,36 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                         UPDATE users u
                         SET 
                          u.email = ${email}`;
-                if(tmp_path){
-                    var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf(path.sep)+1,tmp_path.length);
+                if (tmp_path) {
+                    var tmp_path_insert = '/public/uploads/' + tmp_path.substring(tmp_path.lastIndexOf(path.sep) + 1, tmp_path.length);
                     updateSql += `,u.avatar = '${tmp_path_insert}'`
                 }
-                if(level){
+                if (level) {
                     updateSql += `,u.LEVEL = ${level}`
                 }
-                if(nickName){
+                if (nickName) {
                     nickName = mysql.escape(nickName);
                     updateSql += `,u.nickname = ${nickName}`
                 }
-                if(modifyPwd){
+                if (modifyPwd) {
                     modifyPwd = mysql.escape(md5(md5(modifyPwd) + 'p~1i'));
                     updateSql += `,u.password = ${modifyPwd}`
                 }
-                 updateSql += ` WHERE
+                updateSql += ` WHERE
                     u.email = ${email}
                 `;
-                console.log('modifyUser:'+updateSql);
-                DbUtils.queryData(updateSql,function (result) {
-                    if(tmp_path) {
+                console.log('modifyUser:' + updateSql);
+                DbUtils.queryData(updateSql, function (result) {
+                    if (tmp_path) {
                         fs.readFile(tmp_path, function (err, data) {
-                            fs.writeFile('./'+tmp_path_insert, data, function (err) {
+                            fs.writeFile('./' + tmp_path_insert, data, function (err) {
                                 if (err) {
                                     res.json({
-                                        status:-1,
-                                        desc:err
+                                        status: -1,
+                                        desc: err
                                     })
                                 } else {
-                                    var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd+ ' and u.`status`="activated"';
+                                    var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd + ' and u.`status`="activated"';
                                     DbUtils.queryData(loginSql, function (result) {
                                         if (result && result.length > 0) {
                                             //登录成功，保存session
@@ -2715,14 +2715,14 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                                             userInfo.user = result[0];
                                             req.session.userInfo = JSON.stringify(userInfo);
                                             console.log(req.session.userInfo);
-                                            res.json({status:0,user:result[0]});
+                                            res.json({status: 0, user: result[0]});
                                         }
                                     });
                                 }
                             });
                         });
-                    }else{
-                        var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd+ ' and u.`status`="activated"';
+                    } else {
+                        var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`password` = ' + modifyPwd + ' and u.`status`="activated"';
                         DbUtils.queryData(loginSql, function (result) {
                             if (result && result.length > 0) {
                                 //登录成功，保存session
@@ -2731,52 +2731,52 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                                 userInfo.user = result[0];
                                 req.session.userInfo = JSON.stringify(userInfo);
                                 console.log(req.session.userInfo);
-                                res.json({status:0,user:result[0]});
+                                res.json({status: 0, user: result[0]});
                             }
                         });
                     }
-                },function (error) {
+                }, function (error) {
                     res.json({
-                        status:-1,
-                        desc:error
+                        status: -1,
+                        desc: error
                     })
                 });
             }
         }, function (error) {
             res.json({
-                status:-1,
-                desc:error
+                status: -1,
+                desc: error
             })
         });
-    }else{
+    } else {
         //修改用户信息
         var updateSql = `
                         UPDATE users u
                         SET 
                          u.email = ${email}`;
-        if(tmp_path){
-            var tmp_path_insert = '/public/uploads/'+tmp_path.substring(tmp_path.lastIndexOf(path.sep)+1,tmp_path.length);
+        if (tmp_path) {
+            var tmp_path_insert = '/public/uploads/' + tmp_path.substring(tmp_path.lastIndexOf(path.sep) + 1, tmp_path.length);
             updateSql += `,u.avatar = '${tmp_path_insert}'`
         }
-        if(level){
+        if (level) {
             updateSql += `,u.LEVEL = ${level}`
         }
-        if(nickName){
+        if (nickName) {
             nickName = mysql.escape(nickName);
             updateSql += `,u.nickname = ${nickName}`
         }
         updateSql += ` WHERE
                     u.email = ${email}
                 `;
-        console.log('modifyUser:'+updateSql);
-        DbUtils.queryData(updateSql,function (result) {
-            if(tmp_path) {
+        console.log('modifyUser:' + updateSql);
+        DbUtils.queryData(updateSql, function (result) {
+            if (tmp_path) {
                 fs.readFile(tmp_path, function (err, data) {
-                    fs.writeFile('./'+tmp_path_insert, data, function (err) {
+                    fs.writeFile('./' + tmp_path_insert, data, function (err) {
                         if (err) {
                             res.json({
-                                status:-1,
-                                desc:err
+                                status: -1,
+                                desc: err
                             })
                         } else {
                             var loginSql = 'select * from users u where u.`email` = ' + email + 'and u.`status`="activated"';
@@ -2789,13 +2789,13 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                                     userInfo.user = result[0];
                                     req.session.userInfo = JSON.stringify(userInfo);
                                     console.log(req.session.userInfo);
-                                    res.json({status:0,user:result[0]});
+                                    res.json({status: 0, user: result[0]});
                                 }
                             });
                         }
                     });
                 });
-            }else{
+            } else {
                 var loginSql = 'select * from users u where u.`email` = ' + email + ' and u.`status`="activated"';
                 DbUtils.queryData(loginSql, function (result) {
                     if (result && result.length > 0) {
@@ -2805,23 +2805,23 @@ router.post('/baixiu/modifyUser', multipartMiddleware, function (req, res) {
                         userInfo.user = result[0];
                         req.session.userInfo = JSON.stringify(userInfo);
                         console.log(req.session.userInfo);
-                        res.json({status:0,user:result[0]});
+                        res.json({status: 0, user: result[0]});
                     }
                 });
             }
-        },function (error) {
+        }, function (error) {
             res.json({
-                status:-1,
-                desc:error
+                status: -1,
+                desc: error
             })
         });
     }
 });
 //设置主页路由
-router.post('/baixiu/setHomePage',function (req,res) {
-   var urlPath = req.body.urlPath;
-   var email =  req.session.user[0].email;
-   var queryCountSql = `
+router.post('/baixiu/setHomePage', function (req, res) {
+    var urlPath = req.body.urlPath;
+    var email = req.session.user[0].email;
+    var queryCountSql = `
                         SELECT
                             count(1) as count
                         FROM
@@ -2831,11 +2831,11 @@ router.post('/baixiu/setHomePage',function (req,res) {
                         AND s.type_code = 'home_page'
                         AND s.key_value = ${mysql.escape(email)}
                        `;
-   DbUtils.queryData(queryCountSql,function (result) {
-       if(parseInt(result[0].count)>0){
-           //查询到有记录则进行修改
-           console.log('setHomePage:'+queryCountSql);
-           var querySql = `
+    DbUtils.queryData(queryCountSql, function (result) {
+        if (parseInt(result[0].count) > 0) {
+            //查询到有记录则进行修改
+            console.log('setHomePage:' + queryCountSql);
+            var querySql = `
                            UPDATE sys_set s
                             SET s.result_value = ${mysql.escape(urlPath)}
                             WHERE
@@ -2843,20 +2843,20 @@ router.post('/baixiu/setHomePage',function (req,res) {
                             AND s.type_code = 'home_page'
                             AND s.key_value = ${mysql.escape(email)}
                           `;
-           DbUtils.queryData(querySql,function (result) {
-               res.json({
-                   status:0,
-                   desc:'设置成功'
-               });
-           },function (error) {
-               res.json({
-                   status:-1,
-                   desc:error
-               })
-           });
-       }else{
-           //无记录则直接添加
-           var insertSql = `
+            DbUtils.queryData(querySql, function (result) {
+                res.json({
+                    status: 0,
+                    desc: '设置成功'
+                });
+            }, function (error) {
+                res.json({
+                    status: -1,
+                    desc: error
+                })
+            });
+        } else {
+            //无记录则直接添加
+            var insertSql = `
                             INSERT INTO sys_set (
                                 id,
                                 sys_type,
@@ -2875,30 +2875,30 @@ router.post('/baixiu/setHomePage',function (req,res) {
                                     ${mysql.escape(urlPath)}
                                 )
                            `;
-           DbUtils.queryData(insertSql,function (result) {
-               res.json({
-                   status:0,
-                   desc:'设置成功'
-               });
-           },function (error) {
-               res.json({
-                   status:-1,
-                   desc:error
-               })
-           });
-       }
-   },function (error) {
-       res.json({
-           status:-1,
-           desc:error
-       })
-   });
+            DbUtils.queryData(insertSql, function (result) {
+                res.json({
+                    status: 0,
+                    desc: '设置成功'
+                });
+            }, function (error) {
+                res.json({
+                    status: -1,
+                    desc: error
+                })
+            });
+        }
+    }, function (error) {
+        res.json({
+            status: -1,
+            desc: error
+        })
+    });
 });
 //报销图表展示
-router.get('/baixiu/bxChart',function (req,res) {
-    utils.renderPage(req,res,'bxChart.html');
+router.get('/baixiu/bxChart', function (req, res) {
+    utils.renderPage(req, res, 'bxChart.html');
 });
-router.get('/baixiu/getBxStatistical',function (req,res) {
+router.get('/baixiu/getBxStatistical', function (req, res) {
     var querySql = `
                         SELECT
                             (
@@ -2936,10 +2936,69 @@ router.get('/baixiu/getBxStatistical',function (req,res) {
                                 trip_order o
                             group by addressCode,addressDesc
                    `;
-    DbUtils.queryData(querySql,function (result) {
+    DbUtils.queryData(querySql, function (result) {
         console.log(result)
-    },function (error) {
+    }, function (error) {
 
     });
+});
+router.get('/test', function () {
+    var sqls = [`select * from users`, `select * from mnues`];
+    // utils.asynCallBack().then(function (data) {
+    //     return utils.asynCallBack('2')
+    // }).then(function (data) {
+    //
+    // })
+    // function getUsers() {
+    //     return new Promise((resolve, reject) => {
+    //         DbUtils.queryData('select * from users', (data) => {
+    //             resolve(data)
+    //         })
+    //     })
+    // }
+    //
+    // function getMenue() {
+    //     return new Promise((resolve, reject) => {
+    //         DbUtils.queryData('select * from mnues', (data) => {
+    //             resolve(data)
+    //         })
+    //     })
+    // }
+    //
+    // getUsers()
+    //     .then((data) => {
+    //         console.log(data);
+    //
+    //         return getMenue()
+    //     })
+    //     .then(data => {
+    //         console.log(data);
+    //     })
+
+    // utils.query(
+    //     [{sql: '', callback: function () {}}]
+    // )
+
+    // new Promise((resolve, reject) => {
+    //     DbUtils.queryData('select * from users', (data) => {
+    //         resolve(data)
+    //     })
+    //
+    // }).then(data => {
+    //     console.log(data);
+    //
+    //     return new Promise((resolve, reject) => {
+    //         DbUtils.queryData('select * from mnues', (data) => {
+    //             resolve(data)
+    //         })
+    //     })
+    // }).then(data => {
+    //     console.log(data);
+    // })
+    utils.asynCallBack(sqls,0).then(function (sql,index) {
+        DbUtils.queryData(sql,function (result) {
+
+        });
+    })
 });
 module.exports = router;

@@ -1326,165 +1326,132 @@ router.get('/baixiu/getOrderList', function (req, res) {
     DbUtils.queryData(queryCountSql, function (result) {
         returnObj.totalCount = result[0].count;
         if (result && result[0].count != '0') {
-            var querySql = "SELECT\n" +
-                "\to.*, (\n" +
-                "\t\tdatediff(o.end_date, o.start_date) + 1\n" +
-                "\t) AS totalDay,\n" +
-                "\tDATE_FORMAT(o.start_date, \"%Y-%m-%d\") AS start_date_str,\n" +
-                "\tDATE_FORMAT(o.end_date, \"%Y-%m-%d\") AS end_date_str,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\torg.company_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\tcompany_org org\n" +
-                "\t\tWHERE\n" +
-                "\t\t\torg.company_code = o.start_company\n" +
-                "\t) AS startCompanyDesc,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\torg.company_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\tcompany_org org\n" +
-                "\t\tWHERE\n" +
-                "\t\t\torg.company_code = o.end_company\n" +
-                "\t) AS endCompanyDesc,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\ta.address_code\n" +
-                "\t\tFROM\n" +
-                "\t\t\taddress a\n" +
-                "\t\tWHERE\n" +
-                "\t\t\ta.address_code = (\n" +
-                "\t\t\t\tSELECT\n" +
-                "\t\t\t\t\torg.address_code\n" +
-                "\t\t\t\tFROM\n" +
-                "\t\t\t\t\tcompany_org org\n" +
-                "\t\t\t\tWHERE\n" +
-                "\t\t\t\t\torg.company_code = o.start_company\n" +
-                "\t\t\t)\n" +
-                "\t) AS startAddressCode,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\ta.address_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\taddress a\n" +
-                "\t\tWHERE\n" +
-                "\t\t\ta.address_code = (\n" +
-                "\t\t\t\tSELECT\n" +
-                "\t\t\t\t\torg.address_code\n" +
-                "\t\t\t\tFROM\n" +
-                "\t\t\t\t\tcompany_org org\n" +
-                "\t\t\t\tWHERE\n" +
-                "\t\t\t\t\torg.company_code = o.start_company\n" +
-                "\t\t\t)\n" +
-                "\t) AS startAddressDesc,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\ta.address_code\n" +
-                "\t\tFROM\n" +
-                "\t\t\taddress a\n" +
-                "\t\tWHERE\n" +
-                "\t\t\ta.address_code = (\n" +
-                "\t\t\t\tSELECT\n" +
-                "\t\t\t\t\torg.address_code\n" +
-                "\t\t\t\tFROM\n" +
-                "\t\t\t\t\tcompany_org org\n" +
-                "\t\t\t\tWHERE\n" +
-                "\t\t\t\t\torg.company_code = o.end_company\n" +
-                "\t\t\t)\n" +
-                "\t) AS endAddressCode,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\ta.address_desc\n" +
-                "\t\tFROM\n" +
-                "\t\t\taddress a\n" +
-                "\t\tWHERE\n" +
-                "\t\t\ta.address_code = (\n" +
-                "\t\t\t\tSELECT\n" +
-                "\t\t\t\t\torg.address_code\n" +
-                "\t\t\t\tFROM\n" +
-                "\t\t\t\t\tcompany_org org\n" +
-                "\t\t\t\tWHERE\n" +
-                "\t\t\t\t\torg.company_code = o.end_company\n" +
-                "\t\t\t)\n" +
-                "\t) AS endAddressDesc,\n" +
-                "\t(\n" +
-                "\t\tSELECT\n" +
-                "\t\t\tsum(\n" +
-                "\t\t\t\tCASE\n" +
-                "\t\t\t\tWHEN oc.cost_amount > (\n" +
-                "\t\t\t\t\tCASE\n" +
-                "\t\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
-                "\t\t\t\t\t\t(\n" +
-                "\t\t\t\t\t\t\tdatediff(\n" +
-                "\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
-                "\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
-                "\t\t\t\t\t\t\t) + 1\n" +
-                "\t\t\t\t\t\t) * cs.max_cost\n" +
-                "\t\t\t\t\tELSE\n" +
-                "\t\t\t\t\t\tcs.max_cost\n" +
-                "\t\t\t\t\tEND\n" +
-                "\t\t\t\t) THEN\n" +
-                "\t\t\t\t\t(\n" +
-                "\t\t\t\t\t\tCASE\n" +
-                "\t\t\t\t\t\tWHEN ct.cost_cyc = 1 THEN\n" +
-                "\t\t\t\t\t\t\t(\n" +
-                "\t\t\t\t\t\t\t\tdatediff(\n" +
-                "\t\t\t\t\t\t\t\t\tstr_to_date(o.end_date, '%Y-%m-%d'),\n" +
-                "\t\t\t\t\t\t\t\t\tstr_to_date(o.start_date, '%Y-%m-%d')\n" +
-                "\t\t\t\t\t\t\t\t) + 1\n" +
-                "\t\t\t\t\t\t\t) * cs.max_cost\n" +
-                "\t\t\t\t\t\tELSE\n" +
-                "\t\t\t\t\t\t\tcs.max_cost\n" +
-                "\t\t\t\t\t\tEND\n" +
-                "\t\t\t\t\t)\n" +
-                "\t\t\t\tELSE\n" +
-                "\t\t\t\t\toc.cost_amount\n" +
-                "\t\t\t\tEND\n" +
-                "\t\t\t)\n" +
-                "\t\tFROM\n" +
-                "\t\t\torder_char oc,\n" +
-                "\t\t\tusers u,\n" +
-                "\t\t\tcompany_org org,\n" +
-                "\t\t\tcost_standard cs,\n" +
-                "\t\t\tcost_type ct\n" +
-                "\t\tWHERE\n" +
-                "\t\t\toc.order_no = o.order_no\n" +
-                "\t\tAND u.email = o.email\n" +
-                "\t\tAND u.`level` = cs.`level`\n" +
-                "\t\tAND o.end_company = org.company_code\n" +
-                "\t\tAND org.is_tz = cs.is_tz\n" +
-                "\t\tAND oc.cost_type = cs.cost_type\n" +
-                "\t\tAND cs.cost_type = ct.cost_type\n" +
-                "\t) AS bxAmonut,\n" +
-                "\t(select s.order_desc from order_status s where s.order_status = o.order_status) as orderDesc,\n" +
-                "\t(select s.order_status from order_status s where s.order_status = o.order_status) as orderStatus\n" +
-                "FROM\n" +
-                "\ttrip_order o\n" +
-                "WHERE\n" +
-                "\to.email = '" + req.query.email + "'\n";
+            var querySql = `
+                            SELECT
+                                o.*, (
+                                    datediff(o.end_date, o.start_date) + 1
+                                ) AS totalDay,
+                                DATE_FORMAT(o.start_date, "%Y-%m-%d") AS start_date_str,
+                                DATE_FORMAT(o.end_date, "%Y-%m-%d") AS end_date_str,
+                                (
+                                    SELECT
+                                        org.company_desc
+                                    FROM
+                                        company_org org
+                                    WHERE
+                                        org.company_code = o.start_company
+                                ) AS startCompanyDesc,
+                                (
+                                    SELECT
+                                        org.company_desc
+                                    FROM
+                                        company_org org
+                                    WHERE
+                                        org.company_code = o.end_company
+                                ) AS endCompanyDesc,
+                                (
+                                    SELECT
+                                        a.address_code
+                                    FROM
+                                        address a
+                                    WHERE
+                                        a.address_code = (
+                                            SELECT
+                                                org.address_code
+                                            FROM
+                                                company_org org
+                                            WHERE
+                                                org.company_code = o.start_company
+                                        )
+                                ) AS startAddressCode,
+                                (
+                                    SELECT
+                                        a.address_desc
+                                    FROM
+                                        address a
+                                    WHERE
+                                        a.address_code = (
+                                            SELECT
+                                                org.address_code
+                                            FROM
+                                                company_org org
+                                            WHERE
+                                                org.company_code = o.start_company
+                                        )
+                                ) AS startAddressDesc,
+                                (
+                                    SELECT
+                                        a.address_code
+                                    FROM
+                                        address a
+                                    WHERE
+                                        a.address_code = (
+                                            SELECT
+                                                org.address_code
+                                            FROM
+                                                company_org org
+                                            WHERE
+                                                org.company_code = o.end_company
+                                        )
+                                ) AS endAddressCode,
+                                (
+                                    SELECT
+                                        a.address_desc
+                                    FROM
+                                        address a
+                                    WHERE
+                                        a.address_code = (
+                                            SELECT
+                                                org.address_code
+                                            FROM
+                                                company_org org
+                                            WHERE
+                                                org.company_code = o.end_company
+                                        )
+                                ) AS endAddressDesc,
+                                (SELECT getTotalCost(o.order_no)) AS bxAmonut,
+                                (
+                                    SELECT
+                                        s.order_desc
+                                    FROM
+                                        order_status s
+                                    WHERE
+                                        s.order_status = o.order_status
+                                ) AS orderDesc,
+                                (
+                                    SELECT
+                                        s.order_status
+                                    FROM
+                                        order_status s
+                                    WHERE
+                                        s.order_status = o.order_status
+                                ) AS orderStatus
+                            FROM
+                                trip_order o
+                            WHERE
+                                o.email = ${mysql.escape(req.query.email)}
+                            `;
             if (req.query.startCompanyCode) {
-                querySql += "and o.start_company = '" + req.query.startCompanyCode + "'\n";
+                querySql += ` and o.start_company = ${mysql.escape(req.query.startCompanyCode)} `;
             }
             if (req.query.endCompanyCode) {
-                querySql += "and o.end_company = '" + req.query.endCompanyCode + "'\n";
+                querySql += ` and o.end_company = ${mysql.escape(req.query.endCompanyCode)}`;
             }
             if (req.query.startTime) {
-                querySql += "and o.start_date >= STR_TO_DATE('" + req.query.startTime + "', \"%Y-%m-%d\")\n";
+                querySql += ` and o.start_date >= STR_TO_DATE(${mysql.escape(req.query.startTime)}, %Y-%m-%d)`;
             }
             if (req.query.endTime) {
-                querySql += "and o.start_date <= STR_TO_DATE('" + req.query.endTime + "', \"%Y-%m-%d\")\n";
+                querySql += ` and o.start_date <= STR_TO_DATE(${mysql.escape(req.query.endTime)}, %Y-%m-%d)`;
             }
             if (req.query.orderStatus) {
-                querySql += "and o.order_status = '" + req.query.orderStatus + "'\n";
+                querySql += ` and o.order_status = ${mysql.escape(req.query.orderStatus)}`;
             }
-            querySql += "ORDER BY\n" +
-                "\to.start_date DESC\n";
+            querySql += ` ORDER BY ` +
+                ` o.start_date DESC `;
             if (req.query.offset && req.query.pageSize) {
-                querySql += "LIMIT " + ((req.query.offset - 1) * req.query.pageSize) + "," + req.query.pageSize;
+                querySql += ` LIMIT ${((req.query.offset - 1) * req.query.pageSize)}, ${req.query.pageSize}`;
             }
             console.log('getOrderList查询数据：' + querySql);
-            // querySql += ' LIMIT ' + ((req.query.offset - 1) * req.query.pageSize) + ',\n' + req.query.pageSize;
             DbUtils.queryData(querySql, function (resultList) {
                 if (resultList && resultList.length > 0) {
                     returnObj.getlist_status = 0;
@@ -2937,64 +2904,13 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                             group by addressCode,addressDesc
                    `;
     DbUtils.queryData(querySql, function (result) {
-        console.log(result)
+
     }, function (error) {
 
     });
 });
 router.get('/test', function () {
     var sqls = [`select * from users`, `select * from mnues`];
-    // utils.asynCallBack().then(function (data) {
-    //     return utils.asynCallBack('2')
-    // }).then(function (data) {
-    //
-    // })
-    // function getUsers() {
-    //     return new Promise((resolve, reject) => {
-    //         DbUtils.queryData('select * from users', (data) => {
-    //             resolve(data)
-    //         })
-    //     })
-    // }
-    //
-    // function getMenue() {
-    //     return new Promise((resolve, reject) => {
-    //         DbUtils.queryData('select * from mnues', (data) => {
-    //             resolve(data)
-    //         })
-    //     })
-    // }
-    //
-    // getUsers()
-    //     .then((data) => {
-    //         console.log(data);
-    //
-    //         return getMenue()
-    //     })
-    //     .then(data => {
-    //         console.log(data);
-    //     })
-
-    // utils.query(
-    //     [{sql: '', callback: function () {}}]
-    // )
-
-    // new Promise((resolve, reject) => {
-    //     DbUtils.queryData('select * from users', (data) => {
-    //         resolve(data)
-    //     })
-    //
-    // }).then(data => {
-    //     console.log(data);
-    //
-    //     return new Promise((resolve, reject) => {
-    //         DbUtils.queryData('select * from mnues', (data) => {
-    //             resolve(data)
-    //         })
-    //     })
-    // }).then(data => {
-    //     console.log(data);
-    // })
     utils.asynCallBack(sqls,0).then(function (sql,index) {
         DbUtils.queryData(sql,function (result) {
 

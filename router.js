@@ -2907,7 +2907,7 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                             WHERE o.email = ${mysql.escape(email)}
                             group by addressCode,addressDesc
                    `;
-    console.log('getBxStatistical查询出差公司次数'+querySql);
+    console.log('getBxStatistical查询公司地址次数'+querySql);
     DbUtils.queryData(querySql, function (result) {
         returnData.addressStatistical = result
         //查询订单金额
@@ -2938,9 +2938,64 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
         console.log('getBxStatistical查询订单金额'+querySql);
         DbUtils.queryData(querySql,function (result) {
             returnData.costStatistical = result;
-            returnData.status = 0;
-            returnData.desc = '查询成功';
-            res.json(returnData);
+            var querySql = `
+                            SELECT
+                                (
+                                    SELECT
+                                        org.company_code
+                                    FROM
+                                        company_org org
+                                    WHERE
+                                        org.company_code = o.end_company
+                                ) AS companyCode,
+                                (
+                                    SELECT
+                                        org.company_desc
+                                    FROM
+                                        company_org org
+                                    WHERE
+                                        org.company_code = o.end_company
+                                ) AS companyDesc,
+                                count(1) AS times
+                            FROM
+                                trip_order o
+                            WHERE
+                                o.email = ${mysql.escape(email)}
+                            GROUP BY
+                                companyCode,
+                                companyDesc
+                           `;
+            console.log('getBxStatistical查询出差公司次数'+querySql);
+            DbUtils.queryData(querySql,function (result) {
+                returnData.companyStatistical = result;
+                var querySql = `
+                                SELECT DISTINCT
+                                    getTotalCost (NULL, t.email, NULL) AS totalCost,
+                                    getTotalCost (NULL, t.email, 'C') AS ybxCost,
+                                    (getTotalCost(NULL, t.email, NULL) - getTotalCost (NULL, t.email, 'C')) AS wbxCost
+                                FROM
+                                    trip_order t
+                                WHERE
+                                    t.email = ${mysql.escape(email)}
+                               `;
+                console.log('getBxStatistical查询已报销和未报销金额'+querySql);
+                DbUtils.queryData(querySql,function (result) {
+                    returnData.status = 0;
+                    returnData.desc = '查询成功';
+                    returnData.bxStatistical = result;
+                    res.json(returnData);
+                },function (error) {
+                    res.json({
+                        status:-1,
+                        desc:error
+                    });
+                });
+            },function (error) {
+                res.json({
+                    status:-1,
+                    desc:error
+                });
+            });
         },function (error) {
             res.json({
                 status:-1,

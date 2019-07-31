@@ -1409,7 +1409,7 @@ router.get('/baixiu/getOrderList', function (req, res) {
                                                 org.company_code = o.end_company
                                         )
                                 ) AS endAddressDesc,
-                                (SELECT getTotalCost(o.order_no)) AS bxAmonut,
+                                (SELECT getTotalCost(o.order_no,null,null)) AS bxAmonut,
                                 (
                                     SELECT
                                         s.order_desc
@@ -2866,6 +2866,9 @@ router.get('/baixiu/bxChart', function (req, res) {
     utils.renderPage(req, res, 'bxChart.html');
 });
 router.get('/baixiu/getBxStatistical', function (req, res) {
+    //查询出差公司次数
+    var email = req.session.user[0].email;
+    var returnData = {};
     var querySql = `
                         SELECT
                             (
@@ -2901,12 +2904,54 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                             count(1) as times
                             FROM
                                 trip_order o
+                            WHERE o.email = ${mysql.escape(email)}
                             group by addressCode,addressDesc
                    `;
+    console.log('getBxStatistical查询出差公司次数'+querySql);
     DbUtils.queryData(querySql, function (result) {
-
+        returnData.addressStatistical = result
+        //查询订单金额
+        var querySql = `
+                        SELECT
+                            t.order_status AS orderStatus,
+                            (
+                                SELECT
+                                    s.order_desc
+                                FROM
+                                    order_status s
+                                WHERE
+                                    s.order_status = t.order_status
+                            ) AS orderStatusDesc,
+                            getTotalCost (
+                                NULL,
+                                t.email,
+                                t.order_status
+                            ) AS cost,
+                            getTotalCost(NULL,t.email,null) as totalCost
+                        FROM
+                            trip_order t
+                        WHERE
+                            t.email = ${mysql.escape(email)}
+                        GROUP BY
+                            t.order_status
+                       `;
+        console.log('getBxStatistical查询订单金额'+querySql);
+        DbUtils.queryData(querySql,function (result) {
+            returnData.costStatistical = result;
+            returnData.status = 0;
+            returnData.desc = '查询成功';
+            res.json(returnData);
+        },function (error) {
+            res.json({
+                status:-1,
+                desc:error
+            });
+        })
     }, function (error) {
-
+            res.json({
+                status:-1,
+                desc:error
+            });
     });
 });
 router.get('/test', function () {

@@ -188,24 +188,31 @@ var utils = {
                         arrSql.push(mnueIdArr[i]);
                     }
                 }
-                var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
-                DbUtils.queryData(queryMnueSql, function (result) {
-                    for (var i = 0; i < result.length; i++) {
-                        utils.addList(result, result[i]);
-                    }
-                    // 将result中所有节点parent_id值不为空的给踢出掉
-                    var array = [];
-                    for (var i = 0; i < result.length; i++) {
-                        if (!result[i]['parent_id']) {
-                            array.push(result[i]);
+                if(arrSql.length > 0) {
+                    var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
+                    DbUtils.queryData(queryMnueSql, function (result) {
+                        for (var i = 0; i < result.length; i++) {
+                            utils.addList(result, result[i]);
                         }
-                    }
+                        // 将result中所有节点parent_id值不为空的给踢出掉
+                        var array = [];
+                        for (var i = 0; i < result.length; i++) {
+                            if (!result[i]['parent_id']) {
+                                array.push(result[i]);
+                            }
+                        }
+                        var dataJson = {};
+                        dataJson.user = req.session.user[0];
+                        dataJson.dataJsonArr = array;
+                        req.session.userInfo = JSON.stringify(dataJson);
+                        res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
+                    })
+                }else{
                     var dataJson = {};
                     dataJson.user = req.session.user[0];
-                    dataJson.dataJsonArr = array;
                     req.session.userInfo = JSON.stringify(dataJson);
                     res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
-                })
+                }
             })
         });
 

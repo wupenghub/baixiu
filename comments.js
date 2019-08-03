@@ -32,7 +32,7 @@ app.use(session({
         saveUninitialized: false
     }
 ));
-app.use('/baixiu/', function (req, res, next) {
+app.use('/', function (req, res, next) {
     if (req.originalUrl == '/baixiu/isExitUser' || req.originalUrl == '/baixiu/forgetPwd' || req.originalUrl == '/baixiu/forgetPwd'
         || req.originalUrl.indexOf('/baixiu/resetPwd') != -1 || req.originalUrl == '/baixiu/registered' || req.originalUrl == '/baixiu/registered'
         || req.originalUrl == '/baixiu/register' || req.originalUrl == '/baixiu/login' || req.originalUrl == '/baixiu/pwdUpdate'

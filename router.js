@@ -13,75 +13,7 @@ var fs = require('fs');
 var path = require('path');
 //访问管理后台首页
 router.get('/', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        //session不存在，则需要直接返回登录界面
-        return;
-    }
-    // 2、查询对应的菜单数据
-    var sql = `
-                SELECT
-                    mu.*
-                FROM
-                    mnue_permissions_approval ma,
-                    users_mnue_permissions_group ug,
-                    mnues mu
-                WHERE
-                    ug.email = ${mysql.escape(req.session.user[0].email)}
-                AND ma.permissions_code = ug.permissions_code
-                AND ma.mnue_id = mu.id
-                AND mu.model_id = 1
-                AND mu.del_flag = 0
-              `;
-    console.log('查询菜单：' + sql);
-    DbUtils.queryData(sql, function (result) {
-        var mnueIdArr = [];
-        var sql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1`;
-        DbUtils.queryData(sql, function (allResult) {
-            for (var i = 0; i < result.length; i++) {
-                utils.findParentMnueId(allResult, mnueIdArr, result[i]);
-            }
-            var arrSql = [];
-            for (var i = 0; i < mnueIdArr.length; i++) {
-                var conatinId = false;
-                for (var j = 0; j < arrSql.length; j++) {
-                    if (mnueIdArr[i] == arrSql[j]) {
-                        conatinId = true;
-                        break;
-                    }
-                }
-                if (!conatinId) {
-                    arrSql.push(mnueIdArr[i]);
-                }
-            }
-            var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
-            DbUtils.queryData(queryMnueSql, function (result) {
-                for (var i = 0; i < result.length; i++) {
-                    utils.addList(result, result[i]);
-                }
-                // 将result中所有节点parent_id值不为空的给踢出掉
-                var array = [];
-                for (var i = 0; i < result.length; i++) {
-                    if (!result[i]['parent_id']) {
-                        array.push(result[i]);
-                    }
-                }
-                for (var i = 0; i < result.length; i++) {
-                    utils.addList(result, result[i]);
-                }
-                // 将result中所有节点parent_id值不为空的给踢出掉
-                var array = [];
-                for (var i = 0; i < result.length; i++) {
-                    if (!result[i]['parent_id']) {
-                        array.push(result[i]);
-                    }
-                }
-                var dataJson = {};
-                dataJson.user = req.session.user[0];
-                dataJson.dataJsonArr = array;
-                req.session.userInfo = JSON.stringify(dataJson);
-                var queryCountSql = `
+    var queryCountSql = `
                                 SELECT
                                     count(1) as count
                                 FROM
@@ -89,11 +21,11 @@ router.get('/', function (req, res) {
                                 WHERE
                                     s1.sys_type = 'page'
                                 AND s1.type_code = 'home_page'
-                                AND s1.key_value = ${mysql.escape(dataJson.user.email)}
+                                AND s1.key_value = ${mysql.escape(req.session.user[0].email)}
                             `;
-                DbUtils.queryData(queryCountSql, function (result) {
-                    if (parseInt(result[0].count) > 0) {
-                        var queryIndexSql = `
+    DbUtils.queryData(queryCountSql, function (result) {
+        if (parseInt(result[0].count) > 0) {
+            var queryIndexSql = `
                                     SELECT
                                             CASE
                                             WHEN s.result_value IS NULL THEN
@@ -108,24 +40,19 @@ router.get('/', function (req, res) {
                                     WHERE
                                         s.sys_type = 'page'
                                     AND s.type_code = 'home_page'
-                                    AND s.key_value = ${mysql.escape(dataJson.user.email)}
+                                    AND s.key_value = ${mysql.escape(req.session.user[0].email)}
                                    `;
 
-                        DbUtils.queryData(queryIndexSql, function (result) {
-                            if (result[0].path == '/') {
-                                res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-                            } else {
-                                res.redirect(302, result[0].path);
-                            }
-                        })
-                    } else {
-                        res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-                    }
-                });
+            DbUtils.queryData(queryIndexSql, function (result) {
+                if (result[0].path == '/') {
+                    utils.renderPage(req,res,'index.html');
+                } else {
+                    res.redirect(302, result[0].path);
+                }
             })
-        })
-
-
+        } else {
+            utils.renderPage(req,res,'index.html');
+        }
     });
 });
 //访问登录界面
@@ -182,31 +109,7 @@ router.get('/baixiu/loginout', function (req, res) {
     utils.isLogin(req, res);
 });
 router.get('/baixiu/personMaintenance', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        //session不存在，则需要直接返回登录界面
-        return;
-    }
-    // 2、查询对应的菜单数据
-    var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
-    DbUtils.queryData(sql, function (result) {
-        for (var i = 0; i < result.length; i++) {
-            utils.addList(result, result[i]);
-        }
-        // 将result中所有节点parent_id值不为空的给踢出掉
-        var array = [];
-        for (var i = 0; i < result.length; i++) {
-            if (!result[i]['parent_id']) {
-                array.push(result[i]);
-            }
-        }
-        var dataJson = {};
-        dataJson.user = req.session.user[0];
-        dataJson.dataJsonArr = array;
-        req.session.userInfo = JSON.stringify(dataJson);
-        res.render('personMaintenance.html', {dataJson: JSON.stringify(dataJson), url: '/baixiu/personMaintenance'});
-    });
+    utils.renderPage(req,res,'personMaintenance.html')
 });
 router.get('/baixiu/registered', function (req, res) {
     res.render('registered.html');
@@ -343,14 +246,7 @@ router.post('/baixiu/isExitUser', function (req, res) {
 });
 //菜单管理
 router.get('/baixiu/MenuManger', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        //session不存在，则需要直接返回登录界面
-        return;
-    }
-    console.log(user);
-    res.render('mnueManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/MenuManger'});
+    utils.renderPage(req,res,'mnueManger.html');
 });
 //菜单管理->菜单删除
 router.get('/baixiu/menuDelete', function (req, res) {
@@ -590,30 +486,15 @@ router.get('/baixiu/articleDelete', function (req, res) {
 });
 //CIS系统人员权限管理模块
 router.get('/baixiu/cisApproval', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('cisApproval.html', {dataJsonArr: req.session.userInfo});
-    // res.render('cisApproval.html');
+   utils.renderPage(req,res,'cisApproval.html');
 });
 //CIS系统材料单配置
 router.get('/baixiu/cisSqlConfig', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('cisSql.html', {dataJsonArr: req.session.userInfo});
+    utils.renderPage(req,res,'cisSql.html');
 });
 //出差记录
 router.get('/baixiu/businessTrip', function (req, res) {
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('businessTrip.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/businessTrip'});
+    utils.renderPage(req,res,'businessTrip.html');
 });
 //查询订单记录
 router.get('/baixiu/searchOrder', function (req, res) {
@@ -812,12 +693,7 @@ router.get('/baixiu/searchOrderByNo', function (req, res) {
 });
 // 出差公司管理
 router.get('/baixiu/companyManger', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('companyManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/companyManger'});
+    utils.renderPage(req,res,'companyManger.html');
 });
 //查询公司列表
 router.get('/baixiu/queryCompanyList', function (req, res) {
@@ -1120,13 +996,7 @@ router.get('/baixiu/companyDelete', function (req, res) {
 });
 //地址管理
 router.get('/baixiu/addressManger', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        //session不存在，则需要直接返回登录界面
-        return;
-    }
-    res.render('addressManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/addressManger'});
+    utils.renderPage(req,res,'addressManger.html');
 });
 //查询地址列表
 router.get('/baixiu/queryAddressList', function (req, res) {
@@ -1299,12 +1169,7 @@ router.post('/baixiu/deleteAddress', function (req, res) {
 });
 //报销管理模块
 router.get('/baixiu/bxManger', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('bxManger.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/bxManger'});
+    utils.renderPage(req,res,'bxManger.html')
 });
 //查询订单状态接口
 router.get('/baixiu/queryOrderStatus', function (req, res) {
@@ -1609,13 +1474,7 @@ router.get('/baixiu/searchOrderCost', function (req, res) {
 });
 //费用类型管理
 router.get('/baixiu/costType', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        //session不存在，则需要直接返回登录界面
-        return;
-    }
-    res.render('costType.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/costType'});
+    utils.renderPage(req,res,'costType.html');
 });
 //查询费用类型
 router.get('/baixiu/searchCostTypeList', function (req, res) {
@@ -1869,12 +1728,7 @@ router.get('/baixiu/costStandardDelete', function (req, res) {
 });
 //费用类型维护模块
 router.get('/baixiu/costTypeMaintenance', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('costMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/costTypeMaintenance'});
+    utils.renderPage(req,res,'costMaintenance.html');
 });
 //费用类型列表查询
 router.get('/baixiu/searchCostTypeMaintenanceList', function (req, res) {
@@ -2026,12 +1880,7 @@ router.get('/baixiu/costTypeDelete', function (req, res) {
 });
 //公司类别维护模块
 router.get('/baixiu/companyMaintenance', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('companyMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/companyMaintenance'});
+    utils.renderPage(req,res,'companyMaintenance.html');
 });
 //获取公司类别数据列表
 router.get('/baixiu/searchCompanyTypeMaintenanceList', function (req, res) {
@@ -2175,12 +2024,7 @@ router.get('/baixiu/companyTypeDelete', function (req, res) {
 });
 //职位类型维护模块
 router.get('/baixiu/levelMaintenance', function (req, res) {
-    //1、判断此用户是否已经登录过
-    var user = utils.isLogin(req, res);
-    if (!user) {
-        return;
-    }
-    res.render('levelMaintenance.html', {dataJsonArr: req.session.userInfo, url: '/baixiu/levelMaintenance'});
+    utils.renderPage(req,res,'levelMaintenance.html');
 });
 //查看职位类型列表
 router.get('/baixiu/searchLevelTypeMaintenanceList', function (req, res) {

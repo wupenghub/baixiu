@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var DbUtils = require('../DbUtils');
+var mysql = require('mysql');
 var utils = {
     addList(result, obj) {
         //判断当前节点是否有父节点
@@ -152,24 +153,74 @@ var utils = {
     },
     renderPage(req, res, html) {
         // 2、查询对应的菜单数据
-        var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
-        DbUtils.queryData(sql, function (result) {
-            for (var i = 0; i < result.length; i++) {
-                utils.addList(result, result[i]);
-            }
-            // 将result中所有节点parent_id值不为空的给踢出掉
-            var array = [];
-            for (var i = 0; i < result.length; i++) {
-                if (!result[i]['parent_id']) {
-                    array.push(result[i]);
+        var sql = `
+                SELECT
+                    mu.*
+                FROM
+                    mnue_permissions_approval ma,
+                    users_mnue_permissions_group ug,
+                    mnues mu
+                WHERE
+                    ug.email = ${mysql.escape(req.session.user[0].email)}
+                AND ma.permissions_code = ug.permissions_code
+                AND ma.mnue_id = mu.id
+                AND mu.model_id = 1
+                AND mu.del_flag = 0
+              `;
+        console.log('根据当前登录人查询菜单：'+sql);
+        DbUtils.queryData(sql,function (result) {
+            var mnueIdArr = [];
+            var sql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1`;
+            DbUtils.queryData(sql,function (allResult) {
+                for(var i = 0;i<result.length;i++) {
+                    utils.findParentMnueId(allResult, mnueIdArr,result[i]);
+                }
+                var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${mnueIdArr.join(',')});`;
+                console.log(mnueIdArr.join(','));
+                DbUtils.queryData(queryMnueSql, function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        utils.addList(result, result[i]);
+                    }
+                    // 将result中所有节点parent_id值不为空的给踢出掉
+                    var array = [];
+                    for (var i = 0; i < result.length; i++) {
+                        if (!result[i]['parent_id']) {
+                            array.push(result[i]);
+                        }
+                    }
+                    var dataJson = {};
+                    dataJson.user = req.session.user[0];
+                    dataJson.dataJsonArr = array;
+                    req.session.userInfo = JSON.stringify(dataJson);
+                    res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
+                })
+            })
+        });
+
+
+    },
+    //根据当前菜单对象，找到所有的父级菜单
+    findParentMnueId(allMnueObj,mnueIdArr,currentMnueObj){
+        for(var i = 0;i<allMnueObj.length;i++){
+            var obj = allMnueObj[i];
+            if(currentMnueObj.id == obj.id){
+                mnueIdArr.push(currentMnueObj.id);
+                if(currentMnueObj.parent_id) {
+                    // 根据parent_id找菜单parent对象
+                    var parentMnueObj = null;
+                    for(var j = 0;j<allMnueObj.length;j++){
+                        if(allMnueObj[j].id == currentMnueObj.parent_id){
+                            parentMnueObj = allMnueObj[j];
+                            break;
+                        }
+                    }
+                    if(parentMnueObj) {
+                        console.log(parentMnueObj.mnue_desc+'======'+parentMnueObj.id);
+                        utils.findParentMnueId(allMnueObj, mnueIdArr, parentMnueObj);
+                    }
                 }
             }
-            var dataJson = {};
-            dataJson.user = req.session.user[0];
-            dataJson.dataJsonArr = array;
-            req.session.userInfo = JSON.stringify(dataJson);
-            res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
-        })
+        }
     },
     asynCallBack(sqls,index){
         var p = new Promise(function(resolve, reject){        //做一些异步操作

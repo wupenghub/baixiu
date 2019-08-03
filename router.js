@@ -20,7 +20,25 @@ router.get('/', function (req, res) {
         return;
     }
     // 2、查询对应的菜单数据
-    var sql = 'select * from mnues m where m.model_id = 1 and m.del_flag = 0';
+    var sql = `
+                SELECT
+                    mu.*
+                FROM
+                    mnue_permissions_approval ma,
+                    users_mnue_permissions_group ug,
+                    mnues mu
+                WHERE
+                    ug.email = ${mysql.escape(req.session.user[0].email)}
+                AND ma.permissions_code = ug.permissions_code
+                AND (
+                    ma.mnue_id = mu.id
+                    OR ma.mnue_id = mu.parent_id
+                )
+                AND mu.model_id = 1
+                AND mu.del_flag = 0
+                UNION(select * from mnues m where m.id = '2' )
+              `;
+    console.log('查询菜单：'+sql);
     DbUtils.queryData(sql, function (result) {
         for (var i = 0; i < result.length; i++) {
             utils.addList(result, result[i]);

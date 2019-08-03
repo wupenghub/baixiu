@@ -6,7 +6,6 @@ $(function () {
         dataType: 'json',
         data: {orderNo:$('#order-no').val(),orderStates:$('#order_states').val()}
     },function (data) {
-        console.log(data)
         var addressArray = [];
         var addressTimesArray = [];
         for(var i = 0;i<data.addressStatistical.length;i++){

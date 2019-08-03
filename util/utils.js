@@ -175,8 +175,20 @@ var utils = {
                 for(var i = 0;i<result.length;i++) {
                     utils.findParentMnueId(allResult, mnueIdArr,result[i]);
                 }
-                var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${mnueIdArr.join(',')});`;
-                console.log(mnueIdArr.join(','));
+                var arrSql = [];
+                for(var i = 0;i<mnueIdArr.length;i++){
+                    var conatinId = false;
+                    for(var j = 0;j<arrSql.length;j++){
+                        if(mnueIdArr[i] == arrSql[j]){
+                            conatinId = true;
+                            break;
+                        }
+                    }
+                    if(!conatinId){
+                        arrSql.push(mnueIdArr[i]);
+                    }
+                }
+                var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
                 DbUtils.queryData(queryMnueSql, function (result) {
                     for (var i = 0; i < result.length; i++) {
                         utils.addList(result, result[i]);
@@ -215,7 +227,6 @@ var utils = {
                         }
                     }
                     if(parentMnueObj) {
-                        console.log(parentMnueObj.mnue_desc+'======'+parentMnueObj.id);
                         utils.findParentMnueId(allMnueObj, mnueIdArr, parentMnueObj);
                     }
                 }

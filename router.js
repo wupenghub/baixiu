@@ -30,31 +30,58 @@ router.get('/', function (req, res) {
                 WHERE
                     ug.email = ${mysql.escape(req.session.user[0].email)}
                 AND ma.permissions_code = ug.permissions_code
-                AND (
-                    ma.mnue_id = mu.id
-                    OR ma.mnue_id = mu.parent_id
-                )
+                AND ma.mnue_id = mu.id
                 AND mu.model_id = 1
                 AND mu.del_flag = 0
-                UNION(select * from mnues m where m.id = '2' )
               `;
-    console.log('查询菜单：'+sql);
+    console.log('查询菜单：' + sql);
     DbUtils.queryData(sql, function (result) {
-        for (var i = 0; i < result.length; i++) {
-            utils.addList(result, result[i]);
-        }
-        // 将result中所有节点parent_id值不为空的给踢出掉
-        var array = [];
-        for (var i = 0; i < result.length; i++) {
-            if (!result[i]['parent_id']) {
-                array.push(result[i]);
+        var mnueIdArr = [];
+        var sql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1`;
+        DbUtils.queryData(sql, function (allResult) {
+            for (var i = 0; i < result.length; i++) {
+                utils.findParentMnueId(allResult, mnueIdArr, result[i]);
             }
-        }
-        var dataJson = {};
-        dataJson.user = req.session.user[0];
-        dataJson.dataJsonArr = array;
-        req.session.userInfo = JSON.stringify(dataJson);
-        var queryCountSql = `
+            var arrSql = [];
+            for (var i = 0; i < mnueIdArr.length; i++) {
+                var conatinId = false;
+                for (var j = 0; j < arrSql.length; j++) {
+                    if (mnueIdArr[i] == arrSql[j]) {
+                        conatinId = true;
+                        break;
+                    }
+                }
+                if (!conatinId) {
+                    arrSql.push(mnueIdArr[i]);
+                }
+            }
+            var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
+            DbUtils.queryData(queryMnueSql, function (result) {
+                for (var i = 0; i < result.length; i++) {
+                    utils.addList(result, result[i]);
+                }
+                // 将result中所有节点parent_id值不为空的给踢出掉
+                var array = [];
+                for (var i = 0; i < result.length; i++) {
+                    if (!result[i]['parent_id']) {
+                        array.push(result[i]);
+                    }
+                }
+                for (var i = 0; i < result.length; i++) {
+                    utils.addList(result, result[i]);
+                }
+                // 将result中所有节点parent_id值不为空的给踢出掉
+                var array = [];
+                for (var i = 0; i < result.length; i++) {
+                    if (!result[i]['parent_id']) {
+                        array.push(result[i]);
+                    }
+                }
+                var dataJson = {};
+                dataJson.user = req.session.user[0];
+                dataJson.dataJsonArr = array;
+                req.session.userInfo = JSON.stringify(dataJson);
+                var queryCountSql = `
                                 SELECT
                                     count(1) as count
                                 FROM
@@ -64,9 +91,9 @@ router.get('/', function (req, res) {
                                 AND s1.type_code = 'home_page'
                                 AND s1.key_value = ${mysql.escape(dataJson.user.email)}
                             `;
-        DbUtils.queryData(queryCountSql, function (result) {
-            if (parseInt(result[0].count) > 0) {
-                var queryIndexSql = `
+                DbUtils.queryData(queryCountSql, function (result) {
+                    if (parseInt(result[0].count) > 0) {
+                        var queryIndexSql = `
                                     SELECT
                                             CASE
                                             WHEN s.result_value IS NULL THEN
@@ -84,17 +111,21 @@ router.get('/', function (req, res) {
                                     AND s.key_value = ${mysql.escape(dataJson.user.email)}
                                    `;
 
-                DbUtils.queryData(queryIndexSql, function (result) {
-                    if (result[0].path == '/') {
-                        res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+                        DbUtils.queryData(queryIndexSql, function (result) {
+                            if (result[0].path == '/') {
+                                res.render('index.html', {dataJson: JSON.stringify(dataJson)});
+                            } else {
+                                res.redirect(302, result[0].path);
+                            }
+                        })
                     } else {
-                        res.redirect(302, result[0].path);
+                        res.render('index.html', {dataJson: JSON.stringify(dataJson)});
                     }
-                })
-            } else {
-                res.render('index.html', {dataJson: JSON.stringify(dataJson)});
-            }
-        });
+                });
+            })
+        })
+
+
     });
 });
 //访问登录界面
@@ -2925,7 +2956,7 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                             WHERE o.email = ${mysql.escape(email)}
                             group by addressCode,addressDesc
                    `;
-    console.log('getBxStatistical查询公司地址次数'+querySql);
+    console.log('getBxStatistical查询公司地址次数' + querySql);
     DbUtils.queryData(querySql, function (result) {
         returnData.addressStatistical = result
         //查询订单金额
@@ -2953,8 +2984,8 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                         GROUP BY
                             t.order_status
                        `;
-        console.log('getBxStatistical查询订单金额'+querySql);
-        DbUtils.queryData(querySql,function (result) {
+        console.log('getBxStatistical查询订单金额' + querySql);
+        DbUtils.queryData(querySql, function (result) {
             returnData.costStatistical = result;
             var querySql = `
                             SELECT
@@ -2983,8 +3014,8 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                                 companyCode,
                                 companyDesc
                            `;
-            console.log('getBxStatistical查询出差公司次数'+querySql);
-            DbUtils.queryData(querySql,function (result) {
+            console.log('getBxStatistical查询出差公司次数' + querySql);
+            DbUtils.queryData(querySql, function (result) {
                 returnData.companyStatistical = result;
                 var querySql = `
                                 SELECT DISTINCT
@@ -2996,41 +3027,41 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
                                 WHERE
                                     t.email = ${mysql.escape(email)}
                                `;
-                console.log('getBxStatistical查询已报销和未报销金额'+querySql);
-                DbUtils.queryData(querySql,function (result) {
+                console.log('getBxStatistical查询已报销和未报销金额' + querySql);
+                DbUtils.queryData(querySql, function (result) {
                     returnData.status = 0;
                     returnData.desc = '查询成功';
                     returnData.bxStatistical = result;
                     res.json(returnData);
-                },function (error) {
+                }, function (error) {
                     res.json({
-                        status:-1,
-                        desc:error
+                        status: -1,
+                        desc: error
                     });
                 });
-            },function (error) {
+            }, function (error) {
                 res.json({
-                    status:-1,
-                    desc:error
+                    status: -1,
+                    desc: error
                 });
             });
-        },function (error) {
+        }, function (error) {
             res.json({
-                status:-1,
-                desc:error
+                status: -1,
+                desc: error
             });
         })
     }, function (error) {
-            res.json({
-                status:-1,
-                desc:error
-            });
+        res.json({
+            status: -1,
+            desc: error
+        });
     });
 });
 router.get('/test', function () {
     var sqls = [`select * from users`, `select * from mnues`];
-    utils.asynCallBack(sqls,0).then(function (sql,index) {
-        DbUtils.queryData(sql,function (result) {
+    utils.asynCallBack(sqls, 0).then(function (sql, index) {
+        DbUtils.queryData(sql, function (result) {
 
         });
     })

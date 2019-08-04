@@ -11,6 +11,10 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var fs = require('fs');
 var path = require('path');
+/**
+ * 权限管理模块
+ */
+var MnuePerRequest = require('./request/menuPermissionMaintenance/MnuePerRequest.js');
 //访问管理后台首页
 router.get('/', function (req, res) {
     var queryCountSql = `
@@ -2902,12 +2906,15 @@ router.get('/baixiu/getBxStatistical', function (req, res) {
         });
     });
 });
-router.get('/test', function () {
-    var sqls = [`select * from users`, `select * from mnues`];
-    utils.asynCallBack(sqls, 0).then(function (sql, index) {
-        DbUtils.queryData(sql, function (result) {
+/**
+ * 菜单权限模块处理
+ * */
+router.get('/baixiu/menuPermissionMaintenance',function (req,res) {
+    MnuePerRequest.toMnuePermissionPage(req,res);
+});
 
-        });
-    })
+
+router.get('/baixiu/test',function (req,res) {
+
 });
 module.exports = router;

@@ -1,23 +1,17 @@
 var returnData = null;
 $(function () {
-    var data = $("#template").html().replace(/&#34;/g, '"');
-    var dataJson = JSON.parse(data);
-    var rootNode = $('.aside .nav');
-    $('.avatar').prop('src', dataJson.user.avatar);
-    $('.name').html(dataJson.user.nickname);
-    for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
-    }
+    utils.renderPage(function () {
+
+    });
     $('#cost-list').on('click', function () {
-       init();
+        init();
         //获取费用类型数据
         getCompanyTypeListData(1, utils.pageSize);
     });
-    $('#cost-modify').on('click',function () {
+    $('#cost-modify').on('click', function () {
         init();
     });
-    $('#cost-add').on('click',function () {
+    $('#cost-add').on('click', function () {
         init();
     });
     $('#cost-type-modify').on('click', function () {
@@ -30,11 +24,11 @@ $(function () {
             url: '/baixiu/modifyCompanyTypeMaintenanceInfo',
             data: {
                 costTypeCode: $('#cost_modify .company_type_code_view').val(),
-                costTypeDesc:$('#cost_type_desc_modify').val()
+                costTypeDesc: $('#cost_type_desc_modify').val()
             },
             dataType: "json"
         }, function (data) {
-            if(data.status == 0){
+            if (data.status == 0) {
                 $('#cost_modify .company_type_desc_view').val($('#cost_type_desc_modify').val());
             }
         }, function (error) {
@@ -57,10 +51,10 @@ $(function () {
         }, function (data) {
             console.log(data)
             if (data.status == 0) {
-                if(data.returnData.length > 0){
+                if (data.returnData.length > 0) {
                     $('.cost_type_div').show();
                     $('#cost_type_desc_modify').val(data.returnData[0].costTypeDesc);
-                }else {
+                } else {
                     $('.cost_type_div').hide();
                     $('#cost_type_desc_modify').val('');
                 }
@@ -73,32 +67,34 @@ $(function () {
         });
     });
 
-    $('#cost-standard-add').on('click',function () {
+    $('#cost-standard-add').on('click', function () {
         var costType = $('#cost_add .cost_type_code_view').val();//费用类型
         var costTypeDesc = $('#cost_add .company_type_desc_view').val();//费用类型描述
-        if(!costType){
+        if (!costType) {
             alert('请填写公司类型代码');
             return;
         }
-        if(!costTypeDesc){
+        if (!costTypeDesc) {
             alert('请填写公司描述');
             return;
         }
         utils.ajaxSend({
             type: 'get',
             url: '/baixiu/addCompanyTypeInfo',
-            data: {costType,costTypeDesc},
-            dataType: "json"},function (data) {
-            if(data.status == 1){
+            data: {costType, costTypeDesc},
+            dataType: "json"
+        }, function (data) {
+            if (data.status == 1) {
                 alert(data.desc);
             }
-        },function (error) {
+        }, function (error) {
             alert(error);
         });
     });
     //获取公司类型数据getCompanyTypeListData   getCompanyTypeListData
     getCompanyTypeListData(1, utils.pageSize);
 });
+
 function init() {
     $('.cost_type_desc_view').val('');
     $('.cost_type_code_view').val('');
@@ -111,6 +107,7 @@ function init() {
     $('.max_amount_view').val('');
     $('.cost_type_div').hide();
 }
+
 function getCompanyTypeListData(offset, pageSize) {
     utils.ajaxSend({
         type: 'get',
@@ -134,7 +131,7 @@ function getCompanyTypeListData(offset, pageSize) {
             $('#cost_modify .company_type_desc_view').val(costTypeDesc);
             $('#cost_modify .company_type_code_view').val(costTypeCode);
         });
-        $('.cost_type_delete').on('click',function () {
+        $('.cost_type_delete').on('click', function () {
             var dataCode = this.dataset.code;
             deleteCostStandard(dataCode);
         });
@@ -148,17 +145,18 @@ function getCompanyTypeListData(offset, pageSize) {
 
     });
 }
+
 function deleteCostStandard(dataCode) {
     utils.ajaxSend({
         type: 'get',
         url: '/baixiu/companyTypeDelete',
-        data: {costTypeCode:dataCode},
+        data: {costTypeCode: dataCode},
         dataType: "json"
-    },function (data) {
-        if(data.status == 0){
+    }, function (data) {
+        if (data.status == 0) {
             getCompanyTypeListData(1, utils.pageSize);
         }
-    },function (error) {
+    }, function (error) {
 
     });
 }
@@ -179,14 +177,14 @@ function showModal(queryType) {
         dataType: "json"
     }, function (data) {
         console.log(data)
-        var html = template('typeList',data);
+        var html = template('typeList', data);
         $('.type-list').html(html);
     }, function (error) {
 
     });
 }
 
-function showInfo(type,obj) {
+function showInfo(type, obj) {
     if (type == 'FY') {
         $('#cost_modify .cost_type_desc_view').val(obj.innerHTML);
         $('.companyMaintenance .cost_type_code_view').val(obj.dataset.costCode);

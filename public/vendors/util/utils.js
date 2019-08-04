@@ -305,10 +305,8 @@ var utils = {
             });
     },
     renderPage(fun){
-        // var retrunData = new Buffer($("#template").html(),'base64').toString();
         var retrunData = Base64.decode($("#template").html());
         var data = retrunData.replace(/&#34;/g, '"');
-        console.log('==='+data);
         var dataJson = JSON.parse(data);
         var rootNode = $('.aside .nav');
         $('.avatar').prop('src', dataJson.user.avatar);

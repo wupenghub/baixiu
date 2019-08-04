@@ -206,14 +206,14 @@ var utils = {
                         dataJson.dataJsonArr = array;
                         req.session.userInfo = JSON.stringify(dataJson);
                         var dataJsonBase = new Buffer(JSON.stringify(dataJson)).toString('base64');
-                        // res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
                         res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
                     })
                 }else{
                     var dataJson = {};
                     dataJson.user = req.session.user[0];
                     req.session.userInfo = JSON.stringify(dataJson);
-                    res.render(html, {dataJson: JSON.stringify(dataJson), url: req.originalUrl});
+                    var dataJsonBase = new Buffer(JSON.stringify(dataJson)).toString('base64');
+                    res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
                 }
             })
         });

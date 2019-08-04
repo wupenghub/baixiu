@@ -1,14 +1,7 @@
 $(function () {
-    var data = $("#template").html().replace(/&#34;/g,'"');
-    var dataJson = JSON.parse(data);
-    var rootNode = $('.aside .nav');
-    // var tbody = $('.company-manger table tbody');
-    $('.avatar').prop('src',dataJson.user.avatar);
-    $('.name').html(dataJson.user.nickname);
-    for(var i = 0;i<dataJson.dataJsonArr.length;i++) {
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
-    }
+    utils.renderPage(function () {
+
+    });
     dateUtils.renderCander($('tbody'), new Date(), ['日', '一', '二', '三', '四', '五', '六']);
     var date = new Date();
     var year = date.getFullYear();

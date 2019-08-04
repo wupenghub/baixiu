@@ -1,15 +1,8 @@
 var returnData = null;
 $(function () {
-    var data = $("#template").html().replace(/&#34;/g, '"');
-    console.log(data)
-    var dataJson = JSON.parse(data);
-    var rootNode = $('.aside .nav');
-    $('.avatar').prop('src', dataJson.user.avatar);
-    $('.name').html(dataJson.user.nickname);
-    for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
-    }
+    utils.renderPage(function () {
+
+    });
     $('#personMaintenance_modify #is_pwd_modify').on('change',function (e) {
         var isChecked=$(e.target).is(':checked');
         isChecked?$('#personMaintenance_modify .password').show():$('#personMaintenance_modify .password').hide();

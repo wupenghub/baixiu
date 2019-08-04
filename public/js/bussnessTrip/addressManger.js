@@ -1,16 +1,10 @@
 var hiddenList = [];
 var isUpdate = 'N';
 $(function () {
-    var data = $("#template").html().replace(/&#34;/g,'"');
-    var dataJson = JSON.parse(data);
-    var rootNode = $('.aside .nav');
+    utils.renderPage(function () {
+
+    });
     var tbody = $('.address-manger table tbody');
-    $('.avatar').prop('src',dataJson.user.avatar);
-    $('.name').html(dataJson.user.nickname);
-    for(var i = 0;i<dataJson.dataJsonArr.length;i++){
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode,dataJson.dataJsonArr[i]);
-    }
     $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写
         if(!$('.address-manger .search_text').val()){

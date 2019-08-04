@@ -24,6 +24,9 @@ var MnuePerSql = {
                     sg.del_flag = 0
                `;
         return sql;
+    },
+    getMnueListSql(){
+        return `select * from mnues m where m.del_flag = 0`;
     }
 };
 module.exports = MnuePerSql;

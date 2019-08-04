@@ -2915,7 +2915,9 @@ router.get('/baixiu/menuPermissionMaintenance',function (req,res) {
 router.get('/baixiu/searchMnuePremissionList',function (req,res) {
     MnuePerRequest.searchMnuePremissionList(req,res);
 });
-
+router.get('/baixiu/getMnueList',function (req,res) {
+    MnuePerRequest.getMnueList(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

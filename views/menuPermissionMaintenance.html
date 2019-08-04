@@ -30,7 +30,7 @@
                 <li role="presentation" ><a href="#mnue_permission_add" id="mnue-permission-add" data-toggle="tab">菜单权限添加</a></li>
             </ul>
             <div class="tab-content mnue-permission-content">
-                <div class="active" id="mnue_permission_list">
+                <div class="tab-pane active" id="mnue_permission_list">
                     <div class="page-action" style="margin-top: 10px">
                         <ul class="pagination pagination-sm pull-right pages-nav">
                         </ul>
@@ -48,7 +48,34 @@
                         </tbody>
                     </table>
                 </div>
-                <div  class="tab-pane" id="mnue_permission_add">
+                <div  class="tab-pane clearfix" id="mnue_permission_add">
+                    <div class="mnue_content">
+                        <div class="search_text_div_model">
+                            <sapn class="text-content-model">菜单权限名称：</sapn>
+                            <input type="text">
+                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        </div>
+                        <div class="search_text_div_model">
+                            <sapn class="text-content-model">菜单权限代码：</sapn>
+                            <input type="text">
+                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
+                        </div>
+                        <button type="button" class="btn btn-info" id="mnue-permission-maintenance">保存</button>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>菜单名称</th>
+                                <th>
+                                    <input type="checkbox" id="all-choose">
+                                    <label for="all-choose" style="font-weight: bold">全选</label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

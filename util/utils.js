@@ -157,8 +157,8 @@ var utils = {
                 SELECT
                     mu.*
                 FROM
-                    mnue_permissions_approval ma,
-                    users_mnue_permissions_group ug,
+                    sys_mnue_permissions_approval ma,
+                    sys_users_mnue_permissions_group ug,
                     mnues mu
                 WHERE
                     ug.email = ${mysql.escape(req.session.user[0].email)}

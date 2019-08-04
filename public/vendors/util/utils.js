@@ -123,6 +123,42 @@ var utils = {
             }
         }
     },
+    addTableMnuesPremisson(parentNode, dataObj, spanNoContent, index) {
+        if (dataObj.sonList && dataObj.sonList.length > 0) {//包含子节点
+            //如果该父节点中包含其他子节点，先添加父节点
+            var dirObj = $('<tr id="mnuesManger' + dataObj.id + '" data-open="on" class="mnuesManger' + dataObj.parent_id + '">' +
+                '<td class="first_td">' +
+                '<span class="glyphicon glyphicon-menu-down" onclick="toggle(\'#mnuesManger\',this,' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')"></span>' +
+                '<a href="#">' + dataObj.mnue_desc + '</a>' +
+                '</td>' +
+                '<td class="check_td">' +
+                '<input type="checkbox" id="check'+dataObj.id+'"><label for="check'+dataObj.id+'">添加</label></input>' +
+                '</td>' +
+                '</tr>');
+            parentNode.append(dirObj);
+            for (var i = 0; i < index; i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+            for (var i = 0; i < dataObj.sonList.length; i++) {
+                //递归将当前目录传进，进一步添加目录
+                this.addTableMnuesPremisson(parentNode, dataObj.sonList[i], $('<span class="no-content"></span>'), index + 1);
+            }
+        } else {//不包含子节点
+            var html = '<tr id="mnuesManger' + dataObj.id + '" data-open="on" class="mnuesManger' + dataObj.parent_id + '">' +
+                '<td class="first_td">' +
+                '<span class="no-content"></span>' +
+                '<a href="#">' + dataObj.mnue_desc + '</a>' +
+                '</td>' +
+                '<td class="check_td">' +
+                '<input type="checkbox" id="check'+dataObj.id+'"><label for="check'+dataObj.id+'">添加</label></input>' +
+                '</td>' +
+                '</tr>';
+            parentNode.append(html);
+            for (var i = 0; i < index; i++) {
+                $('#mnuesManger' + dataObj.id + ' .first_td').prepend($('<span class="no-content"></span>'));
+            }
+        }
+    },
     //在弹框界面添加菜单结构
     mnueTreeInModel(parentNode, dataObj, spanNoContent, index) {
         if (dataObj.sonList && dataObj.sonList.length > 0) {//包含子节点

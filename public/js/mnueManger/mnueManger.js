@@ -1,18 +1,14 @@
+import * as utils from "../../../util/utils";
 var hiddenList = [];
 var mnueObj = null;
 var isUpdate = 'N';
 $(function () {
-    var data = $("#template").html().replace(/&#34;/g, '"');
-    var dataJson = JSON.parse(data);
-    var rootNode = $('.aside .nav');
-    var tbody = $('.mnue-manger table tbody');
-    $('.avatar').prop('src', dataJson.user.avatar);
-    $('.name').html(dataJson.user.nickname);
-    for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
-        //循环遍历集合元素,添加菜单目录。
-        utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
-        utils.addTableMnues(tbody, dataJson.dataJsonArr[i], null, 0);
-    }
+    utils.renderPage(function (dataJson) {
+        var tbody = $('.mnue-manger table tbody');
+        for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
+            utils.addTableMnues(tbody, dataJson.dataJsonArr[i], null, 0);
+        }
+    });
     $('.mnue-manger .save').on('click', function () {
         //判断必填信息是否已经填写
         if (!$('.mnue-manger .search_text').val()) {

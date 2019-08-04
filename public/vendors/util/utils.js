@@ -167,6 +167,7 @@ var utils = {
         var pageList = '<li id="per-page"><a href="#">上一页</a></li>';
         var totalPage = Math.ceil(pageObj.totalCount / pageObj.returnData.pageSize);
         var currentPage = parseInt(pageObj.returnData.offset);
+        console.log(totalPage+','+currentPage)
         var leftArea = currentPage - Math.floor(utils.showNum / 2);
         var rightArea = currentPage + Math.floor(utils.showNum / 2);
         if (pageObj.totalCount <= pageObj.returnData.pageSize) {

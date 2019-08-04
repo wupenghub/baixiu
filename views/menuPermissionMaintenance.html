@@ -14,7 +14,7 @@
 <body>
 <script>NProgress.start()</script>
 <script type="text/javascript" id="template">{{dataJson}}</script>
-<div class="mnue-manger main">
+<div class="mnue-permission-maintenance main">
     <nav class="navbar">
         <button class="btn btn-default navbar-btn fa fa-bars"></button>
         <span class="home-page glyphicon glyphicon-home" onclick="utils.setHomePage('{{url}}')" style="cursor: pointer"></span>
@@ -26,59 +26,29 @@
     <div class="container-fluid">
         <div>
             <ul class="nav nav-tabs mnue-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#mnue_list" id="mnue-list"  data-toggle="tab">菜单列表</a></li>
-                <li role="presentation" ><a href="#mnue_add" id="mnue-add" data-toggle="tab">菜单添加</a></li>
+                <li role="presentation" class="active"><a href="#mnue_permission_list" id="mnue-permission-list"  data-toggle="tab">菜单权限列表</a></li>
+                <li role="presentation" ><a href="#mnue_permission_add" id="mnue-permission-add" data-toggle="tab">菜单权限添加</a></li>
             </ul>
-            <div class="tab-content mnue-content">
-                <div class="tab-pane active" id="mnue_list">
+            <div class="tab-content mnue-permission-content">
+                <div class="active" id="mnue_permission_list">
+                    <div class="page-action">
+                        <ul class="pagination pagination-sm pull-right pages-nav">
+                        </ul>
+                    </div>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>名称</th>
-                                <th>链接</th>
-                                <th>排序</th>
-                                <th>可见</th>
-                                <th>标识</th>
-                                <th>菜单操作</th>
+                                <th>权限名称</th>
+                                <th>权限代码</th>
+                                <th>操作操作</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="mnue_permission_list_content">
 
                         </tbody>
                     </table>
                 </div>
-                <div  class="tab-pane" id="mnue_add">
-                    <ul>
-                        <li>
-                            <div class="line_content">
-                                <label>上级菜单：</label>
-                                <div class="right">
-                                    <input type="text" class="search_text"  readonly="readonly">
-                                    <button class="search_btn glyphicon glyphicon-search" data-toggle="modal" data-target="#mnue_tree" onclick="mnueTreeInModel()"></button>
-                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="line_content">
-                                <label>名称：</label>
-                                <div class="right">
-                                    <input type="text" class="mnue_desc">
-                                    <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="line_content">
-                                <label>链接：</label>
-                                <div class="right">
-                                    <input type="text" class="mnue_url">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <button type="button" class="btn btn-info save">保存</button>
-                    <button type="button" class="btn btn-default back">返回</button>
+                <div  class="tab-pane" id="mnue_permission_add">
                 </div>
             </div>
         </div>
@@ -114,10 +84,24 @@
 </div>
 <script src="/public/vendors/jquery/jquery.js"></script>
 <script src="/public/vendors/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<script src="/node_modules/art-template/lib/template-web.js"></script>
 <script src="/public/vendors/util/utils.js"></script>
 <script src="/public/js/mnuePermissionMaintenance/mnuePermissionMaintenance.js"></script>
 <script src="/public/lib/base64/base64.min.js"></script>
-
+<script type="text/art-template" id="mnue_permission_list_items">
+    <% if(returnData){ %>
+        <% for(var i = 0;i<returnData.length ;i++){ %>
+            <tr>
+                <td> <%= returnData[i].permissions_desc %> </td>
+                <td> <%= returnData[i].permissions_code %> </td>
+                <td>
+                    <a href="javascript:;">修改</a>
+                    <a href="javascript:;">删除</a>
+                </td>
+            </tr>
+        <% } %>
+        <% } %>
+</script>
 <script>NProgress.done()</script>
 </body>
 </html>

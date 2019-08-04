@@ -4,7 +4,6 @@ var isUpdate = 'N';
 $(function () {
     utils.renderPage(function (dataJson) {
         var tbody = $('.mnue-manger table tbody');
-        console.log(dataJson)
         for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
             utils.addTableMnues(tbody, dataJson.dataJsonArr[i], null, 0);
         }

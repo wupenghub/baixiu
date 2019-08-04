@@ -304,8 +304,11 @@ var utils = {
 
             });
     },
-    renderPage(){
-        var data = $("#template").html().replace(/&#34;/g, '"');
+    renderPage(fun){
+        // var retrunData = new Buffer($("#template").html(),'base64').toString();
+        var retrunData = Base64.decode($("#template").html());
+        var data = retrunData.replace(/&#34;/g, '"');
+        console.log('==='+data);
         var dataJson = JSON.parse(data);
         var rootNode = $('.aside .nav');
         $('.avatar').prop('src', dataJson.user.avatar);
@@ -314,6 +317,7 @@ var utils = {
             //循环遍历集合元素,添加菜单目录。
             utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
         }
+        fun(dataJson);
     },
     renderChart(id,option){
         // 基于准备好的dom，初始化echarts实例

@@ -58,9 +58,53 @@ var MnuePerRequest = {
     },
     maintenancePermission(req,res){
         var permissionsCode = req.body.permissionsCode;
-        var permissionsDesc = req.body.permissionsDesc;
         var mnueIdList = req.body.mnueIdList;
+        var sqlParamsEntity = [];
+        //先将数据库中存在的权限删除
+        var deleteMnueSqlById = MnuePerSql.deleteMnueSqlById();
+        var deletesqlParam = [permissionsCode];
+        var deletesqlobj = {
+            sql: deleteMnueSqlById,
+            params: deletesqlParam
+        };
+        sqlParamsEntity.push(deletesqlobj);
+        //之后进行新增
+        var mnueIdArr = mnueIdList.split(',');
+        mnueIdArr.forEach((mnueId)=>{
+            var insertMnueSqlById = MnuePerSql.insertMnueSqlById();
+            var insertsqlParam = [permissionsCode,mnueId];
+            var insertsqlobj = {
+                sql: insertMnueSqlById,
+                params: insertsqlParam
+            };
+            sqlParamsEntity.push(insertsqlobj);
+        });
+        DbUtils.execTrans(sqlParamsEntity,function (error,info) {
+            if(error){
+                res.json({status:-1,desc:error})
+            }else{
+                res.json({
+                    status:0,
+                    desc:'权限维护成功'
+                })
+            }
 
+        });
+    },
+    searchPremissionList(req,res){
+       var queryPremissionList = MnuePerSql.queryPremissionList();
+       console.log('查询权限列表：'+queryPremissionList);
+       DbUtils.queryData(queryPremissionList,function (result) {
+           res.json({
+               status:0,
+               returnData:result
+           });
+       },function (error) {
+           res.json({
+               status:-1,
+               desc:error
+           });
+       });
     }
 };
 module.exports = MnuePerRequest;

@@ -27,6 +27,21 @@ var MnuePerSql = {
     },
     getMnueListSql(){
         return `select * from mnues m where m.del_flag = 0`;
+    },
+    deleteMnueSqlById(){
+        return "delete from sys_mnue_permissions_approval where permissions_code=?";
+    },
+    insertMnueSqlById(){
+        return "insert sys_mnue_permissions_approval  set permissions_code = ?,mnue_id = ?";
+    },
+    queryPremissionList(){
+        return `
+                SELECT
+                    s.permissions_code AS permissionsCode,
+                    s.permissions_desc AS permissionsDesc
+                FROM
+                    sys_mnue_permissions_group s
+               `;
     }
 };
 module.exports = MnuePerSql;

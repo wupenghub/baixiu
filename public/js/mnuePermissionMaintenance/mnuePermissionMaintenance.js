@@ -13,19 +13,8 @@ $(function () {
         }
     });
     $('#mnue-permission-add').on('click', function () {
-        utils.ajaxSend({
-            type: 'get',
-            url: '/baixiu/getMnueList',
-            data: {},
-            dataType: "json"
-        }, function (data) {
-            $('#mnue_permission_add table tbody').empty();
-            mnueObj = data.dataJsonArr[0];
-            for (var i = 0; i < data.dataJsonArr.length; i++) {
-                utils.addTableMnuesPremisson($('#mnue_permission_add table tbody'), data.dataJsonArr[i], null, 0);
-            }
-        }, function (error) {
-
+        renderMnueList(function () {
+            showPermission();
         });
     });
     $('#mnue-permission-maintenance').on('click', function () {
@@ -58,6 +47,53 @@ $(function () {
     });
     getMnuePermissionListData(1, utils.pageSize);
 });
+function showPermission() {
+    if ($('#mnue-permission-code').val()) {
+        //如果权限角色代码不为空,发送ajax请求权限对应的可访问菜单
+        utils.ajaxSend({
+            type: 'get',
+            url: '/baixiu/queryMnuesByPermission',
+            data: {
+                // permissionsCode: $('#mnue-permission-code').val()
+                permissionsCode: 'CC',
+            },
+            dataType: "json"
+        }, function (data) {
+            if(data.status == 0) {
+                console.log(data)
+                $('#mnue_permission_add table tbody input[type=checkbox]').each(function (index,obj) {
+                    var mnueId = obj.dataset.id;
+                    data.returnData.forEach(function (val) {
+                        var permissionMnueId = val.mnueId;
+                        if(mnueId == permissionMnueId){
+                            $(obj).prop("checked",true);
+                        }
+                    })
+                })
+            }
+        }, function (error) {
+
+        });
+    }
+}
+function renderMnueList(fun) {
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/getMnueList',
+        data: {},
+        dataType: "json"
+    }, function (data) {
+        $('#mnue_permission_add table tbody').empty();
+        mnueObj = data.dataJsonArr[0];
+        for (var i = 0; i < data.dataJsonArr.length; i++) {
+            utils.addTableMnuesPremisson($('#mnue_permission_add table tbody'), data.dataJsonArr[i], null, 0);
+        }
+        if (fun)
+            fun();
+    }, function (error) {
+
+    });
+}
 
 function getMnuePermissionListData(offset, pageSize) {
     utils.ajaxSend({
@@ -188,8 +224,8 @@ function mnuePermissionChoose() {
         data: {},
         dataType: "json"
     }, function (data) {
-        if(data.status == 0){
-            var html = template('permission_list',data);
+        if (data.status == 0) {
+            var html = template('permission_list', data);
             $('.mnue-permission-manger-model').html(html);
             $('#mnue-permission-manger').modal('show');
         }
@@ -202,4 +238,17 @@ function chooseMnuePermission(obj) {
     $('#mnue-permission-manger').modal('hide');
     $('#mnue-permission-code').val(obj.dataset.permissionCode);
     $('#mnue-permission-desc').val($(obj).html());
+    showPermission();
+}
+
+function modifyPermission(code,desc) {
+    $('#tab_li_list').removeClass('active');
+    $('#tab_li_list_add').addClass('active');
+    $('#mnue_permission_list').removeClass('active');
+    $('#mnue_permission_add').addClass('active');
+    $('#mnue-permission-code').val(code);
+    $('#mnue-permission-desc').val(desc);
+    renderMnueList(function () {
+        showPermission();
+    });
 }

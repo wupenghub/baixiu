@@ -105,6 +105,21 @@ var MnuePerRequest = {
                desc:error
            });
        });
+    },
+    queryMnuesByPermission(req,res){
+        var queryMnuesByPermission = MnuePerSql.queryMnuesByPermission(req.query.permissionsCode);
+        console.log('查询权限菜单列表：'+queryMnuesByPermission);
+        DbUtils.queryData(queryMnuesByPermission,function (result) {
+            res.json({
+                status:0,
+                returnData:result
+            })
+        },function (error) {
+            res.json({
+                status:-1,
+                desc:error
+            })
+        });
     }
 };
 module.exports = MnuePerRequest;

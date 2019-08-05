@@ -4,6 +4,7 @@ var sonListId = [];
 var parentListId = [];
 var mnueObj = null;
 var currentMnueParentObj = null;
+var mnueIdList = [];
 $(function () {
     utils.renderPage(function (dataJson) {
         var tbody = $('.mnue-manger table tbody');
@@ -23,6 +24,39 @@ $(function () {
             for(var i = 0;i<data.dataJsonArr.length;i++){
                 utils.addTableMnuesPremisson($('#mnue_permission_add table tbody'),data.dataJsonArr[i],null,0);
             }
+        },function (error) {
+
+        });
+    });
+    $('#mnue-permission-maintenance').on('click',function () {
+        if(!$('#mnue-permission-desc').val()){
+            alert('请输入菜单权限名称');
+            return;
+        }
+        if(!$('#mnue-permission-code').val()){
+            alert('请输入菜单权限代码');
+            return;
+        }
+        $('#mnue_permission_add tbody input[type=checkbox]').each(function (i,val) {
+            if($(val).is(':checked')){
+                mnueIdList.push(val.dataset.id);
+            }
+        });
+        if(mnueIdList.length == 0){
+            alert('请给该角色分配对应的菜单访问权限');
+            return;
+        }
+        utils.ajaxSend({
+            type: 'post',
+            url: '/baixiu/maintenancePermission',
+            data: {
+                permissionsCode:$('#mnue-permission-code').val(),
+                permissionsDesc:$('#mnue-permission-desc').val(),
+                mnueIdList:mnueIdList.join(',')
+            },
+            dataType: "json"
+        },function (data) {
+
         },function (error) {
 
         });

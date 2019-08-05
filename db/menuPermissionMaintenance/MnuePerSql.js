@@ -1,3 +1,4 @@
+var mysql = require('mysql');
 var MnuePerSql = {
     searchMnuePremissionListSql(offset,pageSize){
         var sql = `
@@ -41,6 +42,17 @@ var MnuePerSql = {
                     s.permissions_desc AS permissionsDesc
                 FROM
                     sys_mnue_permissions_group s
+               `;
+    },
+    queryMnuesByPermission(permissionCode){
+        return `
+                SELECT
+                    s.mnue_id AS mnueId,
+                    s.permissions_code AS permissionsCode
+                FROM
+                    sys_mnue_permissions_approval s
+                WHERE
+                    s.permissions_code = ${mysql.escape(permissionCode)}
                `;
     }
 };

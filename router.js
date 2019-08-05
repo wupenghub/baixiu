@@ -2926,6 +2926,9 @@ router.post('/baixiu/maintenancePermission',function (req,res) {
 router.get('/baixiu/searchPremissionList',function (req,res) {
     MnuePerRequest.searchPremissionList(req,res);
 });
+router.get('/baixiu/queryMnuesByPermission',function (req,res) {
+    MnuePerRequest.queryMnuesByPermission(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

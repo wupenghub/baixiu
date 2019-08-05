@@ -114,7 +114,6 @@ var Dbutils = {
                 });
 
                 async.series(funcAry, function (err, result) {
-                    console.log("transaction error: " + err);
                     if (err) {
                         connection.rollback(function (err) {
                             console.log("transaction error: " + err);

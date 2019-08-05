@@ -2922,21 +2922,11 @@ router.get('/baixiu/getMnueList',function (req,res) {
 router.post('/baixiu/maintenancePermission',function (req,res) {
     MnuePerRequest.maintenancePermission(req,res);
 });
+//查询权限接口
+router.get('/baixiu/searchPremissionList',function (req,res) {
+    MnuePerRequest.searchPremissionList(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
-    var sqlParamsEntity = [];
 
-    for(var i = 0;i<10;i++){
-        // var sql = "insert into baixiu_status_l set ?";
-        var sql ="delete from baixiu_status_l where baixiu_key=? and baixiu_val=? ";
-        var param = {baixiu_key:i+'',baixiu_val:'val'+i};
-        var obj = {
-            sql: sql,
-            params: param
-        }
-        sqlParamsEntity.push(obj)
-    }
-    DbUtils.execTrans(sqlParamsEntity,function (date1,data2) {
-        console.log(data2)
-    });
 });
 module.exports = router;

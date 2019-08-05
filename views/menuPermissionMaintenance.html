@@ -52,12 +52,9 @@
                     <div class="mnue_content">
                         <div class="search_text_div_model">
                             <sapn class="text-content-model">菜单权限名称：</sapn>
-                            <input type="text" id="mnue-permission-desc">
-                            <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
-                        </div>
-                        <div class="search_text_div_model">
-                            <sapn class="text-content-model">菜单权限代码：</sapn>
-                            <input type="text" id="mnue-permission-code">
+                            <input type="text" class="search_text_model" id="mnue-permission-desc" readonly="readonly">
+                            <input type="hidden" id="mnue-permission-code" readonly="readonly">
+                            <button class="search_btn_model glyphicon glyphicon-search" onclick="mnuePermissionChoose()"></button>
                             <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                         </div>
                         <button type="button" class="btn btn-info" id="mnue-permission-maintenance">保存</button>
@@ -93,15 +90,15 @@
     <span class="glyphicon glyphicon-refresh loading"></span>
 </div>
 <!-- Modal -->
-<div class="modal fade mnue-manger-tree" id="mnue_tree" tabindex="-1">
+<div class="modal fade mnue-permission-manger-tree" id="mnue-permission-manger" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">功能菜单</h4>
+                <h4 class="modal-title" id="myModalLabel">权限菜单</h4>
             </div>
             <div class="modal-body">
-                <ul class="mnue-manger-model">
+                <ul class="mnue-permission-manger-model">
 
                 </ul>
             </div>
@@ -125,6 +122,13 @@
                     <a href="javascript:;">删除</a>
                 </td>
             </tr>
+        <% } %>
+        <% } %>
+</script>
+<script type="text/art-template" id="permission_list">
+    <% if(returnData){ %>
+    <% for(var i = 0;i<returnData.length ;i++){ %>
+        <li class="type-item" data-permission-code="<%=  returnData[i].permissionsCode %>" onclick="chooseMnuePermission(this)"><%= returnData[i].permissionsDesc %></li>
         <% } %>
         <% } %>
 </script>

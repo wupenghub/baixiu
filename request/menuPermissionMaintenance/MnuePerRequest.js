@@ -55,6 +55,12 @@ var MnuePerRequest = {
             }
             res.json({dataJsonArr:array})
         });
+    },
+    maintenancePermission(req,res){
+        var permissionsCode = req.body.permissionsCode;
+        var permissionsDesc = req.body.permissionsDesc;
+        var mnueIdList = req.body.mnueIdList;
+
     }
 };
 module.exports = MnuePerRequest;

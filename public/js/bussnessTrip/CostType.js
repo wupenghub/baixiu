@@ -9,9 +9,7 @@ $(function () {
         //循环遍历集合元素,添加菜单目录。
         utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
     }*/
-    utils.renderPage(function () {
-
-    });
+    utils.renderPage();
     $('#cost-list').on('click', function () {
        init();
         //获取费用类型数据

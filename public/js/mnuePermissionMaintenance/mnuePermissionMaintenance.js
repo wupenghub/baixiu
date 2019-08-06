@@ -8,8 +8,10 @@ var mnueIdList = [];
 $(function () {
     utils.renderPage(function (dataJson) {
         var tbody = $('.mnue-manger table tbody');
-        for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
-            utils.addTableMnues(tbody, dataJson.dataJsonArr[i], null, 0);
+        if(dataJson.dataJsonArr) {
+            for (var i = 0; i < dataJson.dataJsonArr.length; i++) {
+                utils.addTableMnues(tbody, dataJson.dataJsonArr[i], null, 0);
+            }
         }
     });
     $('#mnue-permission-add').on('click', function () {

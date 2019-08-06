@@ -1,8 +1,6 @@
 var returnData = null;
 $(function () {
-    utils.renderPage(function () {
-        
-    });
+    utils.renderPage();
     $('#order-list').on('click', function () {
         $('#order-no').val('');
         $('.cost_type_list_items').html('');

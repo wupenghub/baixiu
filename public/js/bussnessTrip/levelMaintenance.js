@@ -1,8 +1,6 @@
 var returnData = null;
 $(function () {
-    utils.renderPage(function () {
-
-    });
+    utils.renderPage();
     $('#cost-list').on('click', function () {
        init();
         //获取费用类型数据

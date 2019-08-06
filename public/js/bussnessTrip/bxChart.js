@@ -1,7 +1,5 @@
 $(function () {
-    utils.renderPage(function (dataJson) {
-        
-    });
+    utils.renderPage();
     utils.ajaxSend({
         type: 'get',
         url: '/baixiu/getBxStatistical',

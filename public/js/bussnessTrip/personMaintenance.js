@@ -1,8 +1,6 @@
 var returnData = null;
 $(function () {
-    utils.renderPage(function () {
-
-    });
+    utils.renderPage();
     $('#personMaintenance_modify #is_pwd_modify').on('change',function (e) {
         var isChecked=$(e.target).is(':checked');
         isChecked?$('#personMaintenance_modify .password').show():$('#personMaintenance_modify .password').hide();

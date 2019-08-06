@@ -1,9 +1,7 @@
 var hiddenList = [];
 var isUpdate = 'N';
 $(function () {
-    utils.renderPage(function () {
-
-    });
+    utils.renderPage();
     var tbody = $('.address-manger table tbody');
     $('.address-manger .save').on('click',function () {
         //判断必填信息是否已经填写

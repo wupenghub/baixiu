@@ -3,9 +3,7 @@ var isUpdate = 'N';
 var chooseCompany = true;
 var addressObj = null;
 $(function () {
-    utils.renderPage(function () {
-        
-    });
+    utils.renderPage();
     var tbody = $('.company-manger table tbody');
     $('.company-manger .save').on('click', function () {
         //判断必填信息是否已经填写

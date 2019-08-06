@@ -1,7 +1,5 @@
 $(function () {
-    utils.renderPage(function () {
-
-    });
+    utils.renderPage();
     dateUtils.renderCander($('tbody'), new Date(), ['日', '一', '二', '三', '四', '五', '六']);
     var date = new Date();
     var year = date.getFullYear();

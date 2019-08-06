@@ -78,6 +78,7 @@ var utils = {
     addTableMnues(parentNode, dataObj, spanNoContent, index) {
         if (dataObj.sonList && dataObj.sonList.length > 0) {//包含子节点
             //如果该父节点中包含其他子节点，先添加父节点
+            var dataObjBase = Base64.encode(JSON.stringify(dataObj));
             var dirObj = $('<tr id="mnuesManger' + dataObj.id + '" data-open="on" class="mnuesManger' + dataObj.parent_id + '">' +
                 '<td class="first_td">' +
                 '<span class="glyphicon glyphicon-menu-down" onclick="toggle(\'#mnuesManger\',this,' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')"></span>' +
@@ -88,9 +89,9 @@ var utils = {
                 '<td>' + (dataObj.addressDesc ? dataObj.addressDesc : '') + '</td>' +
                 '<td>' + (dataObj.company_type_desc ? dataObj.company_type_desc : '') + '</td>' +
                 '<td>' +
-                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
-                '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +
-                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">添加下级菜单</a>' +
+                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(\'' + dataObjBase + '\')">修改</a>' +
+                '<a href="javascript:;" class="mnue-delete" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(\'' + dataObjBase + '\')">删除</a>' +
+                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(\'' + dataObjBase + '\')">添加下级菜单</a>' +
                 '</td>' +
                 '</tr>');
             parentNode.append(dirObj);
@@ -102,6 +103,7 @@ var utils = {
                 this.addTableMnues(parentNode, dataObj.sonList[i], $('<span class="no-content"></span>'), index + 1);
             }
         } else {//不包含子节点
+            var dataObjBase = Base64.encode(JSON.stringify(dataObj));
             var html = '<tr id="mnuesManger' + dataObj.id + '" data-open="on" class="mnuesManger' + dataObj.parent_id + '">' +
                 '<td class="first_td">' +
                 '<span class="no-content"></span>' +
@@ -112,9 +114,9 @@ var utils = {
                 '<td>' + (dataObj.addressDesc ? dataObj.addressDesc : '') + '</td>' +
                 '<td>' + (dataObj.company_type_desc ? dataObj.company_type_desc : '') + '</td>' +
                 '<td>' +
-                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">修改</a>' +
-                '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">删除</a>' +
-                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')">添加下级菜单</a>' +
+                '<a href="javascript:;" class="mnue-modify" onclick="mnueModify(\'' + dataObjBase + '\')">修改</a>' +
+                '<a href="javascript:;" class="mnue-delete " data-toggle="modal" data-target=".bs-example-modal-sm" onclick="mnueDelete(\'' + dataObjBase + '\')">删除</a>' +
+                '<a href="javascript:;" class="mnue-add" onclick="sonMnueAdd(\'' + dataObjBase + '\')">添加下级菜单</a>' +
                 '</td>' +
                 '</tr>';
             parentNode.append(html);

@@ -76,6 +76,7 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
+    obj = JSON.parse(Base64.decode(obj));
     window.obj = obj;
     $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
     $('.mnue-manger .mnue-tabs li:last-child').addClass('active');
@@ -84,7 +85,8 @@ function mnueModify(obj) {
     //将点击链接的节点信息描述设置到文本框中
     $('.mnue-manger .mnue_desc').val(obj.mnue_desc);
     $('.mnue-manger .mnue_url').val(obj.url);
-    utils.findParentBySon(JSON.parse($("#template").html().replace(/&#34;/g, '"')).dataJsonArr, obj);
+    var objMnue = JSON.parse(Base64.decode($("#template").html()));
+    utils.findParentBySon(objMnue.dataJsonArr, obj);
     $('.mnue-manger .search_text').val(utils.parentObj ? utils.parentObj.mnue_desc : '');
     mnueObj = utils.parentObj;
     $('.mnue-manger .save').unbind();
@@ -106,6 +108,7 @@ function mnueModify(obj) {
 
 //删除菜单点击事件
 function mnueDelete(obj) {
+    obj = JSON.parse(Base64.decode(obj));
     var id = obj.id;
     $.ajax({
         type: 'get',
@@ -119,7 +122,7 @@ function mnueDelete(obj) {
             } else {
                 addMnueList(data.dataJsonArr);
             }
-            $("#template").html(JSON.stringify(data).replace(/"/g, '&#34;'));
+            $("#template").html(Base64.encode(JSON.stringify(data)));
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             // alert("请求失败！");
@@ -144,6 +147,7 @@ function addMnueList(array) {
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
+    obj = JSON.parse(Base64.decode(obj));
     window.obj = obj;
     //跳转到添加子菜单的页面
     $('.mnue-manger .mnue-tabs li:first-child').removeClass('active');
@@ -200,7 +204,7 @@ function addMnues(obj) {
             $('.mnue-manger .mnue-content div:first-child').addClass('active');
             $('.mnue-manger .mnue-content div:last-child').removeClass('active');
             //将返回的集合数据重新渲染到标签中，供后面使用
-            $("#template").html(JSON.stringify(data).replace(/"/g, '&#34;'));
+            $("#template").html(Base64.encode(JSON.stringify(data)));
         } else {
             //添加失败
             alert('添加失败！');
@@ -247,7 +251,7 @@ function addMnues(obj) {
 }
 
 function mnueTreeInModel() {
-    var data = $("#template").html().replace(/&#34;/g, '"');
+    var data = Base64.decode($("#template").html());
     var dataJson = JSON.parse(data);
     $('.mnue-manger-tree .mnue-manger-model').html('');
     for (var i = 0; i < dataJson.dataJsonArr.length; i++) {

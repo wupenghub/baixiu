@@ -1,0 +1,186 @@
+.permissionMaintenance{
+  table{
+    th.text-center{
+      font-weight: bold;
+    }
+    td {
+      font-size: 13px !important;
+    }
+  }
+  #permission_type_desc_modify{
+    height: 25px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #cccccc;
+    font-size: 12px;
+    padding-left: 5px;
+    border-radius: 3px;
+  }
+  .permission-content{
+    #permission_modify {
+      #permission_type_desc_modify{
+        padding: 3px;
+      }
+      .permission-search{
+        display: inline-block;
+        float: left;
+        margin-top: 10px;
+      }
+      .text-content{
+        float: left;
+      }
+      .search_text_div{
+        padding: 15px;
+        background: #ffffff;
+        display: inline-block;
+        line-height: 25px;
+        float: left;
+        input.search_text {
+          height: 25px;
+          float: left;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #cccccc;
+          font-size: 12px;
+          padding-left: 5px;
+          border-right: none;
+          border-radius: 3px 0 0 3px;
+          background-color: #f3f3f3;
+        }
+        button.search_btn {
+          height: 25px;
+          float: left;
+          top: 0px;
+          background-color: #fff;
+          padding: 0;
+          border: 1px solid #cccccc;
+          width: 40px;
+        }
+      }
+      .permission_type_list {
+        margin-top: 10px;
+        padding: 10px;
+        background: #ffffff;
+        .permission_type_div{
+          display: none;
+        }
+        .add {
+          background: lightgray;
+          margin-top: 20px;
+          border-radius: 5px;
+          text-align: center;
+          position: relative;
+          .add_font {
+            position: absolute;
+            left: 10px;
+            font-size: x-large;
+            color: white;
+            top: 5px;
+          }
+          .add_text {
+            height: 35px;
+            line-height: 35px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+          }
+        }
+        .add:hover {
+          background: lightblue;
+          cursor: pointer;
+        }
+        .radio-group{
+          margin-left: 10px;
+          display: inline-block;
+          margin-right: 10px;
+          .fix_group{
+            display: inline-block;
+          }
+        }
+      }
+    }
+    #permission_add{
+      .text-content{
+        float: left;
+      }
+      .btn_group {
+        width: 50%;
+        #permission-standard-add{
+          float: right;
+          margin-top: 10px;
+          margin-right: 15px;
+        }
+        #back {
+          float: right;
+          margin-top: 10px;
+        }
+      }
+      .search_text_div{
+        background: #ffffff;
+        line-height: 25px;
+        padding:20px 0 20px 0;
+        border-bottom: 1px dashed lightgray;
+        .max_amount_view{
+          height: 25px;
+          float: left;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #cccccc;
+          font-size: 12px;
+          padding-left: 5px;
+          border-radius: 3px 0 0 3px;
+        }
+        .text-content{
+          display: block;
+          width: 40%;
+          text-align: right;
+          margin-right: 10px;
+        }
+        input.search_text {
+          height: 25px;
+          float: left;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #cccccc;
+          font-size: 12px;
+          padding-left: 5px;
+          //border-right: none;
+          border-radius: 3px 0 0 3px;
+        }
+        button.search_btn {
+          height: 25px;
+          float: left;
+          top: 0px;
+          background-color: #fff;
+          padding: 0;
+          border: 1px solid #cccccc;
+          width: 40px;
+        }
+      }
+    }
+  }
+  .permission-manger-tree{
+    ul.permission-list{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li{
+        padding: 8px;
+        background: #eeeeee;
+        border-radius: 3px;
+        margin-bottom: 10px;
+      }
+      li:hover{
+        cursor: pointer;
+        background: lightblue;
+        color: white;
+      }
+    }
+  }
+  .fix_group_add{
+    text-align: center;
+    .fix_permission{
+      float: left;
+    }
+  }
+}

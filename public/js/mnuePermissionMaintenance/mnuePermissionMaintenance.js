@@ -54,13 +54,15 @@ function showPermission() {
             type: 'get',
             url: '/baixiu/queryMnuesByPermission',
             data: {
-                // permissionsCode: $('#mnue-permission-code').val()
-                permissionsCode: 'CC',
+                permissionsCode: $('#mnue-permission-code').val()
             },
             dataType: "json"
         }, function (data) {
             if(data.status == 0) {
-                console.log(data)
+                //先清空权限状态
+                $('#mnue_permission_add table tbody input[type=checkbox]').each(function (index,obj) {
+                    $(obj).prop("checked",false);
+                });
                 $('#mnue_permission_add table tbody input[type=checkbox]').each(function (index,obj) {
                     var mnueId = obj.dataset.id;
                     data.returnData.forEach(function (val) {

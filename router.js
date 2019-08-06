@@ -12,13 +12,17 @@ var multipartMiddleware = multipart();
 var fs = require('fs');
 var path = require('path');
 /**
- * 权限分配模块
+ * 菜单权限维护模块
  */
 var MnuePerRequest = require('./request/menuPermissionMaintenance/MnuePerRequest.js');
 /**
- * 权限维护模块
+ * 菜单权限维护模块
  * */
 var PermissionMaintenance = require('./request/menuPermissionMaintenance/PermissionMaintenance.js');
+/**
+ * 菜单权限分配模块
+ * */
+var PermissionDistribution = require('./request/menuPermissionMaintenance/PermissionDistribution.js');
 //访问管理后台首页
 router.get('/', function (req, res) {
     var queryCountSql = `
@@ -2949,7 +2953,13 @@ router.post('/baixiu/modifyPermissionTypeDesc',function (req,res) {
 router.post('/baixiu/addPermissionInfo',function (req,res) {
     PermissionMaintenance.addPermissionInfo(req,res);
 });
-//菜单
+//人员菜单权限分配模块
+router.get('/baixiu/permissionDistribution',function (req,res) {
+    PermissionDistribution.renderPermissionDistributionPage(req,res);
+});
+router.get('/baixiu/getUserListData',function (req,res) {
+    PermissionDistribution.getUserListData(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

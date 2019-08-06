@@ -81,7 +81,7 @@ var utils = {
             var dataObjBase = Base64.encode(JSON.stringify(dataObj));
             var dirObj = $('<tr id="mnuesManger' + dataObj.id + '" data-open="on" class="mnuesManger' + dataObj.parent_id + '">' +
                 '<td class="first_td">' +
-                '<span class="glyphicon glyphicon-menu-down" onclick="toggle(\'#mnuesManger\',this,' + JSON.stringify(dataObj).replace(/\"/g, "'") + ')"></span>' +
+                '<span class="glyphicon glyphicon-menu-down" onclick="toggle(\'#mnuesManger\',this,\'' + dataObjBase + '\')"></span>' +
                 '<a href="#">' + dataObj.mnue_desc + '</a>' +
                 '</td>' +
                 '<td>' + dataObj.url + '</td>' +

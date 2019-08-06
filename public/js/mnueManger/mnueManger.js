@@ -44,6 +44,7 @@ function init() {
 }
 
 function toggle(flag, obj, jsonObj) {
+    jsonObj = JSON.parse(Base64.decode(jsonObj));
     findAllID(obj, jsonObj);
     var isOpen = $(flag + jsonObj.id).attr('data-open');
     if (isOpen == 'on') {

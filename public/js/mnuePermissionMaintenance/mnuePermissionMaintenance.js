@@ -18,6 +18,7 @@ $(function () {
         });
     });
     $('#mnue-permission-maintenance').on('click', function () {
+        mnueIdList = [];
         if (!$('#mnue-permission-code').val()) {
             alert('请输入菜单权限代码');
             return;

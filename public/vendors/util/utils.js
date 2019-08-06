@@ -358,7 +358,8 @@ var utils = {
                 utils.addMnues(rootNode, dataJson.dataJsonArr[i]);
             }
         }
-        fun(dataJson);
+        if(fun)
+            fun(dataJson);
     },
     renderChart(id,option){
         // 基于准备好的dom，初始化echarts实例

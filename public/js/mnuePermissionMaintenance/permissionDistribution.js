@@ -5,12 +5,12 @@ $(function () {
         getUserListData(1, utils.pageSize,$('.email').val(),$('.nick_name').val());
     });
 
-    $('#order-search').on('click', function () {
-        if (!$('#order-no').val()) {
-            alert('请输入订单编号');
+    $('#permission-search').on('click', function () {
+        if (!$('#email').val()) {
+            alert('请输入账号');
             return;
         }
-        getOrderAmountList();
+        getUserPerList();
     });
     //添加出差订单金额按钮点击事件
     $('#add_trip_cost').on('click', function () {
@@ -74,7 +74,14 @@ $(function () {
     });
     getUserListData(1, utils.pageSize,$('.email').val(),$('.nick_name').val());
 });
-
+function renderPerPage(data) {
+    var companyHtml = template('companyList',data);
+    $('.user_company_list tbody').html(companyHtml);
+    var mnuePerHtml = template('mnuePerList',data);
+    $('.user_mnue_permission_list tbody').html(mnuePerHtml);
+    var dataPerHtml = template('dataPerList',data);
+    $('.user_data_permission_list tbody').html(dataPerHtml);
+}
 function getUserListData(offset, pageSize,email,nickName) {
     utils.ajaxSend({
         type: 'get',
@@ -93,44 +100,33 @@ function getUserListData(offset, pageSize,email,nickName) {
                 getUserListData(currentPage, pageSize, email,nickName);
             });
         }
-        //注册修改功能点击事件
-        $('.user_edit').on('click', function () {
-            $('.permission_distribution .permission-tabs li:first-child').removeClass('active');
-            $('.permission_distribution .permission-tabs li:last-child').addClass('active');
-            $('.permission_distribution .permission-content div:first-child').removeClass('active');
-            $('.permission_distribution .permission-content div:last-child').addClass('active');
-            // getOrderAmountList();
-        });
-        //给文章信息绑定删除按钮
-        // bindDelete(offset,pageSize);
     }, function (error) {
         alert('请求出问题');
     });
 }
-
-function getOrderAmountList() {
-    var userStr = localStorage.getItem('email');
-    var email = '';
-    if (userStr) {
-        email = JSON.parse(userStr)[0];
+function distriBution(email){
+    $('.permission_distribution .permission-tabs li:first-child').removeClass('active');
+    $('.permission_distribution .permission-tabs li:last-child').addClass('active');
+    $('.permission_distribution .permission-content div:first-child').removeClass('active');
+    $('.permission_distribution .permission-content div:last-child').addClass('active');
+    $('#email').val(email);
+    if($('#email').val()){
+        getUserPerList();
     }
+}
+function getUserPerList() {
+    var email = $('#email').val();
     utils.ajaxSend({
         type: 'get',
-        url: '/baixiu/searchOrderCost',
-        data: {email, orderNo: $('#order-no').val()},
+        url: '/baixiu/searchUserPerList',
+        data: {email},
         dataType: "json"
     }, function (data) {
-        var html = template('ordersListItems', data);
-        $('.cost_type_list_items').html(html);
-        var htmlStatus = template('order_status',data);
-        $('#order_states').html(htmlStatus);
-        $('.type_delete').on('click',function (event) {
-            event.stopPropagation();//阻止事件冒泡
-            var obj = event.target;
-            var id = obj.parentNode.dataset.id;
-            deleteOrderAmount(id);
-        });
-
+        if(data.status==0) {
+            renderPerPage(data);
+        }else{
+            alert(data.desc);
+        }
     }, function (error) {
 
     })

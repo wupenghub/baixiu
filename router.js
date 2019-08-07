@@ -2960,6 +2960,10 @@ router.get('/baixiu/permissionDistribution',function (req,res) {
 router.get('/baixiu/getUserListData',function (req,res) {
     PermissionDistribution.getUserListData(req,res);
 });
+//人员权限分配接口
+router.get('/baixiu/searchUserPerList',function (req,res) {
+    PermissionDistribution.searchUserPerList(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

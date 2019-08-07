@@ -1,5 +1,11 @@
 .permission_distribution {
   table {
+    .text-left {
+      text-align: left;
+    }
+    th.text-left {
+      font-weight: bold;
+    }
     th.text-center {
       font-weight: bold;
     }
@@ -58,13 +64,13 @@
         padding: 3px;
         border-radius: 1px;
       }
-      #order-search {
-        margin-left: 5px;
+      #permission-search {
+        margin-left: 10px !important;
       }
       #order_states {
         height: 30px;
         line-height: 25px;
-        width:auto;
+        width: auto;
         padding: 0 2%;
         margin: 0;
         border-radius: 4px;
@@ -73,7 +79,7 @@
         }
       }
     }
-    .cost_type_list {
+    .user_info_item {
       margin-top: 10px;
       padding: 10px;
       background: #ffffff;
@@ -114,46 +120,6 @@
       }
     }
     #user_list {
-      .search_text_div_model {
-        padding: 15px;
-        background: #ffffff;
-        display: inline-block;
-        line-height: 25px;
-        float: left;
-        .text-content-model {
-          float: left;
-        }
-        input.search_text_model {
-          height: 25px;
-          float: left;
-          border-width: 1px;
-          border-style: solid;
-          border-color: #cccccc;
-          font-size: 12px;
-          padding-left: 5px;
-          border-radius: 3px;
-        }
-        button.search_btn_model {
-          height: 25px;
-          float: left;
-          top: 0px;
-          background-color: #fff;
-          padding: 0;
-          border: 1px solid #cccccc;
-          width: 40px;
-        }
-        input.date_time {
-          height: 25px;
-          float: left;
-          border-width: 1px;
-          border-style: solid;
-          border-color: #cccccc;
-          font-size: 12px;
-          padding-left: 5px;
-          border-radius: 3px;
-          background-color: #f3f3f3;
-        }
-      }
       #user-search {
         margin-top: 10px;
       }
@@ -215,6 +181,85 @@
       }
     }
   }
+  .search_text_div_model {
+    padding: 15px;
+    background: #ffffff;
+    display: inline-block;
+    line-height: 25px;
+    float: left;
+    .text-content-model {
+      float: left;
+    }
+    input.search_text_model {
+      height: 25px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #cccccc;
+      font-size: 12px;
+      padding-left: 5px;
+      border-radius: 3px;
+    }
+    button.search_btn_model {
+      height: 25px;
+      float: left;
+      top: 0px;
+      background-color: #fff;
+      padding: 0;
+      border: 1px solid #cccccc;
+      width: 40px;
+    }
+    input.date_time {
+      height: 25px;
+      float: left;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #cccccc;
+      font-size: 12px;
+      padding-left: 5px;
+      border-radius: 3px;
+      background-color: #f3f3f3;
+    }
+  }
+  .search_text_div_model_search {
+    display: inline-block;
+    line-height: 25px;
+    float: left;
+    .text-content-model {
+      float: left;
+    }
+    input.search_text_model {
+      height: 25px;
+      float: left;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #cccccc;
+      font-size: 12px;
+      padding-left: 5px;
+      border-right: none;
+      border-radius: 3px 0 0 3px;
+      background-color: #f3f3f3;
+    }
+    button.search_btn_model {
+      height: 25px;
+      float: left;
+      top: 0px;
+      background-color: #fff;
+      padding: 0;
+      border: 1px solid #cccccc;
+      width: 40px;
+    }
+    input.date_time {
+      height: 25px;
+      float: left;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #cccccc;
+      font-size: 12px;
+      padding-left: 5px;
+      border-radius: 3px;
+      background-color: #f3f3f3;
+    }
+  }
   .cost-type-tree {
     .cost-body {
       padding: 10px;
@@ -262,23 +307,45 @@
     }
   }
   .order-status-manger-tree {
-      padding: 10px;
-      ul.order-status-manger-model {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        li {
-          position: relative;
-          padding: 8px;
-          background: #eeeeee;
-          border-radius: 3px;
-          margin-bottom: 10px;
-        }
-        li:hover {
-          cursor: pointer;
-          background: lightblue;
-          color: white;
-        }
+    padding: 10px;
+    ul.order-status-manger-model {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        position: relative;
+        padding: 8px;
+        background: #eeeeee;
+        border-radius: 3px;
+        margin-bottom: 10px;
       }
+      li:hover {
+        cursor: pointer;
+        background: lightblue;
+        color: white;
+      }
+    }
+  }
+  .tip_title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+  }
+  span.plus {
+    font-size: 14px;
+    display: inline-block;
+  }
+  span.plus:hover {
+    color: lightgreen;
+    cursor: pointer;
+  }
+  span.mnius {
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 8px;
+  }
+  span.mnius:hover {
+    color: lightgreen;
+    cursor: pointer;
   }
 }

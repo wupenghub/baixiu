@@ -49,6 +49,38 @@ var PermissionDistributionSql = {
             sql += `AND u.nickname LIKE ${mysql.escape(nickName)}`;
         }
         return sql;
+    },
+    userExistSql(email){
+        return `select count(1) as count from users u where u.email = ${mysql.escape(email)}`;
+    },
+    queryUserInfo(email){
+        return `
+                SELECT
+                    sg.permissions_code as code,
+                    sg.permissions_desc as descr
+                FROM
+                    sys_users_mnue_permissions_group usg,
+                    sys_mnue_permissions_group sg
+                WHERE
+                    usg.permissions_code = sg.permissions_code
+                and usg.email = ${mysql.escape(email)}
+                `;
+    },
+    userCompanySql(email){
+        return `
+                SELECT
+                    org.company_code AS code,
+                    org.company_desc AS descr
+                FROM
+                    sys_company_user su,
+                    company_org org
+                WHERE
+                    su.company_code = org.company_code
+                AND su.email = ${mysql.escape(email)}
+                GROUP BY
+                    CODE,
+                    descr
+               `;
     }
 };
 module.exports = PermissionDistributionSql;

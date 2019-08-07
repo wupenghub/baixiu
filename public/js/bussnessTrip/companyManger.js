@@ -326,7 +326,6 @@ function chooseMnue(obj) {
     // }
     //  $('.company-manger .search_text').val(mnueObj.mnue_desc);
     //  $('.company-manger .search_text').val(window.parentObj.mnue_desc);
-    console.log(JSON.stringify(obj))
     $('.company-manger-tree').modal('hide');
 }
 

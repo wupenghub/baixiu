@@ -2964,6 +2964,10 @@ router.get('/baixiu/getUserListData',function (req,res) {
 router.get('/baixiu/searchUserPerList',function (req,res) {
     PermissionDistribution.searchUserPerList(req,res);
 });
+//更新人员权限接口
+router.post('/baixiu/updateUserPermission',function (req,res) {
+    PermissionDistribution.updateUserPermission(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

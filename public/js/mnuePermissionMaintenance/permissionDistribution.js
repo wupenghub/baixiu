@@ -205,8 +205,21 @@ function addPer(obj, type) {
     }
 }
 
-function minusPer(obj) {
+function minusPer(obj,type) {
+    var tbody = $(obj).parents('tbody');
     $(obj).parents('tr').remove();
+    if(tbody.children().length == 0){
+        if (type == 'companyList') {
+            var html = template('companyList', {companyJsonArray: null}).trim();
+            tbody.append($(html))
+        } else if (type == 'mnuePerList') {
+            var html = template('mnuePerList', {mnueJsonArray: null}).trim();
+            tbody.append($(html))
+        } else if (type == 'dataPerList') {
+            var html = template('dataPerList', {dataJsonArray: null}).trim();
+            tbody.append($(html))
+        }
+    }
 }
 
 function companyChoose(obj) {

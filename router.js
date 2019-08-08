@@ -2505,8 +2505,9 @@ router.get('/baixiu/searchUser', function (req, res) {
     console.log('searchUser:' + querySql);
     DbUtils.queryData(querySql, function (result) {
         console.log(result)
-        user.levelDesc = result[0].levelDesc;
-        console.log(user)
+        if(result&&result.length > 0) {
+            user.levelDesc = result[0].levelDesc;
+        }
         res.json(user)
     }, function (error) {
 

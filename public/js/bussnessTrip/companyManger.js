@@ -84,6 +84,7 @@ function init() {
 }
 
 function toggle(flag, obj, jsonObj) {
+    jsonObj = JSON.parse(Base64.decode(jsonObj));
     findAllID(obj, jsonObj);
     var isOpen = $(flag + jsonObj.id).attr('data-open');
     if (isOpen == 'on') {
@@ -116,7 +117,7 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
-    // window.obj = obj;
+    obj = JSON.parse(Base64.decode(obj));
     window.sonObj = obj;
     console.log(JSON.stringify(obj));
     searchCompanyType(obj);
@@ -165,6 +166,7 @@ function mnueModify(obj) {
 
 //删除菜单点击事件
 function mnueDelete(obj) {
+    obj = JSON.parse(Base64.decode(obj));
     var id = obj.id;
     utils.ajaxSend({
             type: 'get',
@@ -193,7 +195,7 @@ function mnueDelete(obj) {
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
-    // window.obj = obj;
+    obj = JSON.parse(Base64.decode(obj));
     window.parentObj = obj;
     searchCompanyType();
     //跳转到添加子菜单的页面

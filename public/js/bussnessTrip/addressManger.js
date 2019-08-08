@@ -55,6 +55,7 @@ function init() {
     $('.address-manger .search_text').val('');
 }
 function toggle(flag,obj,jsonObj) {
+    jsonObj = JSON.parse(Base64.decode(jsonObj));
     findAllID(obj,jsonObj);
     var isOpen = $(flag+jsonObj.id).attr('data-open');
     if(isOpen == 'on') {
@@ -85,6 +86,7 @@ function findAllID(obj, jsonObj) {
 //修改菜单点击事件
 function mnueModify(obj) {
     isUpdate = 'Y';
+    obj = JSON.parse(Base64.decode(obj));
     window.sonObj = obj;
     $('.address-manger .address-tabs li:first-child').removeClass('active');
     $('.address-manger .address-tabs li:last-child').addClass('active');
@@ -120,6 +122,7 @@ function mnueModify(obj) {
 }
 //删除菜单点击事件
 function mnueDelete(obj) {
+    obj = JSON.parse(Base64.decode(obj));
     var id = obj.id;
     utils.ajaxSend({type:'post',
         url:'/baixiu/deleteAddress',
@@ -157,7 +160,7 @@ function addMnueList(array) {
 //添加子菜单点击事件
 function sonMnueAdd(obj) {
     isUpdate = 'N';
-    // window.obj = obj;
+    obj = JSON.parse(Base64.decode(obj));
     window.parentObj = obj;
     //跳转到添加子菜单的页面
     $('.address-manger .address-tabs li:first-child').removeClass('active');

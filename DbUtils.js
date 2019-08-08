@@ -1,11 +1,19 @@
 var mysql = require('mysql');
 var oracledb = require('oracledb');
 var async = require("async");
-const db_config = {
+/*const db_config = {
     connectionLimit: 5,
     host: "47.96.76.172",
     user: "root",
     password: "4217aBc!",
+    port: "3306",
+    database: "baixiu"
+};*/
+const db_config = {
+    connectionLimit: 5,
+    host: "127.0.0.1",
+    user: "root",
+    password: "080902abc",
     port: "3306",
     database: "baixiu"
 };

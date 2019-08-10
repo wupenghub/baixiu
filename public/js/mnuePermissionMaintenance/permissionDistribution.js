@@ -207,19 +207,26 @@ function addPer(obj, type) {
 
 function minusPer(obj,type) {
     var tbody = $(obj).parents('tbody');
-    $(obj).parents('tr').remove();
-    if(tbody.children().length == 0){
+    if(tbody.children().length == 1){
         if (type == 'companyList') {
-            var html = template('companyList', {companyJsonArray: null}).trim();
-            tbody.append($(html))
+            var companyDesc = $(obj).parents('td').siblings().find('.company_desc_view');
+            var companyCode = $(obj).parents('td').siblings().find('.company_code_view');
+            companyDesc.val('');
+            companyCode.val('');
         } else if (type == 'mnuePerList') {
-            var html = template('mnuePerList', {mnueJsonArray: null}).trim();
-            tbody.append($(html))
+            var mnuePerDesc = $(obj).parents('td').siblings().find('.mnue_per_desc_view');
+            var mnuePerCode = $(obj).parents('td').siblings().find('.mnue_per_code_view');
+            mnuePerDesc.val('');
+            mnuePerCode.val('');
         } else if (type == 'dataPerList') {
-            var html = template('dataPerList', {dataJsonArray: null}).trim();
-            tbody.append($(html))
+            var dataPerDesc = $(obj).parents('td').siblings().find('.data_per_desc_view');
+            var dataPerCode = $(obj).parents('td').siblings().find('.data_per_code_view');
+            dataPerDesc.val('');
+            dataPerCode.val('');
         }
+        return;
     }
+    $(obj).parents('tr').remove();
 }
 
 function companyChoose(obj) {

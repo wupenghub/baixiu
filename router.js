@@ -23,6 +23,10 @@ var PermissionMaintenance = require('./request/menuPermissionMaintenance/Permiss
  * 菜单权限分配模块
  * */
 var PermissionDistribution = require('./request/menuPermissionMaintenance/PermissionDistribution.js');
+/**
+ * 数据权限维护模块
+ */
+var DataPerRequest = require('./request/menuPermissionMaintenance/DataPerRequest.js');;
 //访问管理后台首页
 router.get('/', function (req, res) {
     var queryCountSql = `
@@ -103,13 +107,39 @@ router.post('/baixiu/login', function (req, res) {
             loginData.login_state = '0';
             loginData.login_desc = '登录成功';
             loginData.user = result[0];
+            //登录成功后，查询此用户的访问菜单权限
+            var query = `
+                            SELECT
+                                sa.mnue_id,m.url
+                            FROM
+                                sys_users_mnue_permissions_group sug,
+                                sys_mnue_permissions_approval sa,
+                                mnues m
+                            WHERE
+                                sug.email = ${mysql.escape(loginData.user.email)}
+                            AND sug.permissions_code = sa.permissions_code
+                            AND sa.mnue_id = m.id
+                            GROUP BY
+                                sa.mnue_id,m.url
+                        `;
+            console.log('查询用户权限清单：'+query);
+            DbUtils.queryData(query,function (result) {
+                req.session.mnueObj = {};
+                req.session.mnueObj.mnues = result;
+                res.json(loginData);
+            },function (error) {
+                loginData.login_state = '-1';
+                loginData.login_desc = error;
+                loginData.user = null;
+                res.json(loginData);
+            });
         } else {
             //未找到用户
             loginData.login_state = '1';
             loginData.login_desc = '登录失败，密码错误！';
             loginData.user = null;
+            res.json(loginData);
         }
-        res.json(loginData);
     });
 });
 //退出登录
@@ -2968,6 +2998,10 @@ router.get('/baixiu/searchUserPerList',function (req,res) {
 //更新人员权限接口
 router.post('/baixiu/updateUserPermission',function (req,res) {
     PermissionDistribution.updateUserPermission(req,res);
+});
+//数据权限维护模块
+router.get('/baixiu/dataPermissionMaintance',function (req,res) {
+    DataPerRequest.dataPermissionMaintance(req,res);
 });
 router.get('/baixiu/test',function (req,res) {
 

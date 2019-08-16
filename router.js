@@ -3003,6 +3003,18 @@ router.post('/baixiu/updateUserPermission',function (req,res) {
 router.get('/baixiu/dataPermissionMaintance',function (req,res) {
     DataPerRequest.dataPermissionMaintance(req,res);
 });
+//查询数据权限接口
+router.get('/baixiu/searchDataPermissionTypeList',function (req,res) {
+    DataPerRequest.searchDataPermissionTypeList(req,res);
+});
+//查找数据权限类型描述
+router.get('/baixiu/searchDataPermissionTypeInfo',(req,res)=>{
+    DataPerRequest.searchDataPermissionTypeInfo(req,res);
+});
+//修改数据权限类型描述
+router.post('/baixiu/modifyDataPermissionTypeDesc',(req,res)=>{
+    DataPerRequest.modifyDataPermissionTypeDesc(req,res);
+});
 router.get('/baixiu/test',function (req,res) {
 
 });

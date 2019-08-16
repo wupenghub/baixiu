@@ -47,11 +47,11 @@ var utils = {
     isLogin(req, res) {
         var user = req.session.user;
         if (!user) {
-            if(req.headers['x-requested-with'] != null && req.headers['x-requested-with'] == 'XMLHttpRequest'){
+            if (req.headers['x-requested-with'] != null && req.headers['x-requested-with'] == 'XMLHttpRequest') {
                 res.json({
-                    status:-304
+                    status: -304
                 });
-            }else {
+            } else {
                 res.render('login.html', {});
             }
             return;
@@ -167,28 +167,28 @@ var utils = {
                 AND mu.model_id = 1
                 AND mu.del_flag = 0
               `;
-        console.log('根据当前登录人查询菜单：'+sql);
-        DbUtils.queryData(sql,function (result) {
+        console.log('根据当前登录人查询菜单：' + sql);
+        DbUtils.queryData(sql, function (result) {
             var mnueIdArr = [];
             var sql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1`;
-            DbUtils.queryData(sql,function (allResult) {
-                for(var i = 0;i<result.length;i++) {
-                    utils.findParentMnueId(allResult, mnueIdArr,result[i]);
+            DbUtils.queryData(sql, function (allResult) {
+                for (var i = 0; i < result.length; i++) {
+                    utils.findParentMnueId(allResult, mnueIdArr, result[i]);
                 }
                 var arrSql = [];
-                for(var i = 0;i<mnueIdArr.length;i++){
+                for (var i = 0; i < mnueIdArr.length; i++) {
                     var conatinId = false;
-                    for(var j = 0;j<arrSql.length;j++){
-                        if(mnueIdArr[i] == arrSql[j]){
+                    for (var j = 0; j < arrSql.length; j++) {
+                        if (mnueIdArr[i] == arrSql[j]) {
                             conatinId = true;
                             break;
                         }
                     }
-                    if(!conatinId){
+                    if (!conatinId) {
                         arrSql.push(mnueIdArr[i]);
                     }
                 }
-                if(arrSql.length > 0) {
+                if (arrSql.length > 0) {
                     var queryMnueSql = `select * from mnues m where m.del_flag = 0 and m.model_id = 1 and m.id in (${arrSql.join(',')});`;
                     DbUtils.queryData(queryMnueSql, function (result) {
                         for (var i = 0; i < result.length; i++) {
@@ -206,14 +206,22 @@ var utils = {
                         dataJson.dataJsonArr = array;
                         req.session.userInfo = JSON.stringify(dataJson);
                         var dataJsonBase = new Buffer(JSON.stringify(dataJson)).toString('base64');
-                        res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
+                        if(req.session.index){
+                            res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
+                        }else {
+                            res.render('index.html', {dataJson: dataJsonBase, url: req.originalUrl});
+                        }
                     })
-                }else{
+                } else {
                     var dataJson = {};
                     dataJson.user = req.session.user[0];
                     req.session.userInfo = JSON.stringify(dataJson);
                     var dataJsonBase = new Buffer(JSON.stringify(dataJson)).toString('base64');
-                    res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
+                    if(req.session.index){
+                        res.render(html, {dataJson: dataJsonBase, url: req.originalUrl});
+                    }else {
+                        res.render('index.html', {dataJson: dataJsonBase, url: req.originalUrl});
+                    }
                 }
             })
         });
@@ -221,36 +229,36 @@ var utils = {
 
     },
     //根据当前菜单对象，找到所有的父级菜单
-    findParentMnueId(allMnueObj,mnueIdArr,currentMnueObj){
-        for(var i = 0;i<allMnueObj.length;i++){
+    findParentMnueId(allMnueObj, mnueIdArr, currentMnueObj) {
+        for (var i = 0; i < allMnueObj.length; i++) {
             var obj = allMnueObj[i];
-            if(currentMnueObj.id == obj.id){
+            if (currentMnueObj.id == obj.id) {
                 mnueIdArr.push(currentMnueObj.id);
-                if(currentMnueObj.parent_id) {
+                if (currentMnueObj.parent_id) {
                     // 根据parent_id找菜单parent对象
                     var parentMnueObj = null;
-                    for(var j = 0;j<allMnueObj.length;j++){
-                        if(allMnueObj[j].id == currentMnueObj.parent_id){
+                    for (var j = 0; j < allMnueObj.length; j++) {
+                        if (allMnueObj[j].id == currentMnueObj.parent_id) {
                             parentMnueObj = allMnueObj[j];
                             break;
                         }
                     }
-                    if(parentMnueObj) {
+                    if (parentMnueObj) {
                         utils.findParentMnueId(allMnueObj, mnueIdArr, parentMnueObj);
                     }
                 }
             }
         }
     },
-    asynCallBack(sqls,index){
-        var p = new Promise(function(resolve, reject){        //做一些异步操作
-            if(index < sqls.length){
-                resolve(sqls[index],index++);
+    asynCallBack(sqls, index) {
+        var p = new Promise(function (resolve, reject) {        //做一些异步操作
+            if (index < sqls.length) {
+                resolve(sqls[index], index++);
             }
         });
         return p;
     },
-    test (json = []) {
+    test(json = []) {
         // new Promise((resolve, reject) => {
         //     DbUtils.queryData('select * from users', (data) => {
         //         resolve(data)

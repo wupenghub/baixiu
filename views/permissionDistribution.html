@@ -62,11 +62,12 @@
                 </table>
             </div>
             <div class="tab-pane" id="per_distribution">
-                <div class="clearfix">
+                <div class="clearfix head_bg">
                     <div class="search_text_div_model">
                         登录账号：<input type="email" id="email" placeholder="请输入登录账号" class="search_text_model"/>
                         <button type="button" class="btn btn-info" id="permission-search">查询</button>
                     </div>
+                    <button type="button" class="btn btn-info" id="permission-update">更新</button>
                 </div>
                 <div class="user_info_item user_company_list">
                     <span class="tip_title">所在公司：</span>
@@ -119,6 +120,39 @@
     <div class="mask" style="display: none">
         <span class="glyphicon glyphicon-refresh loading"></span>
     </div>
+    <!-- 公司Modal -->
+    <div class="modal fade company-manger-tree" id="company_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">公司</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="company-manger-model">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 菜单权限Modal -->
+    <div class="modal fade permission-manger-tree" id="modal_tree" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >权限列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="permission-list">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="../public/vendors/jquery/jquery.js"></script>
     <script src="/node_modules/art-template/lib/template-web.js"></script>
     <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
@@ -148,14 +182,14 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'companyList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'companyList')"></span>
                 </td>
                 <td class="text-center">
                     <div class="search_text_div_model_search">
                         <sapn class="text-content-model">公司机构：</sapn>
-                        <input type="text" class="search_text_model start_company_type_desc_view"  readonly="readonly">
-                        <input style="display: none" class="start_company_type_code_view" readonly="readonly">
-                        <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose()"></button>
+                        <input type="text" class="search_text_model company_desc_view"  readonly="readonly">
+                        <input style="display: none" class="company_code_view" readonly="readonly">
+                        <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose(this)"></button>
                     </div>
                 </td>
             </tr>
@@ -164,14 +198,14 @@
                     <tr>
                         <td class="text-center">
                             <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'companyList')"></span>
-                            <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                            <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'companyList')"></span>
                         </td>
                         <td class="text-center">
                             <div class="search_text_div_model_search">
                                 <sapn class="text-content-model">公司机构：</sapn>
-                                <input type="text" class="search_text_model start_company_type_desc_view" value="<%= companyJsonArray[i].descr %>"  readonly="readonly">
-                                <input style="display: none" class="start_company_type_code_view" value="<%= companyJsonArray[i].code %>" readonly="readonly">
-                                <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose()"></button>
+                                <input type="text" class="search_text_model company_desc_view" value="<%= companyJsonArray[i].descr %>"  readonly="readonly">
+                                <input style="display: none" class="company_code_view" value="<%= companyJsonArray[i].code %>" readonly="readonly">
+                                <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose(this)"></button>
                             </div>
                         </td>
                     </tr>
@@ -181,14 +215,14 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'companyList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'companyList')"></span>
                 </td>
                 <td class="text-center">
                     <div class="search_text_div_model_search">
                         <sapn class="text-content-model">公司机构：</sapn>
-                        <input type="text" class="search_text_model start_company_type_desc_view"  readonly="readonly">
-                        <input style="display: none" class="start_company_type_code_view" readonly="readonly">
-                        <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose()"></button>
+                        <input type="text" class="search_text_model company_desc_view"  readonly="readonly">
+                        <input style="display: none" class="company_code_view" readonly="readonly">
+                        <button class="search_btn_model glyphicon glyphicon-search" onclick="companyChoose(this)"></button>
                     </div>
                 </td>
             </tr>
@@ -200,15 +234,14 @@
         <tr>
             <td class="text-center">
                 <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'mnuePerList')"></span>
-                <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'mnuePerList')"></span>
             </td>
             <td>
                 <div class="search_text_div_model_search">
                     <sapn class="text-content-model">角色权限：</sapn>
                     <input type="text" class="search_text_model mnue_per_desc_view"  readonly="readonly">
                     <input style="display: none" class="mnue_per_code_view" readonly="readonly">
-                    <button class="search_btn_model glyphicon glyphicon-search"  data-toggle="modal"
-                            data-target="#modal_tree" onclick="mnuePerChoose()"></button>
+                    <button class="search_btn_model glyphicon glyphicon-search" onclick="mnuePerChoose(this,'mnuePerList')"></button>
                 </div>
             </td>
         </tr>
@@ -217,15 +250,14 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'mnuePerList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'mnuePerList')"></span>
                 </td>
                 <td>
                     <div class="search_text_div_model_search">
                         <sapn class="text-content-model">角色权限：</sapn>
                         <input type="text" class="search_text_model mnue_per_desc_view" value="<%= mnueJsonArray[i].descr %>"  readonly="readonly">
                         <input style="display: none" class="mnue_per_code_view" value="<%= mnueJsonArray[i].code %>" readonly="readonly">
-                        <button class="search_btn_model glyphicon glyphicon-search"  data-toggle="modal"
-                                data-target="#modal_tree" onclick="mnuePerChoose()"></button>
+                        <button class="search_btn_model glyphicon glyphicon-search" onclick="mnuePerChoose(this)"></button>
                     </div>
                 </td>
             </tr>
@@ -235,14 +267,14 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'mnuePerList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'mnuePerList')"></span>
                 </td>
                 <td>
                     <div class="search_text_div_model_search">
                         <sapn class="text-content-model">角色权限：</sapn>
                         <input type="text" class="search_text_model mnue_per_desc_view"  readonly="readonly">
                         <input style="display: none" class="mnue_per_code_view" readonly="readonly">
-                        <button class="search_btn_model glyphicon glyphicon-search" onclick="mnueChoose()"></button>
+                        <button class="search_btn_model glyphicon glyphicon-search" onclick="mnuePerChoose(this)"></button>
                     </div>
                 </td>
             </tr>
@@ -254,7 +286,7 @@
         <tr>
             <td class="text-center">
                 <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'dataPerList')"></span>
-                <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'dataPerList')"></span>
             </td>
             <td>
                 <div class="search_text_div_model_search">
@@ -270,7 +302,7 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'dataPerList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'dataPerList')"></span>
                 </td>
                 <td>
                     <div class="search_text_div_model_search">
@@ -287,18 +319,24 @@
             <tr>
                 <td class="text-center">
                     <span class="plus glyphicon glyphicon-plus" onclick="addPer(this,'dataPerList')"></span>
-                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this)"></span>
+                    <span class="mnius glyphicon glyphicon-minus" onclick="minusPer(this,'dataPerList')"></span>
                 </td>
                 <td>
                     <div class="search_text_div_model_search">
                         <sapn class="text-content-model">数据权限：</sapn>
                         <input type="text" class="search_text_model data_per_desc_view"  readonly="readonly">
                         <input style="display: none" class="data_per_code_view" readonly="readonly">
-                        <button class="search_btn_model glyphicon glyphicon-search"  data-toggle="modal"
-                                data-target="#modal_tree" onclick="dataChoose()"></button>
+                        <button class="search_btn_model glyphicon glyphicon-search" onclick="dataChoose()"></button>
                     </div>
                 </td>
             </tr>
+            <% } %>
+    </script>
+    <script type="text/art-template" id="permissionList">
+        <% if(permissionTypeJsonArray){ %>
+        <% for(var i = 0;i<permissionTypeJsonArray.length ;i++){ %>
+            <li class="type-item" data-permission-code="<%=  permissionTypeJsonArray[i].perCode %>" onclick="showInfo(this)"><%= permissionTypeJsonArray[i].perDesc %></li>
+            <% } %>
             <% } %>
     </script>
     <script>NProgress.done()</script>

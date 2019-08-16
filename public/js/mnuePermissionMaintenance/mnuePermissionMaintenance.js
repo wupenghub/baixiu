@@ -107,17 +107,19 @@ function getMnuePermissionListData(offset, pageSize) {
         data: {offset, pageSize},
         dataType: "json"
     }, function (data) {
-        var html = template('mnue_permission_list_items', data.returnData);
-        utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-            getMnuePermissionListData(currentPage, pageSize);
-        });
-        $('#mnue_permission_list_content').html(html);
-        //渲染分页页签
-        returnData = data.returnData;
-        data.returnData.totalCount = data.totalCount;
-        utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-            getMnuePermissionListData(currentPage, pageSize);
-        });
+        if(data.status == 0) {
+            var html = template('mnue_permission_list_items', data.returnData);
+            utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
+                getMnuePermissionListData(currentPage, pageSize);
+            });
+            $('#mnue_permission_list_content').html(html);
+            //渲染分页页签
+            returnData = data.returnData;
+            data.returnData.totalCount = data.totalCount;
+            utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
+                getMnuePermissionListData(currentPage, pageSize);
+            });
+        }
     }, function (error) {
 
     });

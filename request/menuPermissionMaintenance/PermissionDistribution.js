@@ -77,10 +77,79 @@ var PermissionDistribution = {
                 });
             }
         },function (error) {
+            var returnData = {};
             returnData.status = -1;
             returnData.desc = error;
             res.json(returnData);
         })
+    },
+    updateUserPermission(req,res){
+        var companyArr = req.body.companyArr;
+        var mnuePerArr = req.body.mnuePerArr;
+        var dataPerArr = req.body.dataPerArr;
+        var email = req.body.email;
+        dataPerArr = '1';
+        if(companyArr)
+            companyArr = arrRemoverepeat(companyArr.split(','));
+        if(mnuePerArr)
+            mnuePerArr = arrRemoverepeat(mnuePerArr.split(','));
+        if(dataPerArr)
+            dataPerArr = arrRemoverepeat(dataPerArr.split(','));
+        var sqlParamsEntity = [];
+        //先将数据库中存在的权限删除
+        var deleteCompanySqlById = PermissionDistributionSql.deleteCompanySqlById();
+        var deleteCompanySqlParam = [email];
+        addSql(sqlParamsEntity,deleteCompanySqlById,deleteCompanySqlParam);
+
+        var deleteMnuePerSqlById = PermissionDistributionSql.deleteMnuePerSqlById();
+        var deleteMnuePerParam = [email];
+        addSql(sqlParamsEntity,deleteMnuePerSqlById,deleteMnuePerParam);
+
+
+        //之后进行新增
+        if(companyArr) {
+            companyArr.forEach((companyCode) => {
+                var insertCompanySql = PermissionDistributionSql.insertCompanySql();
+                var insertsqlParam = [companyCode, email];
+                addSql(sqlParamsEntity, insertCompanySql, insertsqlParam);
+            });
+        }
+        if(mnuePerArr) {
+            mnuePerArr.forEach((mnueCode) => {
+                var insertMnuePerSql = PermissionDistributionSql.insertMnuePerSql();
+                var insertsqlParam = [mnueCode, email];
+                addSql(sqlParamsEntity, insertMnuePerSql, insertsqlParam);
+            });
+        }
+        DbUtils.execTrans(sqlParamsEntity,function (error,info) {
+            if(error){
+                res.json({status:-1,desc:error})
+            }else{
+                res.json({
+                    status:0,
+                    desc:'权限维护成功'
+                })
+            }
+
+        });
     }
 };
+function arrRemoverepeat(arr) {
+    var newArr = [];
+    if(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if(newArr.indexOf(arr[i]) == -1){
+                newArr.push(arr[i])
+            }
+        }
+    }
+    return newArr;
+}
+function addSql(sqlArr,sql,paramArr) {
+    var obj = {
+        sql: sql,
+        params: paramArr
+    };
+    sqlArr.push(obj);
+}
 module.exports = PermissionDistribution;

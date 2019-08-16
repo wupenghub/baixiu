@@ -81,6 +81,18 @@ var PermissionDistributionSql = {
                     CODE,
                     descr
                `;
+    },
+    deleteCompanySqlById(){
+        return `delete from sys_company_user where email = ?`;
+    },
+    deleteMnuePerSqlById(){
+        return `delete from sys_users_mnue_permissions_group where email = ?`;
+    },
+    insertCompanySql(){
+        return `insert sys_company_user set company_code = ?,email = ?`;
+    },
+    insertMnuePerSql(){
+        return `insert sys_users_mnue_permissions_group set permissions_code = ?,email = ?`;
     }
 };
 module.exports = PermissionDistributionSql;

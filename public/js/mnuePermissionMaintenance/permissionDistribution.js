@@ -1,8 +1,9 @@
 var returnData = null;
+var hiddenList = [];
 $(function () {
     utils.renderPage();
     $('#user-search').on('click', function () {
-        getUserListData(1, utils.pageSize,$('.email').val(),$('.nick_name').val());
+        getUserListData(1, utils.pageSize, $('.email').val(), $('.nick_name').val());
     });
 
     $('#permission-search').on('click', function () {
@@ -12,22 +13,106 @@ $(function () {
         }
         getUserPerList();
     });
-    getUserListData(1, utils.pageSize,$('.email').val(),$('.nick_name').val());
+    $('#permission-update').on('click', function () {
+        if (!$('#email').val()) {
+            alert('请输入账号');
+            return;
+        }
+        updateUserPermission();
+    });
+    getUserListData(1, utils.pageSize, $('.email').val(), $('.nick_name').val());
 });
+
+function updateUserPermission() {
+    var companyArr = [];
+    var mnuePerArr = [];
+    var dataPerArr = [];
+    var containCompany = false;
+    var containMnuePer = false;
+    var containDataPer = false;
+    $('.user_company_list tbody .company_code_view').each(function (index, companyCodeInput) {
+        if ($(companyCodeInput).val()) {
+            for (var i = 0; i < companyArr.length; i++) {
+                if ($(companyCodeInput).val() == companyArr[i]) {
+                    containCompany = true;
+                    break;
+                }
+            }
+            if (!containCompany)
+                companyArr.push($(companyCodeInput).val())
+            else
+                return false;
+        }
+    });
+    if (containCompany) {
+        alert('公司机构重复');
+        return;
+    }
+    $('.user_mnue_permission_list tbody .mnue_per_code_view').each(function (index, mnueCodeInput) {
+        if ($(mnueCodeInput).val()) {
+            for (var i = 0; i < mnuePerArr.length; i++) {
+                if ($(mnueCodeInput).val() == mnuePerArr[i]) {
+                    containMnuePer = true;
+                    break;
+                }
+            }
+            if (!containMnuePer)
+                mnuePerArr.push($(mnueCodeInput).val());
+            else
+                return false;
+
+        }
+    });
+    if (containMnuePer) {
+        alert('角色权限重复');
+        return;
+    }
+    $('.user_data_permission_list tbody .data_per_code_view').each(function (index, dataCodeInput) {
+        if ($(dataCodeInput).val()) {
+            for (var i = 0; i < dataPerArr.length; i++) {
+                if ($(dataCodeInput).val() == dataPerArr[i]) {
+                    containDataPer = true;
+                    return;
+                }
+            }
+            if (!containDataPer)
+                dataPerArr.push($(dataCodeInput).val());
+            else
+                return false;
+        }
+    });
+    if (containDataPer) {
+        alert('数据权限重复');
+        return;
+    }
+    //校验完毕，发送ajax请求提交数据
+    utils.ajaxSend({
+        type: 'post',
+        url: '/baixiu/updateUserPermission',
+        dataType: 'json',
+        data: {email:$('#email').val(),companyArr:companyArr.join(','),mnuePerArr:mnuePerArr.join(','),dataPerArr:dataPerArr.join(',')}
+    }, function (data) {
+
+    }, function (error) {
+
+    });
+}
+
 function renderPerPage(data) {
-    var companyHtml = template('companyList',data);
+    var companyHtml = template('companyList', data);
     $('.user_company_list tbody').html(companyHtml);
-    var mnuePerHtml = template('mnuePerList',data);
+    var mnuePerHtml = template('mnuePerList', data);
     $('.user_mnue_permission_list tbody').html(mnuePerHtml);
-    var dataPerHtml = template('dataPerList',data);
+    var dataPerHtml = template('dataPerList', data);
     $('.user_data_permission_list tbody').html(dataPerHtml);
 }
-function getUserListData(offset, pageSize,email,nickName) {
+
+function getUserListData(offset, pageSize, email, nickName) {
     utils.ajaxSend({
         type: 'get',
         url: '/baixiu/getUserListData',
         dataType: 'json',
-        data: {offset, pageSize, email,nickName}
+        data: {offset, pageSize, email, nickName}
     }, function (data) {
         var userListHtml = template('userList', data);
         $('#user_list table tbody').html(userListHtml);
@@ -35,25 +120,27 @@ function getUserListData(offset, pageSize,email,nickName) {
         returnData = data.returnData;
         data.returnData.totalCount = data.totalCount;
         $('.pages-nav').empty();
-        if(data.totalCount > 0) {
+        if (data.totalCount > 0) {
             utils.pageList(data, $('.pages-nav'), function (currentPage, pageSize) {
-                getUserListData(currentPage, pageSize, email,nickName);
+                getUserListData(currentPage, pageSize, email, nickName);
             });
         }
     }, function (error) {
         alert('请求出问题');
     });
 }
-function distriBution(email){
+
+function distriBution(email) {
     $('.permission_distribution .permission-tabs li:first-child').removeClass('active');
     $('.permission_distribution .permission-tabs li:last-child').addClass('active');
     $('.permission_distribution .permission-content div:first-child').removeClass('active');
     $('.permission_distribution .permission-content div:last-child').addClass('active');
     $('#email').val(email);
-    if($('#email').val()){
+    if ($('#email').val()) {
         getUserPerList();
     }
 }
+
 function getUserPerList() {
     var email = $('#email').val();
     utils.ajaxSend({
@@ -62,9 +149,9 @@ function getUserPerList() {
         data: {email},
         dataType: "json"
     }, function (data) {
-        if(data.status==0) {
+        if (data.status == 0) {
             renderPerPage(data);
-        }else{
+        } else {
             alert(data.desc);
         }
     }, function (error) {
@@ -72,120 +159,6 @@ function getUserPerList() {
     })
 }
 
-function showCostInfo(obj) {
-    var html = template('modify_amount');
-    $('.modal-title').html('订单费用修改');
-    $('.modal-body').empty();
-    $('.modal-body').html(html);
-    $('#order-amount').val(obj.dataset.amount);
-    $('#order-char-id').val(obj.dataset.id);
-    $('#order-amount-modify').on('click', function () {
-        if (!$('#order-amount').val()) {
-            alert('请输入要修改的金额');
-            return;
-        }
-        modifyAmount();
-    });
-}
-
-//修改订单金额请求
-function modifyAmount() {
-    utils.ajaxSend({
-        type: 'post',
-        url: '/baixiu/modifyAmount',
-        dataType: 'json',
-        data: {id: $('#order-char-id').val(), amount: $('#order-amount').val()}
-    }, function (data) {
-        if (data.status == 0) {
-            $('.order-manger-tree').modal('hide');
-            getOrderAmountList();
-        }
-    }, function (error) {
-        alert(error);
-    });
-}
-
-//添加出差订单金额请求
-function addTripCostRequest() {
-    $('.type-list').empty();
-    var userStr = localStorage.getItem('email');
-    var email = '';
-    if (userStr) {
-        email = JSON.parse(userStr)[0];
-    }
-    utils.ajaxSend({
-        type: 'get',
-        url: '/baixiu/searchCostStandard',
-        data: {email, orderNo: $('#order-no').val()},
-        dataType: "json"
-    }, function (result) {
-        var html = template('typeList', result);
-        $('.type-list').html(html);
-        // $('#order-amount-add').on('click',function () {
-        //     if(!$('.line_content .cost_type_desc_view').val()&&!$('.line_content .cost_type_code_view').val(code)){
-        //         alert('请选择费用类型');
-        //         return;
-        //     }
-        //     if(!$('.amount').val()){
-        //         alert('请填写金额');
-        //         return;
-        //     }
-        // });
-    }, function (error) {
-
-    });
-}
-
-//选择费用类型
-function chooseCostType(obj) {
-    var code = obj.dataset.costCode;
-    var desc = obj.innerHTML;
-    $('.line_content .cost_type_desc_view').val(desc);
-    $('.line_content .cost_type_code_view').val(code);
-    $('#cost_tree').modal('hide');
-}
-//选择订单状态类型
-function chooseOrderStatusType(obj){
-    var code = obj.dataset.costCode;
-    var desc = obj.innerHTML;
-    $('.search_text_div_model .order_status_desc').val(desc);
-    $('.search_text_div_model .order_status_code').val(code);
-    $('#order_status_tree').modal('hide');
-}
-//添加费用类型请求
-function addCostAmountRequest() {
-    var orderNo = $('#order-no').val();
-    var costType = $('.line_content .cost_type_code_view').val();
-    var amount = $('.amount').val();
-    utils.ajaxSend({
-        type: 'post',
-        url: '/baixiu/addOrderAmount',
-        dataType: 'json',
-        data: {orderNo, costType, amount}
-    }, function (data) {
-        if(data.status == 0){
-            $('#order_tree').modal('hide');
-            getOrderAmountList();
-        }
-    }, function (error) {
-
-    });
-}
-//删除订单金额的请求
-function deleteOrderAmount(id) {
-    utils.ajaxSend({
-        type: 'post',
-        url: '/baixiu/deleteOrderAmount',
-        dataType: 'json',
-        data: {id}
-    }, function (data) {
-        if(data.status == 0){
-            getOrderAmountList();
-        }
-    }, function (error) {
-
-    });
-}
 //选择公司
 function companyChoose(type) {
     $('.company-manger-tree .company-manger-model').html('');
@@ -205,38 +178,143 @@ function companyChoose(type) {
     }, function (error) {
 
     });
-    /* for(var i = 0;i<dataJson.dataJsonArr.length;i++){
-         //循环遍历集合元素,添加菜单目录。
-         utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'),dataJson.dataJsonArr[i],null,0);
-     }*/
-
 };
+
 //点选公司
 function chooseMnue(obj) {
     $('.company-manger-tree').modal('hide');
-    if(window.chooseCompanyType == 'start'){
+    if (window.chooseCompanyType == 'start') {
         $('.start_company_type_desc_view').val(obj.mnue_desc);
         $('.start_company_type_code_view').val(obj.id);
-    }else if(window.chooseCompanyType == 'end'){
+    } else if (window.chooseCompanyType == 'end') {
         $('.end_company_type_desc_view').val(obj.mnue_desc);
         $('.end_company_type_code_view').val(obj.id);
     }
 }
 
-function addPer(obj,type) {
-    if(type == 'companyList') {
+function addPer(obj, type) {
+    if (type == 'companyList') {
         var html = template('companyList', {companyJsonArray: null}).trim();
         $(html).insertAfter($(obj).parents('tr'));
-    }else if(type == 'mnuePerList'){
+    } else if (type == 'mnuePerList') {
         var html = template('mnuePerList', {mnueJsonArray: null}).trim();
         $(html).insertAfter($(obj).parents('tr'));
-    }else if(type == 'dataPerList'){
+    } else if (type == 'dataPerList') {
         var html = template('dataPerList', {dataJsonArray: null}).trim();
         $(html).insertAfter($(obj).parents('tr'));
     }
 }
-function minusPer(obj) {
+
+function minusPer(obj,type) {
+    var tbody = $(obj).parents('tbody');
+    if(tbody.children().length == 1){
+        if (type == 'companyList') {
+            var companyDesc = $(obj).parents('td').siblings().find('.company_desc_view');
+            var companyCode = $(obj).parents('td').siblings().find('.company_code_view');
+            companyDesc.val('');
+            companyCode.val('');
+        } else if (type == 'mnuePerList') {
+            var mnuePerDesc = $(obj).parents('td').siblings().find('.mnue_per_desc_view');
+            var mnuePerCode = $(obj).parents('td').siblings().find('.mnue_per_code_view');
+            mnuePerDesc.val('');
+            mnuePerCode.val('');
+        } else if (type == 'dataPerList') {
+            var dataPerDesc = $(obj).parents('td').siblings().find('.data_per_desc_view');
+            var dataPerCode = $(obj).parents('td').siblings().find('.data_per_code_view');
+            dataPerDesc.val('');
+            dataPerCode.val('');
+        }
+        return;
+    }
     $(obj).parents('tr').remove();
 }
 
+function companyChoose(obj) {
+    window.companyObj = obj;
+    $('.company-manger-tree .company-manger-model').html('');
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/queryCompanyList',
+        data: {},
+        dataType: "json"
+    }, function (result) {
+        if (result.status == 0) {
+            for (var i = 0; i < result.returnDate.length; i++) {
+                //循环遍历集合元素,添加公司目录。
+                // utils.addTableMnues(tbody,result.returnDate[i],null,0);
+                utils.mnueTreeInModel($('.company-manger-tree .company-manger-model'), result.returnDate[i], null, 0);
+            }
+            $('#company_tree').modal('show');
+        }
 
+    }, function (error) {
+
+    });
+}
+
+function toggle(flag, obj, jsonObj) {
+    findAllID(obj, jsonObj);
+    var isOpen = $(flag + jsonObj.id).attr('data-open');
+    if (isOpen == 'on') {
+        for (var i = 0; i < hiddenList.length; i++) {
+            $(flag + hiddenList[i]).hide();
+        }
+        $(obj).attr("class", "glyphicon glyphicon-menu-right");
+        $(flag + jsonObj.id).attr('data-open', 'off');
+    } else {
+        for (var i = 0; i < hiddenList.length; i++) {
+            // if($('#mnuesManger' + hiddenList[i]).is(':visible')){
+            $(flag + hiddenList[i]).show();
+            // }
+        }
+        $(obj).attr("class", "glyphicon glyphicon-menu-down");
+        $(flag + jsonObj.id).attr('data-open', 'on');
+    }
+    hiddenList = [];
+}
+
+function findAllID(obj, jsonObj) {
+    if (jsonObj.sonList) {
+        for (var i = 0; i < jsonObj.sonList.length; i++) {
+            hiddenList.push(jsonObj.sonList[i].id);
+            findAllID(obj, jsonObj.sonList[i]);
+        }
+    }
+}
+
+function chooseMnue(obj) {
+    if (window.companyObj) {
+        var companyInputCode = $(window.companyObj).siblings('.company_code_view');
+        companyInputCode.val(obj.id);
+        var companyInputDesc = $(window.companyObj).siblings('.company_desc_view');
+        companyInputDesc.val(obj.mnue_desc);
+    }
+    $('.company-manger-tree').modal('hide');
+}
+
+function mnuePerChoose(obj) {
+    window.mnuePerObj = obj;
+    utils.ajaxSend({
+        type: 'get',
+        url: '/baixiu/searchPermissionTypeList',
+        data: {},
+        dataType: "json"
+    }, function (data) {
+        var html = template('permissionList', data);
+        $('.permission-list').html(html);
+        $('#modal_tree').modal('show');
+    }, function (error) {
+
+    });
+}
+
+
+function showInfo(obj) {
+    if (window.mnuePerObj) {
+        var mnuePerInputDesc = $(window.mnuePerObj).siblings('.mnue_per_desc_view');
+        mnuePerInputDesc.val($(obj).html());
+        var mnuePerInputCode = $(window.mnuePerObj).siblings('.mnue_per_code_view');
+        mnuePerInputCode.val(obj.dataset.permissionCode);
+    }
+    $('.permission-manger-tree').modal('hide');
+}

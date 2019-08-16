@@ -21,6 +21,7 @@ var MnuePerRequest = {
                 var sql = MnuePerSql.searchMnuePremissionListSql(req.query.offset,req.query.pageSize);
                 console.log('searchMnuePremissionList查询菜单权限列表：'+sql);
                 DbUtils.queryData(sql,function (result) {
+                    returnObj.status = 0;
                     returnObj.returnData.returnData = result;
                     res.json(returnObj);
                 },function (error) {

@@ -13,7 +13,7 @@
 </head>
 <body>
 <script>NProgress.start()</script>
-<div class="permissionMaintenance main">
+<div class="dataPermissionMaintenance main">
     <nav class="navbar">
         <button class="btn btn-default navbar-btn fa fa-bars"></button>
         <span class="home-page glyphicon glyphicon-home" onclick="utils.setHomePage('{{url}}')" style="cursor: pointer"></span>
@@ -24,13 +24,13 @@
     </nav>
     <div class="container-fluid">
         <div class="page-title">
-            <h1>菜单权限类型维护</h1>
+            <h1>数据权限类型维护</h1>
         </div>
         <ul class="nav nav-tabs permission-tabs" role="tablist">
-            <li role="presentation" class="active permission_list_li"><a href="#permission_list" id="permission-list" data-toggle="tab">菜单权限类型列表</a>
+            <li role="presentation" class="active permission_list_li"><a href="#permission_list" id="permission-list" data-toggle="tab">数据权限类型列表</a>
             </li>
-            <li role="presentation" class="permission_modify_li"><a href="#permission_modify" id="permission-modify" data-toggle="tab">菜单权限类型修改</a></li>
-            <li role="presentation" class="permission_add_li"><a href="#permission_add" id="permission-add" data-toggle="tab">菜单权限类型添加</a></li>
+            <li role="presentation" class="permission_modify_li"><a href="#permission_modify" id="permission-modify" data-toggle="tab">数据权限类型修改</a></li>
+            <li role="presentation" class="permission_add_li"><a href="#permission_add" id="permission-add" data-toggle="tab">数据权限类型添加</a></li>
         </ul>
         <div class="tab-content permission-content">
             <div class="tab-pane active" id="permission_list">
@@ -41,9 +41,9 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th class="text-center">菜单类型编码</th>
-                        <th class="text-center">菜单类型描述</th>
-                        <th class="text-center">菜单类型修改</th>
+                        <th class="text-center">数据类型编码</th>
+                        <th class="text-center">数据类型描述</th>
+                        <th class="text-center">数据类型修改</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -53,7 +53,7 @@
             <div class="tab-pane" id="permission_modify">
                 <div style="background:#ffffff;" class="clearfix">
                     <div class="search_text_div">
-                        <sapn class="text-content">菜单类型：</sapn>
+                        <sapn class="text-content">数据类型：</sapn>
                         <input type="text" class="search_text permission_type_desc_view"  readonly="readonly">
                         <input style="display: none" class="permission_type_code_view" readonly="readonly">
                         <button class="search_btn glyphicon glyphicon-search" onclick="showModal()"></button>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="permission_type_list">
                     <div class="permission_type_div">
-                       <span> 菜单类型名称：</span><input type="text" id="permission_type_desc_modify" placeholder="请输入要修改的名称">
+                       <span> 数据类型名称：</span><input type="text" id="permission_type_desc_modify" placeholder="请输入要修改的名称">
                         <button type="button" class="btn btn-info" id="permission-type-modify">修改</button>
                     </div>
                 </div>
@@ -70,12 +70,12 @@
             <div class="tab-pane" id="permission_add">
                 <div style="background:#ffffff;" class="clearfix">
                     <div class="search_text_div clearfix">
-                        <span class="text-content">菜单类型代码：</span>
+                        <span class="text-content">数据类型代码：</span>
                         <input  class="search_text permission_type_code_view">
                         <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                     </div>
                     <div class="search_text_div clearfix">
-                        <sapn class="text-content">菜单类型描述：</sapn>
+                        <sapn class="text-content">数据类型描述：</sapn>
                         <input type="text" class="search_text permission_type_desc_view">
                         <span style="color: red;display:inline-block;margin: 5px 0 0 10px">*</span>
                     </div>
@@ -117,7 +117,7 @@
     <script src="/node_modules/art-template/lib/template-web.js"></script>
     <script src="../public/vendors/bootstrap/js/bootstrap.js"></script>
     <script src="/public/vendors/util/utils.js"></script>
-    <script src="/public/js/mnuePermissionMaintenance/permissionMaintenance.js"></script>
+    <script src="/public/js/mnuePermissionMaintenance/dataPermissionMaintenance.js"></script>
     <script src="/public/lib/base64/base64.min.js"></script>
     <script type="text/javascript" id="template">{{dataJson}}</script>
     <script type="text/art-template" id="permissionsList">

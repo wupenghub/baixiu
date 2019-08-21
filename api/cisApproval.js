@@ -87,9 +87,7 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
     excelUtils.readExcel(tmp_path, ['材料信息'], function (data) {
         //获取当前最大的材料编码
         var sql = "select c.bo_data_area as boData,(select max(to_number(SUBSTR(I.SQI_CD, 5))) from ci_sqi i where i.sqi_cd like '"+sqiTypeCode+"%') AS maxNum,(select max(o.cm_id) from cm_org_type o) AS cmId from c1_calc_rule c where rownum = 1";
-        console.log(sql);
         var sjSqiData = data['材料信息'];
-        console.log(sjSqiData);
         DbUtils.queryCisData(sql,function (result) {
             var ciSqiConfigData = {};
             var startIndex = Number(result[0]&&result[0]['MAXNUM']) + 1;
@@ -117,7 +115,6 @@ router.post('/baixiu/sqlExcel', multipartMiddleware,function (req,res) {
             excelUtils.writeExcel(ciSqiConfigData,cisDiv+'材料配置.xlsx');
             res.json({status:1});
         },function (err) {
-            console.log(err)
         })
     });
 });

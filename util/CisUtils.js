@@ -19,7 +19,7 @@ var cisUtils = {
         for (var i = 0; i < userGroupPermissionsArray.length; i++) {
             var userGroupObj = userGroupPermissionsArray[i];
             var addName = userGroupObj['姓名'];
-            var userPhone = userGroupObj['电话'];
+            // var userPhone = userGroupObj['电话'];
             var contains = false;
             var user = null;
             for (var j = 0; j < userArray.length; j++) {
@@ -31,7 +31,10 @@ var cisUtils = {
             }
             if (contains) {
                 //如果已经存在人员，判断此人员是否已经有用户组权限集合
-                if (user && user.userGroupPermissArr && user.userGroupPermissArr.length > 0) {
+                if (user) {
+                    if(!user.userGroupPermissArr){
+                        user.userGroupPermissArr = [];
+                    }
                     //已经有用户组权限，再次判断此集合是否已经包含遍历的用户组
                     cisUtils.addPermiss(user, userGroupObj, cisDivDesc);
                 }
@@ -39,7 +42,7 @@ var cisUtils = {
                 user = {};
                 user.userGroupPermissArr = [];
                 user.userName = cisUtils.removeBlank(addName);
-                user.userPhone = userPhone;
+                // user.userPhone = userPhone;
                 cisUtils.addPermiss(user, userGroupPermissionsArray[i], cisDivDesc);
                 userArray.push(user);
             }
@@ -143,7 +146,6 @@ var cisUtils = {
             // var userRolls = user.userRolls || [];
             // var userGroup = user.userGroupCode || [];
             var userDisp = user.dispGroup || [];
-            console.log(user.userName + ':调度组' + userDisp.length);
         }
     },
     generateCisId(userArray, cisDivCode) {
@@ -185,7 +187,6 @@ var cisUtils = {
         userRollData.push(userRollHead);
         userInfo.push(userHead);
         for(var i = 0;i<userArray.length;i++){
-            console.log(userArray[i].userName);
             var user = userArray[i];
             var userGroup = user.userGroupCode;
             var userDisp = user.userDispCode;
@@ -258,7 +259,6 @@ var cisUtils = {
                 });
             });
         }, function (err) {
-            console.log(err);
         });
 
     },

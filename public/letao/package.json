@@ -30,7 +30,7 @@
     "art-template": "^4.13.2",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "mint-ui": "^2.2.13",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.13.1",
     "vue-resource": "^1.5.1",
     "vuex": "^3.0.1"
   }

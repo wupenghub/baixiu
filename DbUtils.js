@@ -1,32 +1,24 @@
 var mysql = require('mysql');
 var oracledb = require('oracledb');
 var async = require("async");
-/*const db_config = {
+const db_config = {
     connectionLimit: 5,
     host: "47.96.76.172",
     user: "root",
     password: "4217aBc!",
     port: "3306",
     database: "baixiu"
-};*/
-const db_config = {
+};
+/*const db_config = {
     connectionLimit: 5,
     host: "127.0.0.1",
     user: "root",
     password: "080902abc",
     port: "3306",
     database: "baixiu"
-};
+};*/
 const db_config_cis = {
     connectionLimit: 5,
-    //贵燃
-    user: "cisread",
-    password: "cisread",
-    connectString: "172.18.5.106:1521/cisprod",
-    /* //深燃
-     user:"cisread",
-    password:"c2i0s1r4ead",
-    connectString : "cisdr-scan.szgas.com:1521/CISDG"*/
 };
 oracledb.fetchAsBuffer = [oracledb.BLOB];
 oracledb.fetchAsString = [oracledb.CLOB];
